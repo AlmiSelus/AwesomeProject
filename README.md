@@ -16,3 +16,11 @@ It simulates fridge manager, that can:</b>
 - frontend
 - stuff
 - more stuff
+
+<b>Requirements:</b>
+- unit tests
+- continuous integration
+- project patterns
+- test driven developement?
+- milk
+- general stuff from classes (Spring boot, java 8, functional programming, UnitTest, MutationalTesting)
