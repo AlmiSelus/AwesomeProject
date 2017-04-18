@@ -1,9 +1,12 @@
 package com.awesomegroup.recipe;
 
+import com.awesomegroup.recipeingredient.RecipeIngredient;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Michał on 2017-04-14.
@@ -33,6 +36,13 @@ public class Recipe {
     @JsonProperty("servings")
     private byte servingsCount;
 
+    @OneToMany(mappedBy = "recipe", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
+    private List<RecipeIngredient> recipeIngredients;
+
+    public static Recipe.Builder create() {
+        return new Recipe.Builder();
+    }
+
     public long getRecipeID() {
         return recipeID;
     }
@@ -53,6 +63,10 @@ public class Recipe {
         return servingsCount;
     }
 
+    public List<RecipeIngredient> getRecipeIngredients() {
+        return recipeIngredients;
+    }
+
     @Override
     public String toString() {
         return "Recipe{" +
@@ -64,13 +78,14 @@ public class Recipe {
                 '}';
     }
 
-    public static Recipe.Builder create() {
-        return new Recipe.Builder();
-    }
-
     public static class Builder {
 
         private Recipe recipe = new Recipe();
+
+        public Builder id(long id) {
+            recipe.recipeID = id;
+            return this;
+        }
 
         public Builder preparationTime(short prepTime) {
             recipe.estimatedPreparationTime = prepTime;
@@ -92,13 +107,13 @@ public class Recipe {
             return this;
         }
 
-        public Recipe build() {
-            return recipe;
+        public Builder ingredients(RecipeIngredient... ingredients) {
+            recipe.recipeIngredients = Arrays.asList(ingredients);
+            return this;
         }
 
-        public Builder id(long id) {
-            recipe.recipeID = id;
-            return this;
+        public Recipe build() {
+            return recipe;
         }
     }
 }
