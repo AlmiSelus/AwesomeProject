@@ -20,13 +20,13 @@ public class RecipeRestController {
 
     @GetMapping("/api/recipe-{page}")
     public Iterable<Recipe> findAll(@PathVariable("page") int page) {
-        return recipeService.getAllRecipesPaged(createPageRequest(page, recipeService.getMaxPage()));
+        return recipeService.getAllRecipesPaged(new PageRequest(page, RecipeService.RECIPES_PER_PAGE));
     }
 
     @GetMapping("/api/recipe/difficulty-{diff}/{page}")
     public Iterable<Recipe> findAllByDifficulty(@PathVariable("diff") String difficulty, @PathVariable("page") int page) {
         RecipeDifficulty recipeDifficulty = RecipeDifficulty.findByName(difficulty);
-        return recipeService.getByDifficulty(recipeDifficulty, createPageRequest(page, recipeService.getMaxPage()));
+        return recipeService.getByDifficulty(recipeDifficulty, new PageRequest(page, RecipeService.RECIPES_PER_PAGE));
     }
 
     @GetMapping("/api/recipe/{name}")
@@ -40,9 +40,4 @@ public class RecipeRestController {
         recipeService.saveRecipe(recipe);
     }
 
-    private PageRequest createPageRequest(int page, int maxPages) {
-        page = page < 1 ? 1 : page;
-        page = page > maxPages ? maxPages : page;
-        return new PageRequest(page, maxPages);
-    }
 }

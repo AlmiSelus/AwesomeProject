@@ -27,7 +27,7 @@ public class Recipe {
     private String name;
 
     @Column(name = "recipe_difficulty", nullable = false)
-    private byte difficulty;
+    private RecipeDifficulty difficulty;
 
     @Column(name = "recipe_servings", nullable = false)
     @JsonProperty("servings")
@@ -45,7 +45,7 @@ public class Recipe {
         return name;
     }
 
-    public byte getDifficulty() {
+    public RecipeDifficulty getDifficulty() {
         return difficulty;
     }
 
@@ -88,7 +88,7 @@ public class Recipe {
         }
 
         public Builder difficulty(RecipeDifficulty difficulty) {
-            recipe.difficulty = difficulty.getID();
+            recipe.difficulty = difficulty;
             return this;
         }
 

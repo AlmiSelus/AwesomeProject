@@ -47,7 +47,7 @@ public class AwesomeProjectApplication {
 		return new WebMvcConfigurerAdapter() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/api/**").allowedOrigins("http://localhost:3000")
+				registry.addMapping("/api/**").allowedOrigins("*")
 						.allowedHeaders("x-requested-with", "accept", "authorization", "content-type")
 						.exposedHeaders("access-control-allow-headers", "access-control-allow-methods", "access-control-allow-origin", "access-control-max-age", "X-Frame-Options")
 						.allowedMethods(RequestMethod.OPTIONS.name(), RequestMethod.GET.name(), RequestMethod.POST.name());

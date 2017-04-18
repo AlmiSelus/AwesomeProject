@@ -14,6 +14,8 @@ import java.util.Optional;
 @Transactional //for future use with inserting data to db
 public class RecipeService {
 
+    public static final int RECIPES_PER_PAGE = 10;
+
     @Autowired
     private RecipeRepository recipeRepository;
 
@@ -22,12 +24,12 @@ public class RecipeService {
     }
 
     public Iterable<Recipe> getByDifficulty(RecipeDifficulty recipeDifficulty, PageRequest pageRequest) {
-        pageRequest = pageRequest == null ? new PageRequest(1, getMaxPage()) : pageRequest;
+        pageRequest = pageRequest == null ? new PageRequest(1, RECIPES_PER_PAGE) : pageRequest;
         return recipeRepository.findByDifficulty(recipeDifficulty.getID(), pageRequest);
     }
 
-    public int getMaxPage() {
-        return (int) recipeRepository.count();
+    public int getCount() {
+        return (int) recipeRepository.count() ;
     }
 
     public Recipe getRecipeByName(String name) {

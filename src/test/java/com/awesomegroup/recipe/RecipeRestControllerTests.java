@@ -62,16 +62,16 @@ public class RecipeRestControllerTests {
         /*
         Mocking step
          */
-        when(recipeService.getAllRecipesPaged(new PageRequest(1, 1))).thenReturn(mockRecipes);
-        when(recipeService.getMaxPage()).thenReturn(1);
+        when(recipeService.getAllRecipesPaged(new PageRequest(0, RecipeService.RECIPES_PER_PAGE))).thenReturn(mockRecipes);
+        when(recipeService.getCount()).thenReturn(1);
 
         /*
         Test
          */
-        mockMvc.perform(get("/api/recipe-1"))
+        mockMvc.perform(get("/api/recipe-0"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andDo(print())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].name", is("Mock recipe 1")))
@@ -91,12 +91,12 @@ public class RecipeRestControllerTests {
         mockRecipes.add(Recipe.create().id(2L).difficulty(RecipeDifficulty.EASY)
                 .name("Mock recipe 2").preparationTime((short) 10).servings((byte) 1).build());
 
-        when(recipeService.getByDifficulty(RecipeDifficulty.MEDIUM, new PageRequest(1, 1)))
-                          .thenReturn(mockRecipes.stream().filter(recipe -> recipe.getDifficulty() == RecipeDifficulty.MEDIUM.getID())
+        when(recipeService.getByDifficulty(RecipeDifficulty.MEDIUM, new PageRequest(0, RecipeService.RECIPES_PER_PAGE)))
+                          .thenReturn(mockRecipes.stream().filter(recipe -> recipe.getDifficulty() == RecipeDifficulty.MEDIUM)
                                                           .collect(Collectors.toList()));
-        when(recipeService.getMaxPage()).thenReturn(1);
+        when(recipeService.getCount()).thenReturn(1);
 
-        mockMvc.perform(get("/api/recipe/difficulty-medium/1"))
+        mockMvc.perform(get("/api/recipe/difficulty-medium/0"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
@@ -113,7 +113,7 @@ public class RecipeRestControllerTests {
                 .name("Mock recipe 1").preparationTime((short) 25).servings((byte) 2).build();
 
         when(recipeService.getRecipeByName("mock-recipe-1")).thenReturn(mockRecipe);
-        when(recipeService.getMaxPage()).thenReturn(1);
+        when(recipeService.getCount()).thenReturn(1);
 
         mockMvc.perform(get("/api/recipe/mock-recipe-1"))
                 .andExpect(status().isOk())

@@ -12,7 +12,7 @@ public class RecipeBuilderTests {
     public void createRecipeWithBuilder_allValuesNotSet() {
         Recipe recipe = Recipe.create().build();
         Assert.assertNotNull(recipe);
-        Assert.assertEquals("Recipe{recipeID=0, estimatedPreparationTime=0, name='null', difficulty=0, servingsCount=0}",
+        Assert.assertEquals("Recipe{recipeID=0, estimatedPreparationTime=0, name='null', difficulty=null, servingsCount=0}",
                 recipe.toString());
     }
 
@@ -26,7 +26,7 @@ public class RecipeBuilderTests {
                                 .difficulty(RecipeDifficulty.EASY)
                                 .build();
         Assert.assertNotNull(recipe);
-        Assert.assertEquals("Recipe{recipeID=1, estimatedPreparationTime=10, name='Test Name', difficulty=0, servingsCount=1}",
+        Assert.assertEquals("Recipe{recipeID=1, estimatedPreparationTime=10, name='Test Name', difficulty=EASY, servingsCount=1}",
                 recipe.toString());
     }
 
