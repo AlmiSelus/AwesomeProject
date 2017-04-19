@@ -27,6 +27,7 @@ public class MockDatabaseRunner implements ApplicationRunner {
                                             .availableMeasurements(IngredientMeasurement.ML, IngredientMeasurement.L)
                                             .name("milk")
                                             .build();
+        Ingredient ingredient2 = Ingredient.create().id(2L).availableMeasurements(IngredientMeasurement.PINCH).name("pepper").build();
 
         Recipe recipe = Recipe.create()
                                 .id(1)
@@ -42,6 +43,9 @@ public class MockDatabaseRunner implements ApplicationRunner {
                 .ingredient(ingredient)
                 .measurement(IngredientMeasurement.ML)
                 .count(200).build();
+
+        recipe.getRecipeIngredients().add(recipeIngredient);
+        recipe.getRecipeIngredients().add(RecipeIngredient.create().recipe(recipe).ingredient(ingredient2).measurement(IngredientMeasurement.PINCH).build());
 
         recipeRepository.save(recipe);
 

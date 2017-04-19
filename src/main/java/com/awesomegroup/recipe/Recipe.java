@@ -1,10 +1,12 @@
 package com.awesomegroup.recipe;
 
 import com.awesomegroup.recipeingredient.RecipeIngredient;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,7 +39,8 @@ public class Recipe {
     private byte servingsCount;
 
     @OneToMany(mappedBy = "recipe", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
-    private List<RecipeIngredient> recipeIngredients;
+    @JsonIgnoreProperties("recipe")
+    private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
     public static Recipe.Builder create() {
         return new Recipe.Builder();
@@ -108,7 +111,8 @@ public class Recipe {
         }
 
         public Builder ingredients(RecipeIngredient... ingredients) {
-            recipe.recipeIngredients = Arrays.asList(ingredients);
+            recipe.recipeIngredients.clear();
+            recipe.recipeIngredients.addAll(Arrays.asList(ingredients));
             return this;
         }
 

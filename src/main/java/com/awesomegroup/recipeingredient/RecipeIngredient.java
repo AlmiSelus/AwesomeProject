@@ -3,6 +3,7 @@ package com.awesomegroup.recipeingredient;
 import com.awesomegroup.ingredients.Ingredient;
 import com.awesomegroup.ingredients.IngredientMeasurement;
 import com.awesomegroup.recipe.Recipe;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 
@@ -20,10 +21,12 @@ public class RecipeIngredient {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(name = "recipe_id")
+    @JsonIgnoreProperties("recipeIngredients")
     private Recipe recipe;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(name = "ingredient_id")
+    @JsonIgnoreProperties("recipeIngredients")
     private Ingredient ingredient;
 
     @Column(name = "recipe_ingredient_measurement")

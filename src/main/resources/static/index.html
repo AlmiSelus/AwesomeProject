@@ -13,16 +13,18 @@
 <body ng-app="hello" ng-controller="home">
 <div class="container">
     <h1>Greeting</h1>
-    <div ng-cloak class="ng-cloak">
-        <p>The ID is {{greeting.id}}</p>
-        <p>The content is {{greeting.content}}</p>
-    </div>
 
     <div ng-repeat="recipe in recipes.content">
         <div class="">Name: {{recipe.name}}</div>
         <div class="">Difficulty: {{recipe.difficulty}}</div>
         <div class="">Preparation time: {{recipe.prepTime}}</div>
         <div class="">Servings: {{recipe.servings}}</div>
+        <div>
+            Ingredients: <br/>
+            <ul>
+                <li ng-repeat="ingredient in recipe.recipeIngredients">{{ingredient.ingredient.name}} - {{ingredient.count}} {{ingredient.measurement}}</li>
+            </ul>
+        </div>
     </div>
 </div>
 <script src="js/angular-bootstrap.js" type="text/javascript"></script>
