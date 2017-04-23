@@ -1,0 +1,14 @@
+<div class="container" ng-controller="RecipesController">
+    <div ng-repeat="recipe in recipes.content">
+        <div class="">Name: {{recipe.name}}</div>
+        <div class="">Difficulty: {{recipe.difficulty}}</div>
+        <div class="">Preparation time: {{recipe.prepTime}}</div>
+        <div class="">Servings: {{recipe.servings}}</div>
+        <div>
+            Ingredients: <br/>
+            <ul>
+                <li ng-repeat="ingredient in recipe.recipeIngredients">{{ingredient.ingredient.name}} - {{ingredient.count}} {{ingredient.measurement}}</li>
+            </ul>
+        </div>
+    </div>
+</div>

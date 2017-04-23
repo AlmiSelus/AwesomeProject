@@ -3,11 +3,12 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.isdc.ro/wro wro.xsd">
     <group name="angular-bootstrap">
-        <!--<css>webjar:bootstrap/@bootstrap.version@/less/bootstrap.less</css>-->
+        <css>webjar:bootstrap/3.2.0/css/bootstrap.css</css>
         <!--<css>file:@project.basedir@/src/main/wro/main.less</css>-->
         <!--<js>webjar:jquery/@jquery.version@/jquery.min.js</js>-->
         <js>webjar:angularjs/1.6.2/angular.min.js</js>
         <js>webjar:angularjs/1.6.2/angular-route.min.js</js>
         <js>webjar:angularjs/1.6.2/angular-cookies.min.js</js>
+        <js>webjar:angularjs/1.6.2/angular-route.min.js</js>
     </group>
 </groups>

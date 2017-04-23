@@ -1,0 +1,8 @@
+<div ng-controller="RegisterController">
+    <form novalidate="novalidate" class="simple-form">
+        <label>E-mail: <input type="email" ng-model="user.email" /></label><br />
+        <label>Password: <input type="password" ng-model="user.password" /></label><br />
+        <input type="button" class="btn btn-default" ng-click="register()" value="Register" />
+    </form>
+    <pre>user = {{user | json}}</pre>
+</div>

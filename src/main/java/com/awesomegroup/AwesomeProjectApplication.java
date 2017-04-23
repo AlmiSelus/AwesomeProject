@@ -1,6 +1,8 @@
 package com.awesomegroup;
 
+import com.awesomegroup.user.AuthService;
 import org.h2.server.web.WebServlet;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
@@ -9,6 +11,9 @@ import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.vendor.HibernateJpaSessionFactoryBean;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -19,7 +24,7 @@ import javax.sql.DataSource;
 /**
  * Spring security disabled - TODO: enable with changed password
  */
-@SpringBootApplication(scanBasePackages = {"com.awesomegroup"}, exclude = {SecurityAutoConfiguration.class})
+@SpringBootApplication(scanBasePackages = {"com.awesomegroup"})
 @EnableJpaRepositories(basePackages = {"com.awesomegroup"})
 public class AwesomeProjectApplication {
 
@@ -62,5 +67,17 @@ public class AwesomeProjectApplication {
 		ServletRegistrationBean registration = new ServletRegistrationBean(new WebServlet());
 		registration.addUrlMappings("/console/*");
 		return registration;
+	}
+
+	@Autowired
+	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(authService());
+	}
+
+
+
+	@Bean
+	public UserDetailsService authService() {
+		return new AuthService();
 	}
 }
