@@ -31,9 +31,6 @@ import javax.sql.DataSource;
 @EnableJpaRepositories(basePackages = {"com.awesomegroup"})
 public class AwesomeProjectApplication {
 
-	@Autowired
-	private AuthService authService;
-
 	public static void main(String[] args) {
 		SpringApplication.run(AwesomeProjectApplication.class, args);
 	}
@@ -73,17 +70,5 @@ public class AwesomeProjectApplication {
 		ServletRegistrationBean registration = new ServletRegistrationBean(new WebServlet());
 		registration.addUrlMappings("/console/*");
 		return registration;
-	}
-
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(authService).passwordEncoder(passwordEncoder());
-	}
-
-
-
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
 	}
 }
