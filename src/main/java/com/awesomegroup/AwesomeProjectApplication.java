@@ -11,9 +11,12 @@ import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.vendor.HibernateJpaSessionFactoryBean;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -27,6 +30,9 @@ import javax.sql.DataSource;
 @SpringBootApplication(scanBasePackages = {"com.awesomegroup"})
 @EnableJpaRepositories(basePackages = {"com.awesomegroup"})
 public class AwesomeProjectApplication {
+
+	@Autowired
+	private AuthService authService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(AwesomeProjectApplication.class, args);
@@ -71,13 +77,13 @@ public class AwesomeProjectApplication {
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(authService());
+		auth.userDetailsService(authService).passwordEncoder(passwordEncoder());
 	}
 
 
 
 	@Bean
-	public UserDetailsService authService() {
-		return new AuthService();
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 }

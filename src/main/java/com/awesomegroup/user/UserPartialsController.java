@@ -22,4 +22,9 @@ public class UserPartialsController {
         return "partials/user/register";
     }
 
+    @GetMapping("/login")
+    public String displayLoginPartial() {
+        return "/partials/user/login";
+    }
+
 }

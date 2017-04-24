@@ -1,0 +1,7 @@
+<div ng-controller="LoginController">
+    <form novalidate="novalidate" class="simple-form">
+        <label>E-mail: <input type="email" ng-model="user.email" /></label><br />
+        <label>Password: <input type="password" ng-model="user.password" /></label><br />
+        <input type="button" class="btn btn-default" ng-click="login()" value="Login" />
+    </form>
+</div>

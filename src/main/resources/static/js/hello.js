@@ -6,8 +6,8 @@ app.config(function ($routeProvider, $httpProvider, $locationProvider) {
         controller : 'RecipesController',
         controllerAs: 'controller'
     }).when('/login', {
-        templateUrl : 'login.html',
-        controller : 'navigation',
+        templateUrl : 'http://localhost:8080/partials/user/login.do',
+        controller : 'LoginController',
         controllerAs: 'controller'
     }).when('/confirm', {
         templateUrl : 'http://localhost:8080/partials/user/confirm.do',
@@ -39,7 +39,9 @@ app.controller('RegisterController', function ($scope, $http, $location) {
     $scope.register = function() {
         var userData = {
             'email': $scope.user.email,
-            'password': $scope.user.password
+            'password': $scope.user.password,
+            'name' : $scope.user.name,
+            'surname' : $scope.user.surname
         };
 
         $http.post('http://localhost:8080/api/user/register', userData)
@@ -61,4 +63,8 @@ app.controller('ConfirmationController', function ($scope, $http, $routeParams) 
     $http.post('http://localhost:8080/api/user/confirm', hash).then(function (response) {
         console.log(response);
     });
+});
+
+app.controller('LoginController', function ($scope, $http) {
+
 });
