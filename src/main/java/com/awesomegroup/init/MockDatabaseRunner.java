@@ -1,5 +1,8 @@
 package com.awesomegroup.init;
 
+import com.awesomegroup.food2fork.F2FRecipeRecipe;
+import com.awesomegroup.food2fork.F2FSearchRecipe;
+import com.awesomegroup.food2fork.F2FSearchResult;
 import com.awesomegroup.food2fork.Food2fork;
 
 import com.awesomegroup.ingredients.Ingredient;
@@ -8,6 +11,8 @@ import com.awesomegroup.recipe.Recipe;
 import com.awesomegroup.recipe.RecipeDifficulty;
 import com.awesomegroup.recipeingredient.RecipeIngredient;
 import com.awesomegroup.recipe.RecipeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -19,8 +24,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class MockDatabaseRunner implements ApplicationRunner {
 
+    private final static Logger log = LoggerFactory.getLogger(MockDatabaseRunner.class);
+
     @Autowired
     private RecipeRepository recipeRepository;
+
+    @Autowired
+    private Food2fork f2f;
 
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
@@ -31,12 +41,20 @@ public class MockDatabaseRunner implements ApplicationRunner {
                                             .build();
         Ingredient ingredient2 = Ingredient.create().id(2L).availableMeasurements(IngredientMeasurement.PINCH).name("pepper").build();
 
-        Food2fork f2f = new Food2fork("716ca2be43d30cce65e497b5f7ef920e");
+//        Food2fork f2f = new Food2fork("716ca2be43d30cce65e497b5f7ef920e");
         //String result = f2f.searchRecipes("cheese,mushrooms");
-        String result = f2f.getRecipe("35120");
+        F2FRecipeRecipe result = f2f.getRecipe("35120");
+        F2FSearchResult topRated = f2f.findTopRated();
+
+        for(F2FSearchRecipe recipe : topRated.recipes) {
+            f2f.getRecipe(recipe.recipe_id);
+        }
+
+        log.info(topRated.toString());
+
         Recipe recipe = Recipe.create()
                                 .id(1)
-                                .name(result)
+                                .name(result.recipe.title)
                                 .preparationTime((short) 25)
                                 .difficulty(RecipeDifficulty.EASY)
                                 .servings((byte) 1)

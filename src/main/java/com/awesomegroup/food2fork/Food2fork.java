@@ -7,15 +7,22 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.springframework.boot.json.GsonJsonParser;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
 /**
  * Created by patry on 24.04.2017.
  */
+@Service
 public class Food2fork {
     private String apiKey = "716ca2be43d30cce65e497b5f7ef920e";
     private OkHttpClient httpKlient;
+
+    public Food2fork() {
+        httpKlient = new OkHttpClient();
+    }
+
     public Food2fork(String key)
     {
         apiKey = key;
@@ -36,12 +43,17 @@ public class Food2fork {
         return searchResult.toString();
     }
 
-    public String getRecipe(String recipeId)
+    public F2FSearchResult findTopRated() {
+        String result = getDataFromRequest("http://food2fork.com/api/search?key=" + apiKey);
+        return new Gson().fromJson(result, F2FSearchResult.class);
+    }
+
+    public F2FRecipeRecipe getRecipe(String recipeId)
     {
         String result = getDataFromRequest( "http://food2fork.com/api/get?key=" + apiKey + "&rId=" + recipeId);
         //String result = getDataFromRequest( "http://food2fork.com/api/get?key=" + apiKey + "&rId=" + 35120); //test line - chicken dish id
         F2FRecipeRecipe searchResult = new Gson().fromJson(result, F2FRecipeRecipe.class);
-        return searchResult.toString();
+        return searchResult;
     }
 
     private String getDataFromRequest(String url)
