@@ -1,5 +1,7 @@
 package com.awesomegroup.init;
 
+import com.awesomegroup.food2fork.Food2fork;
+
 import com.awesomegroup.ingredients.Ingredient;
 import com.awesomegroup.ingredients.IngredientMeasurement;
 import com.awesomegroup.recipe.Recipe;
@@ -29,9 +31,12 @@ public class MockDatabaseRunner implements ApplicationRunner {
                                             .build();
         Ingredient ingredient2 = Ingredient.create().id(2L).availableMeasurements(IngredientMeasurement.PINCH).name("pepper").build();
 
+        Food2fork f2f = new Food2fork("716ca2be43d30cce65e497b5f7ef920e");
+        //String result = f2f.searchRecipes("cheese,mushrooms");
+        String result = f2f.getRecipe("35120");
         Recipe recipe = Recipe.create()
                                 .id(1)
-                                .name("Recipe name")
+                                .name(result)
                                 .preparationTime((short) 25)
                                 .difficulty(RecipeDifficulty.EASY)
                                 .servings((byte) 1)
@@ -46,6 +51,9 @@ public class MockDatabaseRunner implements ApplicationRunner {
 
         recipe.getRecipeIngredients().add(recipeIngredient);
         recipe.getRecipeIngredients().add(RecipeIngredient.create().recipe(recipe).ingredient(ingredient2).measurement(IngredientMeasurement.PINCH).build());
+
+
+
 
         recipeRepository.save(recipe);
 
