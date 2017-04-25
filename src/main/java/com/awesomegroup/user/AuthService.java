@@ -1,5 +1,7 @@
 package com.awesomegroup.user;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,11 +20,14 @@ import java.util.stream.Collectors;
 @Service
 public class AuthService implements UserDetailsService {
 
+    private final static Logger log = LoggerFactory.getLogger(AuthService.class);
+
     @Autowired
     private UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        log.info("Searching user {}", s);
         Optional<User> user = userRepository.findUserByEmail(s);
         return user.map(this::mapUserToUserDetails).orElseThrow(() -> new UsernameNotFoundException("User with given email not found!"));
     }

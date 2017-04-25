@@ -19,10 +19,16 @@ public class User {
     @Column(name = "user_id", unique = true)
     private long id;
 
-    @Column(name = "user_mail", nullable = false, unique = true)
+    @Column(name = "user_name", length = 50)
+    private String name;
+
+    @Column(name = "user_surname", length = 50)
+    private String surname;
+
+    @Column(name = "user_mail", nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(name = "user_password", nullable = false)
+    @Column(name = "user_password", nullable = false, length = 100)
     private String password;
 
     @Column(name = "user_enabled", nullable = false)

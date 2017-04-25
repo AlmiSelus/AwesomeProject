@@ -6,8 +6,8 @@ app.config(function ($routeProvider, $httpProvider, $locationProvider) {
         controller : 'RecipesController',
         controllerAs: 'controller'
     }).when('/login', {
-        templateUrl : 'login.html',
-        controller : 'navigation',
+        templateUrl : 'http://localhost:8080/partials/user/login.do',
+        controller : 'LoginController',
         controllerAs: 'controller'
     }).when('/confirm', {
         templateUrl : 'http://localhost:8080/partials/user/confirm.do',
@@ -39,7 +39,9 @@ app.controller('RegisterController', function ($scope, $http, $location) {
     $scope.register = function() {
         var userData = {
             'email': $scope.user.email,
-            'password': $scope.user.password
+            'password': $scope.user.password,
+            'name' : $scope.user.name,
+            'surname' : $scope.user.surname
         };
 
         $http.post('http://localhost:8080/api/user/register', userData)
@@ -61,4 +63,52 @@ app.controller('ConfirmationController', function ($scope, $http, $routeParams) 
     $http.post('http://localhost:8080/api/user/confirm', hash).then(function (response) {
         console.log(response);
     });
+});
+
+app.controller('LoginController', function ($rootScope, $scope, $http, $location) {
+
+    $scope.authenticate = function(credentials, callback) {
+
+        var headers = credentials ? {
+                        authorization : "Basic " + btoa(credentials.username + ":" + credentials.password)
+                      } : {};
+
+        $http.get("http://localhost:8080/api/user", {headers: headers}).then(function () {
+            if (response.data.name) {
+                $rootScope.authenticated = true;
+                $rootScope.name = response.data.name;
+            } else {
+                $rootScope.authenticated = false;
+            }
+            callback && callback($rootScope.authenticated);
+        }, function() {
+            $rootScope.authenticated = false;
+            callback && callback(false);
+        });
+    };
+
+    $scope.logout = function() {
+        $http.post('http://localhost:8080/api/user/logout', {}).finally(function() {
+            $rootScope.authenticated = false;
+            $location.url("/");
+        });
+    };
+
+    $scope.credentials = {};
+
+    $scope.login = function () {
+        $scope.authenticate($scope.credentials, function(authenticated) {
+            if (authenticated) {
+                console.log("Login succeeded");
+                $location.url("/");
+                $scope.error = false;
+                $rootScope.authenticated = true;
+            } else {
+                console.log("Login failed");
+                $location.url("/login");
+                $scope.error = true;
+                $rootScope.authenticated = false;
+            }
+        });
+    };
 });
