@@ -18,6 +18,8 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Random;
+
 /**
  * Created by Michał on 2017-04-17.
  */
@@ -31,6 +33,9 @@ public class MockDatabaseRunner implements ApplicationRunner {
 
     @Autowired
     private Food2fork f2f;
+
+    @Autowired
+    private Random random;
 
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
@@ -47,33 +52,48 @@ public class MockDatabaseRunner implements ApplicationRunner {
         F2FSearchResult topRated = f2f.findTopRated();
 
         for(F2FSearchRecipe recipe : topRated.recipes) {
-            f2f.getRecipe(recipe.recipe_id);
+            F2FRecipeRecipe r = f2f.getRecipe(recipe.recipe_id);
+
+            Recipe dbBean = Recipe.create()
+                    .name(r.recipe.title)
+                    .preparationTime((short) random.nextInt(100))
+                    .difficulty(RecipeDifficulty.findByID(random.nextInt(3)))
+                    .servings((byte) random.nextInt(5))
+                    .ingredients()
+                    .build();
+
+            recipeRepository.save(dbBean);
+
+//            Recipe dbRecipeBean = Recipe.create().name(r.recipe.title)
+//                                        .ingredients(r.recipe.ingredients.stream().map(recipeString->{
+//
+//                                        })).build();
         }
 
         log.info(topRated.toString());
 
-        Recipe recipe = Recipe.create()
-                                .id(1)
-                                .name(result.recipe.title)
-                                .preparationTime((short) 25)
-                                .difficulty(RecipeDifficulty.EASY)
-                                .servings((byte) 1)
-                                .ingredients()
-                                .build();
-
-        RecipeIngredient recipeIngredient = RecipeIngredient.create()
-                .recipe(recipe)
-                .ingredient(ingredient)
-                .measurement(IngredientMeasurement.ML)
-                .count(200).build();
-
-        recipe.getRecipeIngredients().add(recipeIngredient);
-        recipe.getRecipeIngredients().add(RecipeIngredient.create().recipe(recipe).ingredient(ingredient2).measurement(IngredientMeasurement.PINCH).build());
-
-
+//        Recipe recipe = Recipe.create()
+//                                .id(1)
+//                                .name(result.recipe.title)
+//                                .preparationTime((short) 25)
+//                                .difficulty(RecipeDifficulty.EASY)
+//                                .servings((byte) 1)
+//                                .ingredients()
+//                                .build();
+//
+//        RecipeIngredient recipeIngredient = RecipeIngredient.create()
+//                .recipe(recipe)
+//                .ingredient(ingredient)
+//                .measurement(IngredientMeasurement.ML)
+//                .count(200).build();
+//
+//        recipe.getRecipeIngredients().add(recipeIngredient);
+//        recipe.getRecipeIngredients().add(RecipeIngredient.create().recipe(recipe).ingredient(ingredient2).measurement(IngredientMeasurement.PINCH).build());
 
 
-        recipeRepository.save(recipe);
+
+
+//        recipeRepository.save(recipe);
 
     }
 }

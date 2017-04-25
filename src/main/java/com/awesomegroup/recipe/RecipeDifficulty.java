@@ -31,4 +31,8 @@ public enum RecipeDifficulty {
     public static RecipeDifficulty findByName(String difficulty) {
         return Arrays.stream(values()).filter(diff->diff.getName().equalsIgnoreCase(difficulty)).findAny().orElse(null);
     }
+
+    public static RecipeDifficulty findByID(int val) {
+        return Arrays.stream(values()).filter(recipediff-> recipediff.getID() == val).findAny().orElse(null);
+    }
 }

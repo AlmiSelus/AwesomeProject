@@ -19,7 +19,7 @@ import java.util.List;
 public class Recipe {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "recipe_id", nullable = false, unique = true, updatable = false)
     @JsonProperty("id")
     private long recipeID;

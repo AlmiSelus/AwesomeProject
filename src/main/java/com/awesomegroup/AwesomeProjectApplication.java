@@ -23,6 +23,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.sql.DataSource;
+import java.util.Random;
 
 /**
  * Spring security disabled - TODO: enable with changed password
@@ -33,6 +34,11 @@ public class AwesomeProjectApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(AwesomeProjectApplication.class, args);
+	}
+
+	@Bean
+	public Random random() {
+		return new Random();
 	}
 
 	@Bean
