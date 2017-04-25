@@ -65,6 +65,50 @@ app.controller('ConfirmationController', function ($scope, $http, $routeParams) 
     });
 });
 
-app.controller('LoginController', function ($scope, $http) {
+app.controller('LoginController', function ($rootScope, $scope, $http, $location) {
 
+    $scope.authenticate = function(credentials, callback) {
+
+        var headers = credentials ? {
+                        authorization : "Basic " + btoa(credentials.username + ":" + credentials.password)
+                      } : {};
+
+        $http.get("http://localhost:8080/api/user", {headers: headers}).then(function () {
+            if (response.data.name) {
+                $rootScope.authenticated = true;
+                $rootScope.name = response.data.name;
+            } else {
+                $rootScope.authenticated = false;
+            }
+            callback && callback($rootScope.authenticated);
+        }, function() {
+            $rootScope.authenticated = false;
+            callback && callback(false);
+        });
+    };
+
+    $scope.logout = function() {
+        $http.post('http://localhost:8080/api/user/logout', {}).finally(function() {
+            $rootScope.authenticated = false;
+            $location.url("/");
+        });
+    };
+
+    $scope.credentials = {};
+
+    $scope.login = function () {
+        $scope.authenticate($scope.credentials, function(authenticated) {
+            if (authenticated) {
+                console.log("Login succeeded");
+                $location.url("/");
+                $scope.error = false;
+                $rootScope.authenticated = true;
+            } else {
+                console.log("Login failed");
+                $location.url("/login");
+                $scope.error = true;
+                $rootScope.authenticated = false;
+            }
+        });
+    };
 });
