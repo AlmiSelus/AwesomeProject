@@ -15,16 +15,16 @@ import javax.persistence.*;
 public class RecipeIngredient {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "recipe_ingredient_id", nullable = false, unique = true)
     private long id;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "recipe_id")
     @JsonIgnoreProperties("recipeIngredients")
     private Recipe recipe;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "ingredient_id")
     @JsonIgnoreProperties("recipeIngredients")
     private Ingredient ingredient;

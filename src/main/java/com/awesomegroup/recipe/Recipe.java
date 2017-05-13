@@ -38,7 +38,7 @@ public class Recipe {
     @JsonProperty("servings")
     private byte servingsCount;
 
-    @OneToMany(mappedBy = "recipe", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "recipe", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JsonIgnoreProperties("recipe")
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 

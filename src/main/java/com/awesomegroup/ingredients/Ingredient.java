@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 public class Ingredient {
 
     @Id
-    @GeneratedValue
-    @Column(name = "ingredient_id", nullable = false, unique = true, updatable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ingredient_id", nullable = false, unique = true)
     @JsonProperty("id")
     private long ingredientID;
 
@@ -34,7 +34,7 @@ public class Ingredient {
     @Column(name = "ingredient_available_measurements")
     private List<IngredientMeasurement> availableMeasurements = new ArrayList<>();
 
-    @OneToMany(mappedBy = "ingredient", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "ingredient", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JsonIgnoreProperties("ingredient")
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
