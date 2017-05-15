@@ -4,14 +4,13 @@ import com.awesomegroup.food2fork.F2FRecipeRecipe;
 import com.awesomegroup.food2fork.F2FSearchRecipe;
 import com.awesomegroup.food2fork.F2FSearchResult;
 import com.awesomegroup.food2fork.Food2fork;
-
 import com.awesomegroup.ingredients.Ingredient;
 import com.awesomegroup.ingredients.IngredientMeasurement;
 import com.awesomegroup.ingredients.IngredientsRepository;
 import com.awesomegroup.recipe.Recipe;
 import com.awesomegroup.recipe.RecipeDifficulty;
-import com.awesomegroup.recipeingredient.RecipeIngredient;
 import com.awesomegroup.recipe.RecipeRepository;
+import com.awesomegroup.recipeingredient.RecipeIngredient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,28 +27,26 @@ import java.util.stream.Collectors;
 /**
  * Created by Michał on 2017-04-17.
  */
-@Component
+//@Component
 public class MockDatabaseRunner implements ApplicationRunner {
 
-    private final static Logger log = LoggerFactory.getLogger(MockDatabaseRunner.class);
+    private static final Logger log = LoggerFactory.getLogger(MockDatabaseRunner.class);
 
-    @Autowired
-    private RecipeRepository recipeRepository;
+    private final RecipeRepository recipeRepository;
+    private final IngredientsRepository ingredientsRepository;
+    private final Food2fork f2f;
+    private final Random random;
 
-    @Autowired
-    private IngredientsRepository ingredientsRepository;
-
-    @Autowired
-    private Food2fork f2f;
-
-    @Autowired
-    private Random random;
+//    @Autowired
+    public MockDatabaseRunner(RecipeRepository recipeRepository, IngredientsRepository ingredientsRepository, Food2fork f2f, Random random) {
+        this.recipeRepository = recipeRepository;
+        this.ingredientsRepository = ingredientsRepository;
+        this.f2f = f2f;
+        this.random = random;
+    }
 
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
-//        Food2fork f2f = new Food2fork("716ca2be43d30cce65e497b5f7ef920e");
-        //String result = f2f.searchRecipes("cheese,mushrooms");
-        F2FRecipeRecipe result = f2f.getRecipe("35120");
         F2FSearchResult topRated = f2f.findTopRated();
 
         for(F2FSearchRecipe recipe : topRated.recipes) {

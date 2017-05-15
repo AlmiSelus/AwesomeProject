@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,9 +22,12 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserDetailsService authService;
+    private final UserDetailsService authService;
 
+    @Autowired
+    public WebSecurityConfig(UserDetailsService authService) {
+        this.authService = authService;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -32,6 +36,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/login", "/", "/partials/**", "/api/**", "/console/**").permitAll()
                 .anyRequest().authenticated()
+                .and()
+                .formLogin()
 //                .and()
 //                .csrf()
 //                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
@@ -45,11 +51,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(authService).passwordEncoder(passwordEncoder());
+        auth.authenticationProvider(authProvider());
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(authService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
     }
 }

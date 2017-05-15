@@ -1,6 +1,9 @@
 package com.awesomegroup.user;
 
 import com.awesomegroup.mail.EmailHTMLSender;
+import com.awesomegroup.mail.EmailStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.LocalServerPort;
@@ -18,22 +21,26 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private static final String SALT = "2hM$^%#$^64Jpx5*NG#^E6yaRXLq6PhgmC&Yx61rzKgCPJdpZWx(ipq%fk)&HFjz";
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final EmailHTMLSender mailSender;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private EmailHTMLSender mailSender;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public UserService(UserRepository userRepository, EmailHTMLSender mailSender, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.mailSender = mailSender;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public Optional<User> register(User user) {
 
         Optional<User> userPersisted = Optional.empty();
 
         if(!userRepository.findUserByEmail(user.getEmail()).isPresent()) {
+            log.info("User's [{}] password = {}", user.getEmail(), user.getPassword());
             User registerUserData = User.create(user).enabled(false).locked(true).credentialsExpired(false)
                     .roles().password(passwordEncoder.encode(user.getPassword())).build();
             userRepository.save(registerUserData);
@@ -44,17 +51,6 @@ public class UserService {
         return userPersisted;
     }
 
-    private void sendConfirmationEmail(final User user) {
-        Context context = new Context();
-        context.setVariable("title", "Lorem Ipsum");
-        context.setVariable("description", "Lorem Lorem Lorem");
-        String url = "http://localhost:8080" + "/#/confirm?uh=" +
-                Base64Utils.encodeToString((user.getEmail()+SALT).getBytes());
-        context.setVariable("link", url);
-
-        mailSender.send(user.getEmail(), "Confirm your account!", "mail/template_register", context);
-    }
-
     public void confirm(String userHash) {
         String userDecodedData = new String(Base64Utils.decodeFromString(userHash)).replace(SALT, "");
         userRepository.findUserByEmail(userDecodedData).ifPresent(user->{
@@ -63,4 +59,18 @@ public class UserService {
             userRepository.save(user);
         });
     }
+
+    private void sendConfirmationEmail(final User user) {
+        Context context = new Context();
+        context.setVariable("title", "Lorem Ipsum");
+        context.setVariable("description", "Lorem Lorem Lorem");
+        context.setVariable("link", getConfirmationURL(user));
+
+        mailSender.send(user.getEmail(), "Confirm your account!", "mail/template_register", context);
+    }
+
+    private String getConfirmationURL(User user) {
+        return "http://localhost:8080/#/confirm?uh=" + Base64Utils.encodeToString((user.getEmail() + SALT).getBytes());
+    }
+
 }

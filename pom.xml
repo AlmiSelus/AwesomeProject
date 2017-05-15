@@ -22,6 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<sonar.jacoco.reportPath>${project.build.directory}/reports</sonar.jacoco.reportPath>
 	</properties>
 
 	<dependencies>
@@ -188,5 +189,60 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>coverage-per-test</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>0.7.9</version>
+						<configuration>
+							<destFile>${sonar.jacoco.reportPath}/jacoco.exec</destFile>
+							<dataFile>${sonar.jacoco.reportPath}/jacoco.exec</dataFile>
+							<outputDirectory>${sonar.jacoco.reportPath}</outputDirectory>
+							<!--<append>true</append>-->
+						</configuration>
+						<executions>
+							<execution>
+								<id>jacoco-initialize</id>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>jacoco-site</id>
+								<phase>package</phase>
+								<goals>
+									<goal>report</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+
+			<dependencies>
+				<dependency>
+					<groupId>org.jacoco</groupId>
+					<artifactId>org.jacoco.agent</artifactId>
+					<version>0.7.9</version>
+				</dependency>
+				<dependency>
+					<groupId>org.jacoco</groupId>
+					<artifactId>org.jacoco.core</artifactId>
+					<version>0.7.9</version>
+				</dependency>
+				<dependency>
+					<groupId>org.sonarsource.java</groupId>
+					<artifactId>sonar-jacoco-listeners</artifactId>
+					<version>4.9.0.9858</version>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 
 </project>

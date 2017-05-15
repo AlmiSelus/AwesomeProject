@@ -17,30 +17,34 @@ public class EmailSender {
 
     private static final Logger log = LoggerFactory.getLogger(EmailSender.class);
 
+    private final JavaMailSender javaMailSender;
+
     @Autowired
-    private JavaMailSender javaMailSender;
-
-    public EmailStatus sendPlainText(String to, String subject, String text) {
-        return send(to, subject, text, false);
+    public EmailSender(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
     }
 
-    public EmailStatus sendHtml(String to, String subject, String htmlBody) {
-        return send(to, subject, htmlBody, true);
+    public EmailStatus sendHtml(EmailStatus mailMessageData) {
+        return send(mailMessageData);
     }
 
-    private EmailStatus send(String to, String subject, String text, Boolean isHtml) {
+    private EmailStatus send(EmailStatus messageData) {
         try {
-            MimeMessage mail = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mail, true);
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText(text, isHtml);
+            MimeMessage mail = getMimeMessage(javaMailSender.createMimeMessage(), messageData);
             javaMailSender.send(mail);
-            log.info("Send email '{}' to: {}", subject, to);
-            return new EmailStatus(to, subject, text).success();
+            log.info("Send email '{}' to: {}", messageData.getSubject(), messageData.getTo());
+            return new EmailStatus(messageData.getTo(), messageData.getSubject(), messageData.getBody()).success();
         } catch (Exception e) {
-            log.error("Problem with sending email to: {}, error message: {}", to, e.getMessage());
-            return new EmailStatus(to, subject, text).error(e.getMessage());
+            log.error("Problem with sending email to: {}, error message: {}", messageData.getTo(), e.getMessage());
+            return new EmailStatus(messageData.getTo(), messageData.getSubject(), messageData.getBody()).error(e.getMessage());
         }
+    }
+
+    private MimeMessage getMimeMessage(MimeMessage mail, EmailStatus messageData) throws Exception {
+        MimeMessageHelper helper = new MimeMessageHelper(mail, true);
+        helper.setTo(messageData.getTo());
+        helper.setSubject(messageData.getSubject());
+        helper.setText(messageData.getBody(), true);
+        return helper.getMimeMessage();
     }
 }

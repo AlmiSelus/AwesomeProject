@@ -80,6 +80,9 @@ app.controller('LoginController', function ($rootScope, $scope, $http, $location
             } else {
                 $rootScope.authenticated = false;
             }
+
+            console.log(response.data);
+
             callback && callback($rootScope.authenticated);
         }, function() {
             $rootScope.authenticated = false;

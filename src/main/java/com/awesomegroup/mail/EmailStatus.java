@@ -59,4 +59,33 @@ public class EmailStatus {
     public String getErrorMessage() {
         return errorMessage;
     }
+
+    public static EmailStatusBuilder builder() {
+        return new EmailStatusBuilder();
+    }
+
+    public static class EmailStatusBuilder {
+        private String to;
+        private String subject;
+        private String body;
+
+        public EmailStatusBuilder to(String to) {
+            this.to = to;
+            return this;
+        }
+
+        public EmailStatusBuilder subject(String subject) {
+            this.subject = subject;
+            return this;
+        }
+
+        public EmailStatusBuilder body(String body) {
+            this.body = body;
+            return this;
+        }
+
+        public EmailStatus build() {
+            return new EmailStatus(to, subject, body);
+        }
+    }
 }
