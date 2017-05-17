@@ -99,6 +99,14 @@ public class User {
         this.userRoles = userRoles;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
     public static Builder create(User user) {
         return new Builder(user);
     }
@@ -107,12 +115,23 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 ", enabled=" + enabled +
                 ", credentialsExpired=" + credentialsExpired +
                 ", locked=" + locked +
                 ", userRoles=" + userRoles +
                 '}';
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public static class Builder {

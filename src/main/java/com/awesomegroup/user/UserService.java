@@ -36,7 +36,6 @@ public class UserService {
         Optional<User> userPersisted = Optional.empty();
 
         if(!userRepository.findUserByEmail(user.getEmail()).isPresent()) {
-            log.info("User's [{}] password = {}", user.getEmail(), user.getPassword());
             User registerUserData = User.create(user).enabled(false).locked(true).credentialsExpired(false)
                     .roles().password(passwordEncoder.encode(user.getPassword())).build();
             userRepository.save(registerUserData);
