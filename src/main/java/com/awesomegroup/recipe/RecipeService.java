@@ -3,6 +3,7 @@ package com.awesomegroup.recipe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
@@ -24,8 +25,7 @@ public class RecipeService {
     }
 
     public Iterable<Recipe> getByDifficulty(RecipeDifficulty recipeDifficulty, PageRequest pageRequest) {
-        pageRequest = pageRequest == null ? new PageRequest(1, RECIPES_PER_PAGE) : pageRequest;
-        return recipeRepository.findByDifficulty(recipeDifficulty.getID(), pageRequest);
+        return recipeRepository.findByDifficulty(recipeDifficulty.getID(), pageRequest == null ? new PageRequest(1, RECIPES_PER_PAGE) : pageRequest);
     }
 
     public int getCount() {

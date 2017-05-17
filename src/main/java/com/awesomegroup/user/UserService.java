@@ -1,13 +1,9 @@
 package com.awesomegroup.user;
 
 import com.awesomegroup.mail.EmailHTMLSender;
-import com.awesomegroup.mail.EmailStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.embedded.LocalServerPort;
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;

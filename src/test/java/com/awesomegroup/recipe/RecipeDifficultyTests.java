@@ -22,4 +22,16 @@ public class RecipeDifficultyTests {
         Assert.assertEquals(RecipeDifficulty.EASY, recipeDifficulty);
     }
 
+    @Test
+    public void callFindByID_shouldReturnEasy() {
+        RecipeDifficulty easy = RecipeDifficulty.findByID(0);
+        Assert.assertNotNull(easy);
+        Assert.assertEquals(RecipeDifficulty.EASY, easy);
+    }
+
+    @Test
+    public void callGetID_shouldReturn0() {
+        Assert.assertEquals(0, RecipeDifficulty.EASY.getID());
+    }
+
 }

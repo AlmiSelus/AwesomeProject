@@ -7,6 +7,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 /**
@@ -40,7 +41,7 @@ public class EmailSender {
         }
     }
 
-    private MimeMessage getMimeMessage(MimeMessage mail, EmailStatus messageData) throws Exception {
+    private MimeMessage getMimeMessage(MimeMessage mail, EmailStatus messageData) throws MessagingException {
         MimeMessageHelper helper = new MimeMessageHelper(mail, true);
         helper.setTo(messageData.getTo());
         helper.setSubject(messageData.getSubject());
