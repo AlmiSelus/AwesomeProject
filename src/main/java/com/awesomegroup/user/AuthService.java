@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,8 +34,7 @@ public class AuthService implements UserDetailsService {
     }
 
     private UserDetails mapUserToUserDetails(User user) {
-        List<GrantedAuthority> authorityList = user.getUserRoles().stream().map(role->new SimpleGrantedAuthority(role.getRole()))
-                .collect(Collectors.toList());
+        List<GrantedAuthority> authorityList = Collections.singletonList(new SimpleGrantedAuthority("ADMIN"));
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), user.isEnabled(),
                 true, !user.isCredentialsExpired(), !user.isLocked(), authorityList);
     }

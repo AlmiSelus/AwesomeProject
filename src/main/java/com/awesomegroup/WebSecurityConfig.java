@@ -1,5 +1,6 @@
 package com.awesomegroup;
 
+import com.awesomegroup.user.AuthFailedEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
@@ -32,17 +33,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .httpBasic().and()
-                .authorizeRequests()
-                .antMatchers("/login", "/", "/partials/**", "/api/**", "/console/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
+            .httpBasic().realmName("MY_TEST_REALM").authenticationEntryPoint(getBasicAuthEntryPoint()).and()
+            .authorizeRequests()
+            .antMatchers("/login", "/", "/partials/**", "/api/**", "/console/**").permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .formLogin()
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .loginProcessingUrl("/api/user/login")
+                .permitAll()
 //                .and()
 //                .csrf()
 //                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-
-        .and()
+            .and()
                 .authorizeRequests().antMatchers("/console/**").permitAll();
 
         http.csrf().disable();
@@ -52,6 +56,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authProvider());
+    }
+
+    @Bean
+    public AuthFailedEntryPoint getBasicAuthEntryPoint() {
+        return new AuthFailedEntryPoint();
     }
 
     @Bean
