@@ -111,6 +111,10 @@ public class User {
         return new Builder(user);
     }
 
+    public static Builder create() {
+        return new Builder();
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -135,6 +139,11 @@ public class User {
 
     public static class Builder {
         private User user;
+
+        private Builder() {
+            user = new User();
+        }
+
         private Builder(User u) {
             user = u;
         }
