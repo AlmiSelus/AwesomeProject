@@ -55,48 +55,24 @@ public class User {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public boolean isEnabled() {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
     public boolean isCredentialsExpired() {
         return credentialsExpired;
-    }
-
-    public void setCredentialsExpired(boolean credentialsExpired) {
-        this.credentialsExpired = credentialsExpired;
     }
 
     public boolean isLocked() {
         return locked;
     }
 
-    public void setLocked(boolean locked) {
-        this.locked = locked;
-    }
-
     public List<UserRole> getUserRoles() {
         return userRoles;
-    }
-
-    public void setUserRoles(List<UserRole> userRoles) {
-        this.userRoles = userRoles;
     }
 
     public String getName() {
@@ -127,14 +103,6 @@ public class User {
                 ", locked=" + locked +
                 ", userRoles=" + userRoles +
                 '}';
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
     }
 
     public static class Builder {

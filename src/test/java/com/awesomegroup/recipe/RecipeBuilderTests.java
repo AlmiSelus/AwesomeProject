@@ -1,5 +1,7 @@
 package com.awesomegroup.recipe;
 
+import com.awesomegroup.ingredients.Ingredient;
+import com.awesomegroup.recipeingredient.RecipeIngredient;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,6 +30,20 @@ public class RecipeBuilderTests {
         Assert.assertNotNull(recipe);
         Assert.assertEquals("Recipe{recipeID=1, estimatedPreparationTime=10, name='Test Name', difficulty=EASY, servingsCount=1}",
                 recipe.toString());
+    }
+
+    @Test
+    public void createRecipeWithBuilder_addedIngredients_shouldReturnAllWhenRequested() {
+        //create ingredient
+        Ingredient ingredient = Ingredient.create().name("Test ingredient").build();
+        Recipe recipeBase = Recipe.create().name("Recipe").build();
+        RecipeIngredient recipeIngredient = RecipeIngredient.create().ingredient(ingredient).recipe(recipeBase).build();
+
+        //create recipe
+        Recipe recipe = Recipe.create(recipeBase).ingredients(recipeIngredient).build();
+
+        Assert.assertFalse(recipe.getRecipeIngredients().isEmpty());
+        Assert.assertEquals(1, recipe.getRecipeIngredients().size());
     }
 
 }

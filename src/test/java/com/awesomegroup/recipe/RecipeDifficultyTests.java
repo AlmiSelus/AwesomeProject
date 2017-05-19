@@ -34,4 +34,9 @@ public class RecipeDifficultyTests {
         Assert.assertEquals(0, RecipeDifficulty.EASY.getID());
     }
 
+    @Test
+    public void callFindByID_shouldReturnNull() {
+        Assert.assertNull(RecipeDifficulty.findByID(-1));
+    }
+
 }

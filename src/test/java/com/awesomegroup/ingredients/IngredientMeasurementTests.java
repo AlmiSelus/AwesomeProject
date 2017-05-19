@@ -24,4 +24,13 @@ public class IngredientMeasurementTests {
         Assert.assertTrue(actual.contains(expected.get(3)));
     }
 
+    @Test
+    public void callGetMeasurementID_measurementALL_shouldReturn0() {
+        Assert.assertEquals(0, IngredientMeasurement.ALL.getMeasurementID());
+    }
+
+    @Test
+    public void callGetMeasurementName_measurementALL_shouldReturnALL() {
+        Assert.assertEquals("ALL", IngredientMeasurement.ALL.getMeasurementName());
+    }
 }

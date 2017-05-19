@@ -1,8 +1,6 @@
 package com.awesomegroup.user;
 
 import com.awesomegroup.mail.EmailHTMLSender;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,7 +15,6 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private static final String SALT = "2hM$^%#$^64Jpx5*NG#^E6yaRXLq6PhgmC&Yx61rzKgCPJdpZWx(ipq%fk)&HFjz";
 
     private final UserRepository userRepository;
@@ -49,9 +46,7 @@ public class UserService {
     public void confirm(String userHash) {
         String userDecodedData = new String(Base64Utils.decodeFromString(userHash)).replace(SALT, "");
         userRepository.findUserByEmail(userDecodedData).ifPresent(user->{
-            user.setLocked(false);
-            user.setEnabled(true);
-            userRepository.save(user);
+            userRepository.save(User.create(user).locked(false).enabled(true).build());
         });
     }
 

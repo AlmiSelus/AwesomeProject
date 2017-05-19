@@ -46,6 +46,10 @@ public class Recipe {
         return new Recipe.Builder();
     }
 
+    public static Recipe.Builder create(Recipe recipe) {
+        return new Recipe.Builder(recipe);
+    }
+
     public long getRecipeID() {
         return recipeID;
     }
@@ -83,7 +87,15 @@ public class Recipe {
 
     public static class Builder {
 
-        private Recipe recipe = new Recipe();
+        private Recipe recipe;
+
+        public Builder() {
+            recipe = new Recipe();
+        }
+
+        public Builder(Recipe recipe) {
+            this.recipe = recipe;
+        }
 
         public Builder id(long id) {
             recipe.recipeID = id;
