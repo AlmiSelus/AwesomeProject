@@ -35,7 +35,7 @@ public class AwesomeProjectApplication {
 	@Bean
 	public DataSource dataSource() {
 		return DataSourceBuilder.create()
-				.url("jdbc:postgresql://217.182.73.188:5432/dbname")
+				.url("jdbc:postgresql://217.182.73.188:5432/AwesomeProjectDB")
 				.driverClassName("org.postgresql.Driver")
 				.username("postgres")
 				.password("dbpwd1")
