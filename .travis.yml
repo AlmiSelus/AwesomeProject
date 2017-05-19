@@ -6,5 +6,5 @@ addons:
     organization: "almiselus-github"
 script:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-  - mvn package -Pcoverage-per-test -B
+  - mvn package -Pci -B
   - sonar-scanner

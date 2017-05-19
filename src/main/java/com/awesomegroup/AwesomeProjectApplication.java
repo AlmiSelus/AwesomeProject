@@ -33,16 +33,6 @@ public class AwesomeProjectApplication {
 	}
 
 	@Bean
-	public DataSource dataSource() {
-		return DataSourceBuilder.create()
-				.url("jdbc:postgresql://217.182.73.188:5432/AwesomeProjectDB")
-				.driverClassName("org.postgresql.Driver")
-				.username("postgres")
-				.password("dbpwd1")
-				.build();
-	}
-
-	@Bean
 	public HibernateJpaSessionFactoryBean sessionFactory() {
 		HibernateJpaSessionFactoryBean factoryBean = new HibernateJpaSessionFactoryBean();
 		factoryBean.getJpaPropertyMap().put("show_sql", "true");

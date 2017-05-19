@@ -203,7 +203,7 @@
 
 	<profiles>
 		<profile>
-			<id>coverage-per-test</id>
+			<id>ci</id>
 			<build>
 				<plugins>
 					<plugin>
