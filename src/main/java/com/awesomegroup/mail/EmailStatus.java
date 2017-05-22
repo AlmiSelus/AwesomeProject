@@ -5,8 +5,8 @@ package com.awesomegroup.mail;
  */
 public class EmailStatus {
 
-    public static final String SUCCESS = "SUCCESS";
-    public static final String ERROR = "ERROR";
+    public static final String SUCCESS_STATUS = "SUCCESS";
+    public static final String ERROR_STATUS = "ERROR";
 
     private final String to;
     private final String subject;
@@ -21,23 +21,12 @@ public class EmailStatus {
         this.body = body;
     }
 
-    public EmailStatus success() {
-        this.status = SUCCESS;
-        return this;
-    }
-
-    public EmailStatus error(String errorMessage) {
-        this.status = ERROR;
-        this.errorMessage = errorMessage;
-        return this;
-    }
-
     public boolean isSuccess() {
-        return SUCCESS.equals(this.status);
+        return SUCCESS_STATUS.equals(this.status);
     }
 
     public boolean isError() {
-        return ERROR.equals(this.status);
+        return ERROR_STATUS.equals(this.status);
     }
 
     public String getTo() {
@@ -52,22 +41,33 @@ public class EmailStatus {
         return body;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
     public String getErrorMessage() {
         return errorMessage;
     }
 
-    public static EmailStatusBuilder builder() {
+    public static EmailStatusBuilder create() {
         return new EmailStatusBuilder();
+    }
+
+    public static EmailStatusBuilder create(EmailStatus existingStatus) {
+        return new EmailStatusBuilder(existingStatus);
     }
 
     public static class EmailStatusBuilder {
         private String to;
         private String subject;
         private String body;
+        private String status;
+        private String msg;
+
+        public EmailStatusBuilder() {
+        }
+
+        public EmailStatusBuilder(EmailStatus emailStatus) {
+            to = emailStatus.getTo();
+            subject = emailStatus.getSubject();
+            body = emailStatus.getBody();
+        }
 
         public EmailStatusBuilder to(String to) {
             this.to = to;
@@ -84,8 +84,22 @@ public class EmailStatus {
             return this;
         }
 
+        public EmailStatusBuilder success() {
+            status = SUCCESS_STATUS;
+            return this;
+        }
+
+        public EmailStatusBuilder error(String message) {
+            status = ERROR_STATUS;
+            this.msg = message;
+            return this;
+        }
+
         public EmailStatus build() {
-            return new EmailStatus(to, subject, body);
+            EmailStatus mailStatus = new EmailStatus(to, subject, body);
+            mailStatus.status = status;
+            mailStatus.errorMessage = msg;
+            return mailStatus;
         }
     }
 }

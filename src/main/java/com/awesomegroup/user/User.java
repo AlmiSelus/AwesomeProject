@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @Table(name = "users")
 @JsonSerialize
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", unique = true)
@@ -45,10 +47,6 @@ public class User {
 
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getEmail() {
@@ -113,7 +111,15 @@ public class User {
         }
 
         private Builder(User u) {
-            user = u;
+            this();
+            user.email = u.getEmail();
+            user.password = u.getPassword();
+            user.name = u.getName();
+            user.surname = u.getSurname();
+            user.locked = u.isLocked();
+            user.credentialsExpired = u.isCredentialsExpired();
+            user.enabled = u.isEnabled();
+            user.userRoles = u.getUserRoles();
         }
 
         public Builder email(String email) {
@@ -142,7 +148,7 @@ public class User {
         }
 
         public Builder roles(UserRole... roles) {
-            Collections.addAll(user.getUserRoles(), roles);
+            Arrays.stream(roles).map(role -> UserRole.create(role).user(user).build()).forEach(userRole -> user.getUserRoles().add(userRole));
             return this;
         }
 

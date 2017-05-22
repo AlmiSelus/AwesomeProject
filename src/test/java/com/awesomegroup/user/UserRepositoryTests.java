@@ -2,6 +2,8 @@ package com.awesomegroup.user;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +16,9 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import java.util.Optional;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Created by Michał on 2017-05-19.
@@ -31,7 +36,7 @@ public class UserRepositoryTests {
     @DatabaseSetup("/database/user2Entries.xml")
     public void callFindByEmail_emailInDB_shouldReturnExistingUser() {
         Optional<User> user = userRepository.findUserByEmail("jsnow@westeros.com");
-        Assert.assertTrue(user.isPresent());
+        assertThat(user.isPresent(), is(true));
         user.ifPresent(Assert::assertNotNull);
     }
 
@@ -39,6 +44,6 @@ public class UserRepositoryTests {
     @DatabaseSetup("/database/user2Entries.xml")
     public void callFindByEmail_emailNOTInDB_shouldReturnEmptyOptional() {
         Optional<User> user = userRepository.findUserByEmail("test");
-        Assert.assertFalse(user.isPresent());
+        assertThat(user.isPresent(), is(false));
     }
 }
