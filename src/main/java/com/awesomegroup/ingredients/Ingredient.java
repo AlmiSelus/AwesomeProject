@@ -64,6 +64,16 @@ public class Ingredient {
                 '}';
     }
 
+    public void Update(Ingredient ingredient) {
+        ingredient.getAvailableMeasurements().forEach(
+                ingredientMeasurement -> {
+                    if(!availableMeasurements.contains(ingredientMeasurement)) {
+                        availableMeasurements.add(ingredientMeasurement);
+                    }
+                }
+        );
+    }
+
     public static Builder create() {
         return new Builder();
     }

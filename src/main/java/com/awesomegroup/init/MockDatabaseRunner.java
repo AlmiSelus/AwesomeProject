@@ -6,17 +6,16 @@ import com.awesomegroup.food2fork.F2FSearchResult;
 import com.awesomegroup.food2fork.Food2fork;
 import com.awesomegroup.ingredients.Ingredient;
 import com.awesomegroup.ingredients.IngredientMeasurement;
-import com.awesomegroup.ingredients.IngredientsRepository;
+import com.awesomegroup.ingredients.IngredientRepository;
 import com.awesomegroup.recipe.Recipe;
 import com.awesomegroup.recipe.RecipeDifficulty;
 import com.awesomegroup.recipe.RecipeRepository;
 import com.awesomegroup.recipeingredient.RecipeIngredient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Component;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Objects;
@@ -33,14 +32,14 @@ public class MockDatabaseRunner implements ApplicationRunner {
     private static final Logger log = LoggerFactory.getLogger(MockDatabaseRunner.class);
 
     private final RecipeRepository recipeRepository;
-    private final IngredientsRepository ingredientsRepository;
+    private final IngredientRepository ingredientRepository;
     private final Food2fork f2f;
     private final Random random;
 
 //    @Autowired
-    public MockDatabaseRunner(RecipeRepository recipeRepository, IngredientsRepository ingredientsRepository, Food2fork f2f, Random random) {
+    public MockDatabaseRunner(RecipeRepository recipeRepository, IngredientRepository ingredientRepository, Food2fork f2f, Random random) {
         this.recipeRepository = recipeRepository;
-        this.ingredientsRepository = ingredientsRepository;
+        this.ingredientRepository = ingredientRepository;
         this.f2f = f2f;
         this.random = random;
     }
@@ -64,7 +63,7 @@ public class MockDatabaseRunner implements ApplicationRunner {
 
 
             List<RecipeIngredient> recipeIngredients = uniqueIngredients.stream().filter(Objects::nonNull).map(ingredientName->{
-                Optional<Ingredient> optionalIngredient = ingredientsRepository.findByName(ingredientName);
+                Optional<Ingredient> optionalIngredient = ingredientRepository.findIngredientsByName(ingredientName);
                 Ingredient newIngredient = optionalIngredient.orElseGet(() -> Ingredient.create().name(ingredientName)
                         .availableMeasurements(IngredientMeasurement.ALL).build());
 
