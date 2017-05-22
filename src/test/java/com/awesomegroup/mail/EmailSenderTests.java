@@ -12,6 +12,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 
@@ -42,6 +43,15 @@ public class EmailSenderTests {
                                             .body("<h1>body</h1>").build();
         emailStatus = emailSender.sendHtml(emailStatus);
         assertThat(emailStatus.isSuccess(), is(true));
+    }
+
+    @Test
+    public void callSendMessage_shouldFailWithMessage() {
+        EmailStatus status = EmailStatus.create().to("test@test.com").subject("subject").body("").build();
+        status = emailSender.sendHtml(status);
+        assertThat(status.isSuccess(), is(false));
+        assertThat(status.isError(), is(true));
+        assertThat(status.getErrorMessage(), containsString("Problem with sending email to: test@test.com"));
     }
 
 }

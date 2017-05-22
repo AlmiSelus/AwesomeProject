@@ -2,8 +2,10 @@ package com.awesomegroup.user;
 
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
 /**
  * Created by Michał on 2017-05-17.
@@ -44,6 +46,20 @@ public class UserBuilderTests {
         User user1 = User.create().email("email").password("password").build();
         User user2 = User.create(user1).build();
         assertThat(user2.toString(), is(user1.toString()));
+    }
+
+    @Test
+    public void userBuilder_createUserWithRoleADMIN() {
+        User user = User.create().email("some.mail@mail.com").roles(UserRole.ADMIN_ROLE).build();
+        assertThat(user.getUserRoles(), hasSize(1));
+        assertThat(user.getUserRoles().get(0).getRole(), is(UserRole.ADMIN_ROLE.getRole()));
+    }
+
+    @Test
+    public void userBuilder_createUserWithEmptyRoles() {
+        User user = User.create().build();
+        assertThat(user.getUserRoles(), is(notNullValue()));
+        assertThat(user.getUserRoles(), hasSize(0));
     }
 
 }

@@ -37,7 +37,7 @@ public class EmailSender {
             return EmailStatus.create(messageData).success().build();
         } catch (Exception e) {
             log.error("Problem with sending email to: {}, error message: {}", messageData.getTo(), e.getMessage());
-            return EmailStatus.create(messageData).error(e.getMessage()).build();
+            return EmailStatus.create(messageData).error("Problem with sending email to: "+messageData.getTo()+", error message: " + e.getMessage()).build();
         }
     }
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -147,7 +148,7 @@ public class User {
         }
 
         public Builder roles(UserRole... roles) {
-            Collections.addAll(user.getUserRoles(), roles);
+            Arrays.stream(roles).map(role -> UserRole.create(role).user(user).build()).forEach(userRole -> user.getUserRoles().add(userRole));
             return this;
         }
 
