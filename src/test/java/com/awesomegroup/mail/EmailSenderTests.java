@@ -1,6 +1,5 @@
 package com.awesomegroup.mail;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -12,6 +11,8 @@ import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 
 /**
@@ -40,7 +41,7 @@ public class EmailSenderTests {
                                             .subject("Subject")
                                             .body("<h1>body</h1>").build();
         emailStatus = emailSender.sendHtml(emailStatus);
-        Assert.assertEquals(EmailStatus.SUCCESS, emailStatus.getStatus());
+        assertThat(emailStatus.isSuccess(), is(true));
     }
 
 }

@@ -17,6 +17,10 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.util.Assert;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 /**
  * Created by Michał on 2017-05-19.
  */
@@ -37,6 +41,7 @@ public class AuthServiceTests {
     public void callLoadUserByUsername_userExists_shouldReturnCorrectUserDetails() {
         UserDetails userDetails = authService.loadUserByUsername("jsnow@westeros.com");
         Assert.notNull(userDetails, "User is null!");
+        assertThat(userDetails, is(notNullValue()));
     }
 
     @Test

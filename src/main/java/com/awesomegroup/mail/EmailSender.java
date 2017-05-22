@@ -34,10 +34,10 @@ public class EmailSender {
             MimeMessage mail = getMimeMessage(javaMailSender.createMimeMessage(), messageData);
             javaMailSender.send(mail);
             log.info("Send email '{}' to: {}", messageData.getSubject(), messageData.getTo());
-            return new EmailStatus(messageData.getTo(), messageData.getSubject(), messageData.getBody()).success();
+            return EmailStatus.create(messageData).success().build();
         } catch (Exception e) {
             log.error("Problem with sending email to: {}, error message: {}", messageData.getTo(), e.getMessage());
-            return new EmailStatus(messageData.getTo(), messageData.getSubject(), messageData.getBody()).error(e.getMessage());
+            return EmailStatus.create(messageData).error(e.getMessage()).build();
         }
     }
 

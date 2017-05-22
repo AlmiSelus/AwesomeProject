@@ -1,7 +1,9 @@
 package com.awesomegroup.user;
 
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Created by Michał on 2017-05-17.
@@ -10,13 +12,13 @@ public class UserBuilderTests {
 
     @Test
     public void userBuilder_createNotNullDefaultObject() {
-        Assert.assertNotNull(User.create().build());
+        assertThat(User.create().build(), is(notNullValue()));
     }
 
     @Test
     public void userBuilder_createNotNullUserFromExisting() {
         User userBase = User.create().email("email").locked(true).build();
-        Assert.assertNotNull(User.create(userBase).build());
+        assertThat(User.create(userBase).build(), is(notNullValue()));
     }
 
     @Test
@@ -27,21 +29,21 @@ public class UserBuilderTests {
                 .locked(true)
                 .credentialsExpired(true)
                 .build();
-        Assert.assertEquals(userString, user.toString());
+        assertThat(user.getId(), is(0L));
+        assertThat(user.toString(), is(userString));
     }
 
     @Test
     public void userBuilder_createUserWithPassword() {
         User user = User.create().password("password1").build();
-        Assert.assertEquals("password1", user.getPassword());
+        assertThat(user.getPassword(), is("password1"));
     }
 
     @Test
     public void userBuilder_copyUserDataFromExisting() {
         User user1 = User.create().email("email").password("password").build();
         User user2 = User.create(user1).build();
-
-        Assert.assertEquals(user1.toString(), user2.toString());
+        assertThat(user2.toString(), is(user1.toString()));
     }
 
 }

@@ -1,16 +1,21 @@
 package com.awesomegroup;
 
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.boot.test.rule.OutputCapture;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.StringContains.containsString;
+
 public class AwesomeProjectApplicationTests {
 
+	@Rule
+	public OutputCapture output = new OutputCapture();
+
 	@Test
-	public void contextLoads() {
+	public void callRunApplication_defaultNoParams_shouldHaveStartedInfoString() {
+		AwesomeProjectApplication.main(new String[]{});
+		assertThat(output.toString(), containsString("Started AwesomeProjectApplication"));
 	}
 
 }
