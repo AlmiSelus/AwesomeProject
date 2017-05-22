@@ -25,6 +25,6 @@ public class EmailHTMLSender {
     }
 
     private EmailStatus getEmailMessageStatus(String email, String subject, String body) {
-        return EmailStatus.builder().to(email).subject(subject).body(body).build();
+        return EmailStatus.create().to(email).subject(subject).body(body).build();
     }
 }

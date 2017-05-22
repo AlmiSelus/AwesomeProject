@@ -113,7 +113,15 @@ public class User {
         }
 
         private Builder(User u) {
-            user = u;
+            this();
+            user.email = u.getEmail();
+            user.password = u.getPassword();
+            user.name = u.getName();
+            user.surname = u.getSurname();
+            user.locked = u.isLocked();
+            user.credentialsExpired = u.isCredentialsExpired();
+            user.enabled = u.isEnabled();
+            user.userRoles = u.getUserRoles();
         }
 
         public Builder email(String email) {

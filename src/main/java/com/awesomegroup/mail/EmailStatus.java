@@ -60,7 +60,7 @@ public class EmailStatus {
         return errorMessage;
     }
 
-    public static EmailStatusBuilder builder() {
+    public static EmailStatusBuilder create() {
         return new EmailStatusBuilder();
     }
 
