@@ -4,19 +4,14 @@ addons:
   sonarqube:
     organization: "almiselus-github"
 
-stage: test
-script: ignore
-install: ignore
-
 jobs:
   include:
-    - stage: Build project
-      script: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-    - stage: Generate tests reports
+    - stage: Test
+      script: mvn test -B
+    - stage: Generate tests reports for Sonar
       script:
         - mvn package -Pci -B
-    - stage: Run Sonar Deploy
-      script: sonar-scanner
+        - sonar-scanner
     - stage: Push to master
       script:
         - chmod 777 merge.sh
