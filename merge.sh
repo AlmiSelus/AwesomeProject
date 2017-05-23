@@ -19,7 +19,6 @@ PUSH_URL="https://$GIT_USER:$GIT_PASS@${URL:6}"
 
 git config user.name "JanuszCebulaJ"
 git config user.password "OnionJava"
-
 git config --global merge.ours.driver true
 
 if [ "$CURRENT_BRANCH" = "$FROM_BRANCH" ] ; then
