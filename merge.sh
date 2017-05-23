@@ -1,4 +1,5 @@
 #! /bin/bash
+# Merge script
 GIT_USER="$1"
 GIT_PASS="$2"
 
