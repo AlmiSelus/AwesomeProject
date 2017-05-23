@@ -33,7 +33,7 @@ if [ "$CURRENT_BRANCH" = "$FROM_BRANCH" ] ; then
 
     # Merge the dev into latest stable
     echo "Merging changes..." && \
-    git merge $FROM_BRANCH && \
+    git merge $FROM_BRANCH -m "Merge branches (development->master) for build $TRAVIS_COMMIT"&& \
 
     # Push changes back to remote vcs
     echo "Pushing changes..." && \
