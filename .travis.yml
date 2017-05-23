@@ -15,9 +15,6 @@ jobs:
   include:
     - stage: test
       script: skip
-    - stage: Download Development Branch
-      script:
-        - git checkout development
     - stage: Build on Development Branch
       script: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
     - stage: Commit To Test Branch
@@ -26,6 +23,7 @@ jobs:
         - ./deploy.sh test
     - stage: Test and report with SonarQube on Test Branch
       script:
+        - git fetch
         - git checkout test
         - mvn package -Pci -B
     - stage: Run Sonar Deploy
