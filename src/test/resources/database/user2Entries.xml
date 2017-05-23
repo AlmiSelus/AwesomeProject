@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <dataset>
     <users user_id="0" user_name="name" user_surname="surname" user_mail="name.surname@mail.com" user_password="password1" user_enabled="true" user_credentials_expired="false" user_locked="false"/>
-    <users user_id="1" user_name="John" user_surname="Snow" user_mail="jsnow@westeros.com" user_password="password2" user_enabled="false" user_credentials_expired="true" user_locked="true"/>
+    <users user_id="1" user_name="John" user_surname="Snow" user_mail="jsnow@westeros.com" user_password="$2a$10$b2lH08odFm.vLMmQBtEFC.MbCynZzUHn11purSB0BNO0.9YSIRt12" user_enabled="false" user_credentials_expired="true" user_locked="true"/>
 </dataset>

@@ -19,7 +19,7 @@ import java.security.Principal;
 @RestController
 public class UserRestController {
 
-    private final static Logger log = LoggerFactory.getLogger(UserRestController.class);
+    private static final Logger log = LoggerFactory.getLogger(UserRestController.class);
 
     @Autowired
     private UserService userService;
@@ -29,7 +29,7 @@ public class UserRestController {
         return user;
     }
 
-    @GetMapping("/api/user/login")
+    @PostMapping("/api/user/login")
     public Authentication authenticate(Authentication authentication) {
         return authentication;
     }
