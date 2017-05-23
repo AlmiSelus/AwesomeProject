@@ -9,7 +9,7 @@ addons:
 #  - sonar-scanner
 
 stage: test
-script: skip
+script: ignore
 
 jobs:
   include:
@@ -20,7 +20,9 @@ jobs:
     - stage: Build on Development Branch
       script: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
     - stage: Commit To Test Branch
-      script: ./deploy.sh test
+      script:
+        - chmod 777 deploy.sh
+        - ./deploy.sh test
     - stage: Test and report with SonarQube on Test Branch
       script:
         - git fetch && git checkout test
@@ -28,6 +30,8 @@ jobs:
     - stage: Run Sonar Deploy
       script: sonar-scanner
     - stage: Commit To Master Branch
-      script: ./deploy.sh master
+      script:
+        - chmod 777 deploy.sh
+        - ./deploy.sh master
 #    - stage: Deploy Master to Heroku
 #      script:
