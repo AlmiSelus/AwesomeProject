@@ -1,4 +1,5 @@
 #! /bin/bash
+# Merge script
 GIT_USER="$1"
 GIT_PASS="$2"
 
@@ -16,12 +17,12 @@ URL=$(git remote -v | head -n1 | cut -f2 | cut -d" " -f1)
 echo "Repo url is $URL"
 PUSH_URL="https://$GIT_USER:$GIT_PASS@${URL:6}"
 
+git config --global merge.ours.driver true
+
 if [ "$CURRENT_BRANCH" = "$FROM_BRANCH" ] ; then
     # Checkout the FROM branch
     #git checkout $FROM_BRANCH && \
     #echo "Checking out $TO_BRANCH..." && \
-
-    git config --global merge.ours.driver true && \
 
     # Checkout the latest TO branch
     git fetch origin $TO_BRANCH:$TO_BRANCH && \
