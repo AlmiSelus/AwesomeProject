@@ -3,32 +3,21 @@ jdk: oraclejdk8
 addons:
   sonarqube:
     organization: "almiselus-github"
-#script:
-#  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-#  - mvn package -Pci -B
-#  - sonar-scanner
 
 stage: test
 script: ignore
+install: ignore
 
 jobs:
   include:
-    - stage: test
-      script: skip
-    - stage: Build on Development Branch
+    - stage: Build project
       script: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-    - stage: Commit To Test Branch
+    - stage: Generate tests reports
       script:
-        - chmod 777 deploy.sh
-        - ./deploy.sh test
-    - stage: Test and report with SonarQube on Test Branch
-      script:
-        - git fetch
-        - git checkout test
         - mvn package -Pci -B
     - stage: Run Sonar Deploy
       script: sonar-scanner
-    - stage: Commit To Master Branch
+    - stage: Push to master
       script:
         - chmod 777 deploy.sh
         - ./deploy.sh master
