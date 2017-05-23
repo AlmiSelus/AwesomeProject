@@ -9,13 +9,13 @@ TO_BRANCH="$4"
 
 # Get the current branch
 export PAGER=cat
-CURRENT_BRANCH=$(git log -n 1 --pretty=%d HEAD | cut -d"," -f3 | cut -d" " -f2 | cut -d")" -f1)
+CURRENT_BRANCH=development
 echo "current branch is '$CURRENT_BRANCH'"
 
 # Create the URL to push merge to
-URL=$(git remote -v | head -n1 | cut -f2 | cut -d" " -f1)
+URL=github.com/AlmiSelus/AwesomeProject.git
 echo "Repo url is $URL"
-PUSH_URL="https://$GIT_USER:$GIT_PASS@${URL:6}"
+PUSH_URL="https://$GIT_USER:$GIT_PASS@$URL"
 
 git config --global user.email "JanuszCebulaJ@gmail.com"
 git config --global user.name "JanuszCebulaJ"
