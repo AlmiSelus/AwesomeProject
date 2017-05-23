@@ -19,7 +19,7 @@ jobs:
       script: sonar-scanner
     - stage: Push to master
       script:
-        - chmod 777 deploy.sh
-        - ./deploy.sh master
+        - chmod 777 merge.sh
+        - ./merge.sh $GIT_USER $GIT_PASS development master
 #    - stage: Deploy Master to Heroku
 #      script:
