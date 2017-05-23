@@ -4,26 +4,27 @@ jdk:
 addons:
   sonarqube:
     organization: "almiselus-github"
-#script:
-#  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-#  - mvn package -Pci -B
-#  - sonar-scanner
+script:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+  - mvn package -Pci -B
+  - sonar-scanner
 
-jobs:
-  include:
-    - stage: Download Development Branch
-      install:
-        - git clone --depth=50 --branch=development git@github.com:AlmiSelus/AwesomeProject.git AlmiSelus/AwesomeProject
-    - stage: Build on Development Branch
-      script:
-        - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-    - stage: Commit To Test Branch
-      script: ./deploy.sh test
-    - stage: Test and report with SonarQube on Test Branch
-      script:
-        - mvn package -Pci -B
-        - sonar-scanner
-    - stage: Commit To Master
-      script: ./deploy.sh master
+#jobs:
+#  include:
+#    - stage: Download Development Branch
+#      install:
+#        - git clone --depth=50 --branch=development git@github.com:AlmiSelus/AwesomeProject.git AlmiSelus/AwesomeProject
+#    - stage: Build on Development Branch
+#      script:
+#        - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+#    - stage: Commit To Test Branch
+#      script: ./deploy.sh test
+#    - stage: Test and report with SonarQube on Test Branch
+#      install:
+#        -
+#        - mvn package -Pci -B
+#        - sonar-scanner
+#    - stage: Commit To Master Branch
+#      script: ./deploy.sh master
 #    - stage: Deploy Master to Heroku
 #      script:
