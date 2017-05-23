@@ -9,12 +9,7 @@ script: ignore
 
 jobs:
   include:
-    - stage: Build project
-      script: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-    - stage: Generate tests reports
-      script:
-        - mvn package -Pci -B
-    - stage: Run Sonar Deploy
-      script: sonar-scanner
+    - stage: echo
+      script: echo "TEST"
 #    - stage: Deploy Master to Heroku
 #      script:
