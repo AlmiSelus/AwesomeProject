@@ -17,9 +17,9 @@ URL=github.com/AlmiSelus/AwesomeProject.git
 echo "Repo url is $URL"
 PUSH_URL="https://$GIT_USER:$GIT_PASS@$URL"
 
-git config --global user.email "JanuszCebulaJ@gmail.com"
-git config --global user.name "JanuszCebulaJ"
-git config --global user.password "OnionJava"
+git config user.email "JanuszCebulaJ@gmail.com"
+git config user.name "JanuszCebulaJ"
+git config user.password "OnionJava"
 git config --global merge.ours.driver true
 
 if [ "$CURRENT_BRANCH" = "$FROM_BRANCH" ] ; then
