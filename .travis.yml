@@ -19,7 +19,7 @@ jobs:
     - chmod 777 merge.sh
     - "./merge.sh $GIT_USER $GIT_PASS development master"
   - stage: Deploy Master to Heroku
-        deploy:
+        deploy: 
             provider: heroku
             api_key:
                 secure: LZDPR+cs7ZmVnwNUp1jqF6AzOmDEr85BScgRPPIogYmBLam8XsnZRNcjRpGLQg3WIBNWfKULRm0HZ/MC87PqATmEUUiJId18vJwER7SNwgkzZzvc471MXaYlgyW9q0Axem7WKoTWoYKhWSFMjBFFxz0QBVLF0L9kLdUK3i7Q9BJn2GFQWCcDRNb7emjCLbjGkmfDVRUkFOHqSMQVAjEEScR+RvqirubvjUjkTsgYrNBENqfxhn2y4+tYf9Hhr3CvxaC5oF/HHxido2I4qJY9WFkvSaEs5PUYYdKcEDb6/stFhGsWmXiTg3NPk43ikcN6cK7MBRQSCK7DSskTWSiVlNKFCcdSNgi/9aeHh/7l6vSWUQsWWeT1KA58HljtByFFlSpUpCErng2dOMMg2vtYKB6XJoTJ6if1Zp6eUwBO4FGPgwM7P8X36lBKNE6u2yn0Oc/N+OKG1yVWTSLLrV3o5/EHYIjG4vxe6oJDLTXYdBv42FCvIMDOtmwFw4iYkCAWQcBIQsMi5qlhi/+dtEV2fJLWEkE8fgOudPdRx+Ouc5t1hyL9kGJ1I3sin29pEdmkVE6RzQnU5lDeqenLyHMAIhKkU5GdshBVWku1J/1SucZeTyzv3ZlFRDmgWbZKmKazmOVrBcuAPbu9MiUfm6s28VasrVie+HV0cBdgyxwSba8=
