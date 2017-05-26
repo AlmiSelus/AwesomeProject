@@ -6,7 +6,7 @@
         <label>First name: <input type="text" ng-model="user.name" /></label><br />
         <label>Last name: <input type="text" ng-model="user.surname" /></label><br />
         <input type="button" class="btn btn-default" ng-click="register()" value="Register" />
-        <div class="g-recaptcha" data-sitekey="6LcbwCIUAAAAAGjuEk3pzNbcnvS1Z289hcaMkx0N"></div>
+        <div vc-recaptcha="vc-recaptcha"></div>
     </form>
     <pre>user = {{user | json}}</pre>
 </div>
