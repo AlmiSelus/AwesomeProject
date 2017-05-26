@@ -15,7 +15,7 @@ public class AwesomeProjectApplicationTests {
 	@Test
 	public void callRunApplication_defaultNoParams_shouldHaveStartedInfoString() {
 		AwesomeProjectApplication.main(new String[]{});
-		assertThat(output.toString(), containsString("Started AwesomeProjectApplication"));
+		assertThat(output.toString(), containsString("Started AwesomeProjectApplication in"));
 	}
 
 }
