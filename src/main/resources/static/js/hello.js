@@ -35,20 +35,25 @@ app.controller('RecipesController', function($scope, $http) {
 
 });
 
-app.controller('RegisterController', function ($scope, $http, $location) {
-    $scope.register = function() {
-        var userData = {
-            'email': $scope.user.email,
-            'password': $scope.user.password,
-            'name' : $scope.user.name,
-            'surname' : $scope.user.surname
+app.controller('RegisterController', function(vcRecaptchaService,$http, $scope, $location) {
+        $scope.register = function() {
+            if(vcRecaptchaService.getResponse() !== '') {
+                var userData = {
+                    'email': $scope.user.email,
+                    'password': $scope.user.password,
+                    'name' : $scope.user.name,
+                    'surname' : $scope.user.surname,
+                    'g-recaptcha-response' : vcRecaptchaService.getResponse()
+                };
+
+                $http.post('http://localhost:8080/api/user/register', userData)
+                    .then(function (response) {
+                        $location.url('/confirm');
+                    });
+            }
+
         };
 
-        $http.post('http://localhost:8080/api/user/register', userData)
-            .then(function (response) {
-                $location.url('/confirm');
-            });
-    };
 });
 
 app.controller('ConfirmationController', function ($scope, $http, $routeParams) {
