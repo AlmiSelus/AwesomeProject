@@ -1,13 +1,20 @@
 package com.awesomegroup.user;
 
 import com.awesomegroup.mail.EmailHTMLSender;
+import com.awesomegroup.recaptcha.GoogleReCaptcha;
+import com.awesomegroup.recaptcha.ReCaptchaRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
 import org.thymeleaf.context.Context;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.util.Optional;
+
+import static com.awesomegroup.recaptcha.GoogleReCaptcha.RECAPTCHA_SERVICE_URL;
 
 /**
  * Created by Michał on 2017-04-23.
@@ -29,8 +36,14 @@ public class UserService {
     }
 
     public Optional<User> register(User user) {
-
         Optional<User> userPersisted = Optional.empty();
+        GoogleReCaptcha recaptcha = new Retrofit.Builder()
+                                        .baseUrl(RECAPTCHA_SERVICE_URL)
+                                        .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
+                                        .build()
+                                        .create(GoogleReCaptcha.class);
+
+        recaptcha.checkIfHuman(ReCaptchaRequest.create().secret().remoteIP().build());
 
         if(!userRepository.findUserByEmail(user.getEmail()).isPresent()) {
             User registerUserData = User.create(user).enabled(false).locked(true).credentialsExpired(false)
