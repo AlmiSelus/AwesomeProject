@@ -91,6 +91,9 @@ public class User {
     }
 
     public static Builder create(User user) {
+        if(user == null) {
+            return create();
+        }
         return new Builder(user);
     }
 
@@ -158,6 +161,16 @@ public class User {
 
         public Builder roles(UserRole... roles) {
             Arrays.stream(roles).map(role -> UserRole.create(role).user(user).build()).forEach(userRole -> user.getUserRoles().add(userRole));
+            return this;
+        }
+
+        public Builder name(String name) {
+            user.name = name;
+            return this;
+        }
+
+        public Builder surname(String surname) {
+            user.surname = surname;
             return this;
         }
 

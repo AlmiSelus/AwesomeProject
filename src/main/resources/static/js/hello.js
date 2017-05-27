@@ -1,5 +1,6 @@
-var app = angular.module('hello', [ 'ngRoute' ]);
-app.config(function ($routeProvider, $httpProvider, $locationProvider) {
+var app = angular.module('hello', [ 'ngRoute', 'vcRecaptcha' ]);
+app.config(function ($routeProvider, $httpProvider, $locationProvider, vcRecaptchaServiceProvider) {
+    vcRecaptchaServiceProvider.setSiteKey('6LcbwCIUAAAAAGjuEk3pzNbcnvS1Z289hcaMkx0N');
 
     $routeProvider.when('/', {
         templateUrl : 'http://localhost:8080/partials/recipe/list.do',
@@ -35,21 +36,24 @@ app.controller('RecipesController', function($scope, $http) {
 
 });
 
-app.controller('RegisterController', function ($scope, $http, $location) {
-    $scope.register = function() {
-        var userData = {
-            'email': $scope.user.email,
-            'password': $scope.user.password,
-            'name' : $scope.user.name,
-            'surname' : $scope.user.surname
-        };
+app.controller('RegisterController', ['$scope', 'vcRecaptchaService', '$http', '$location', function ($scope, recaptcha, $http, $location) {
+        $scope.register = function() {
+            if(recaptcha.getResponse() !== '') {
+                var userData = {
+                    'email': $scope.user.email,
+                    'password': $scope.user.password,
+                    'name' : $scope.user.name,
+                    'surname' : $scope.user.surname,
+                    'g-recaptcha-response' : recaptcha.getResponse()
+                };
 
-        $http.post('http://localhost:8080/api/user/register', userData)
-            .then(function (response) {
-                $location.url('/confirm');
-            });
-    };
-});
+                $http.post('http://localhost:8080/api/user/register', userData)
+                    .then(function (response) {
+                        $location.url('/confirm');
+                    });
+            }
+        };
+}]);
 
 app.controller('ConfirmationController', function ($scope, $http, $routeParams) {
     var hash = $routeParams.uh;

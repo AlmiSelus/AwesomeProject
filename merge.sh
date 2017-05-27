@@ -9,17 +9,17 @@ TO_BRANCH="$4"
 
 # Get the current branch
 export PAGER=cat
-CURRENT_BRANCH=development
+CURRENT_BRANCH=$(git log -n 1 --pretty=%d HEAD | cut -d"," -f3 | cut -d" " -f2 | cut -d")" -f1)
 echo "current branch is '$CURRENT_BRANCH'"
 
 # Create the URL to push merge to
-URL=github.com/AlmiSelus/AwesomeProject.git
+URL=$(git remote -v | head -n1 | cut -f2 | cut -d" " -f1)
 echo "Repo url is $URL"
-PUSH_URL="https://$GIT_USER:$GIT_PASS@$URL"
+PUSH_URL="https://$GIT_USER:$GIT_PASS@${URL:6}"
 
-git config user.email "JanuszCebulaJ@gmail.com"
 git config user.name "JanuszCebulaJ"
 git config user.password "OnionJava"
+
 git config --global merge.ours.driver true
 
 if [ "$CURRENT_BRANCH" = "$FROM_BRANCH" ] ; then
@@ -33,7 +33,7 @@ if [ "$CURRENT_BRANCH" = "$FROM_BRANCH" ] ; then
 
     # Merge the dev into latest stable
     echo "Merging changes..." && \
-    git merge $FROM_BRANCH -m "Merge branches (development->master) for build $TRAVIS_COMMIT"&& \
+    git merge $FROM_BRANCH && \
 
     # Push changes back to remote vcs
     echo "Pushing changes..." && \

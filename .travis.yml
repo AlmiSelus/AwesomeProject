@@ -18,6 +18,5 @@ jobs:
       script:
         - chmod 777 merge.sh
         - ./merge.sh $GIT_USER $GIT_PASS development master
-# add heroku here
 #    - stage: Deploy Master to Heroku
 #      script:
