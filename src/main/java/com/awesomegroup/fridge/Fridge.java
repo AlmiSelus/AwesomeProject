@@ -17,6 +17,7 @@ import java.util.List;
 @Table(name = "fridges")
 @JsonSerialize
 public class Fridge {
+    
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
