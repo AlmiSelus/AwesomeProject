@@ -42,7 +42,7 @@ public class Fridge {
     public User getFridgeUser() {
         return fridgeUser;
     }
-
+ 
     public List<Ingredient> getFridgeIngredients() {
         return fridgeIngredients;
     }
