@@ -1,5 +1,6 @@
 package com.awesomegroup.user;
 
+import com.awesomegroup.fridge.Fridge;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.*;
@@ -45,6 +46,10 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<UserRole> userRoles = new ArrayList<>();
 
+    @OneToOne(fetch=FetchType.LAZY)
+    @JoinColumn (name = "fridge_id")
+    private Fridge fridge;
+
     public long getId() {
         return id;
     }
@@ -79,6 +84,10 @@ public class User {
 
     public String getSurname() {
         return surname;
+    }
+
+    public Fridge getFridge() {
+        return fridge;
     }
 
     public static Builder create(User user) {

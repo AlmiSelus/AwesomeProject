@@ -1,5 +1,6 @@
 package com.awesomegroup.ingredients;
 
+import com.awesomegroup.fridge.Fridge;
 import com.awesomegroup.recipeingredient.RecipeIngredient;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -38,6 +39,9 @@ public class Ingredient {
     @JsonIgnoreProperties("ingredient")
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "fridgeIngredients")
+    private List<Fridge> fridges = new ArrayList<>();
+
     public long getIngredientID() {
         return ingredientID;
     }
@@ -54,6 +58,9 @@ public class Ingredient {
         return recipeIngredients;
     }
 
+    public List<Fridge> getFridges() {
+        return fridges;
+    }
 
     @Override
     public String toString() {
@@ -77,6 +84,8 @@ public class Ingredient {
     public static Builder create() {
         return new Builder();
     }
+
+
 
     public static class Builder {
         private Ingredient ingredient = new Ingredient();
