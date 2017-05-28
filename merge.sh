@@ -18,8 +18,8 @@ echo "Repo url is $URL"
 PUSH_URL="https://$GIT_USER:$GIT_PASS@$URL"
 
 git config user.email "JanuszCebulaJ@gmail.com"
-git config user.name "JanuszCebulaJ"
-git config user.password "OnionJava"
+git config user.name ${GIT_USER}
+git config user.password ${GIT_PASS}
 git config --global merge.ours.driver true
 
 if [ "$CURRENT_BRANCH" = "$FROM_BRANCH" ] ; then
