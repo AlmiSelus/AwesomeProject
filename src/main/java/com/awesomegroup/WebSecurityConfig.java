@@ -33,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .httpBasic().realmName("MY_TEST_REALM").authenticationEntryPoint(getBasicAuthEntryPoint()).and()
             .authorizeRequests()
-            .antMatchers("/login", "/", "/partials/**", "/api/**", "/console/**", "/api/user/login").permitAll()
+            .antMatchers("/login", "/", "/partials/**", "/api/**", "/console/**", "/api/user/login", "/ingredients/**").permitAll()
             .anyRequest().authenticated()
             .and()
             .formLogin()
