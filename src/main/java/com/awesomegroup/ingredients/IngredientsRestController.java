@@ -1,5 +1,10 @@
 package com.awesomegroup.ingredients;
 
+import com.awesomegroup.food2fork.F2FRecipeRecipe;
+import com.awesomegroup.food2fork.F2FSearchRecipe;
+
+import com.awesomegroup.food2fork.F2FSearchResult;
+import com.awesomegroup.food2fork.Food2fork;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,5 +54,22 @@ public class IngredientsRestController {
     @DeleteMapping("/ingredients/delete/{name}")
     public Integer deleteByName(@PathVariable("name") String name) {
         return ingredientService.deleteIngredientByName(name);
+    }
+
+
+    @GetMapping("/ingredients/getrecipe/{recipeId}")
+    public F2FRecipeRecipe GetRecipe(@PathVariable("recipeId") String recipeId) {
+        Food2fork food2fork = new Food2fork();
+        F2FRecipeRecipe foundRecipe = food2fork.getRecipe(recipeId);
+        return foundRecipe;
+    }
+
+    @GetMapping("/ingredients/kochastest/{param}")
+    public String kochasTest(@PathVariable("param") String param) {
+        String resultString = new String("Kochas is testing!");
+        if(param != null) {
+            resultString += "\n" + param;
+        }
+        return resultString;
     }
 }
