@@ -39,7 +39,7 @@ if [ "$CURRENT_BRANCH" = "$FROM_BRANCH" ] ; then
     echo "Pushing changes..." && \
     git push $PUSH_URL && \
     echo "Merge complete!" || \
-    echo "Error Occurred. Merge failed" && exit 1
+    (echo "Error Occurred. Merge failed" && exit 1)
 else
     echo "Not on $FROM_BRANCH. Skipping merge"
 fi
