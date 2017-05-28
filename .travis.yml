@@ -2,19 +2,21 @@ language: java
 jdk: oraclejdk8
 addons:
   sonarqube:
-    organization: "almiselus-github"
-
+    organization: almiselus-github
 stage: test
 script: ignore
-
 jobs:
   include:
-    - stage: echo
-      script: echo "TEST"
-#    - stage: Deploy Master to Heroku
-#      deploy:
-#        script:
-#          provider: heroku
-#          api_key:
-#          secure: LZDPR+cs7ZmVnwNUp1jqF6AzOmDEr85BScgRPPIogYmBLam8XsnZRNcjRpGLQg3WIBNWfKULRm0HZ/MC87PqATmEUUiJId18vJwER7SNwgkzZzvc471MXaYlgyW9q0Axem7WKoTWoYKhWSFMjBFFxz0QBVLF0L9kLdUK3i7Q9BJn2GFQWCcDRNb7emjCLbjGkmfDVRUkFOHqSMQVAjEEScR+RvqirubvjUjkTsgYrNBENqfxhn2y4+tYf9Hhr3CvxaC5oF/HHxido2I4qJY9WFkvSaEs5PUYYdKcEDb6/stFhGsWmXiTg3NPk43ikcN6cK7MBRQSCK7DSskTWSiVlNKFCcdSNgi/9aeHh/7l6vSWUQsWWeT1KA58HljtByFFlSpUpCErng2dOMMg2vtYKB6XJoTJ6if1Zp6eUwBO4FGPgwM7P8X36lBKNE6u2yn0Oc/N+OKG1yVWTSLLrV3o5/EHYIjG4vxe6oJDLTXYdBv42FCvIMDOtmwFw4iYkCAWQcBIQsMi5qlhi/+dtEV2fJLWEkE8fgOudPdRx+Ouc5t1hyL9kGJ1I3sin29pEdmkVE6RzQnU5lDeqenLyHMAIhKkU5GdshBVWku1J/1SucZeTyzv3ZlFRDmgWbZKmKazmOVrBcuAPbu9MiUfm6s28VasrVie+HV0cBdgyxwSba8=
-#          on: master
+  - stage: echo
+    script: echo "TEST"
+  - stage: Deploy Master to Heroku
+    deploy:
+      provider: heroku
+      app: awesomeproject
+      on: master
+      api_key:
+        secure: JRHQaOZfUV1kCbA2O3FtPIDfZhnpQdpM937Kjglh8HYhBfRkQBU363LVuzAHm2LxIXH4+uXISY/sNijSGTbluQDAly33avyJl+80yq3dU3J0bPtTVKzOlKJ1bi+Mk5EMke5uv4pNcvbBMpldid88N/OFjBTOC+JhXqJI9rDPRnHMBBc950Tq3SZ3UH738Zt53Nf056tdUfgOLv1/SczK3uraslTRq0ELM49aI/0EU5xQBsBwdyssWxDmbVXHkgi1s3MhiALTRN8bZEwElfKWIePFmKuFamONTuvMd2CxVvyIwuY3tSSynJyAbFtPagboyM965fOidnDhGKJsBUp6Kbda8Lm/5VCn9FXMepNRgwBXenskB0C0ka0CosLCgu6aIzyeGB5NJXBZKYtq7gpeGQI57oS+SSV5ll32PNe8tWe91VsBOAjo14tJj2eLXH0kKTwhCoXAalIoytHNo725qsYKBqJ7yRbWVdpJ8/xfjVMqYSWnvXySCSxK9fI+7C5O8IMqGw2MkOYsSMOfznofEnIOsHwBMyA9mLGkg2ghyieQIujEoXWaYOik2pEdp3UIiDbxdBERtdfr5QLQkd7W7wlR9mSSEbjBYwxlcNVeP3cpJO8QK7KpoDDihSkP2izwJHEVjPSqvsx3285Yv45XLCwxGxPcoEbNFcPa4WeYC/o=
+        
+#deploy:
+#  api_key:
+#    secure: JRHQaOZfUV1kCbA2O3FtPIDfZhnpQdpM937Kjglh8HYhBfRkQBU363LVuzAHm2LxIXH4+uXISY/sNijSGTbluQDAly33avyJl+80yq3dU3J0bPtTVKzOlKJ1bi+Mk5EMke5uv4pNcvbBMpldid88N/OFjBTOC+JhXqJI9rDPRnHMBBc950Tq3SZ3UH738Zt53Nf056tdUfgOLv1/SczK3uraslTRq0ELM49aI/0EU5xQBsBwdyssWxDmbVXHkgi1s3MhiALTRN8bZEwElfKWIePFmKuFamONTuvMd2CxVvyIwuY3tSSynJyAbFtPagboyM965fOidnDhGKJsBUp6Kbda8Lm/5VCn9FXMepNRgwBXenskB0C0ka0CosLCgu6aIzyeGB5NJXBZKYtq7gpeGQI57oS+SSV5ll32PNe8tWe91VsBOAjo14tJj2eLXH0kKTwhCoXAalIoytHNo725qsYKBqJ7yRbWVdpJ8/xfjVMqYSWnvXySCSxK9fI+7C5O8IMqGw2MkOYsSMOfznofEnIOsHwBMyA9mLGkg2ghyieQIujEoXWaYOik2pEdp3UIiDbxdBERtdfr5QLQkd7W7wlR9mSSEbjBYwxlcNVeP3cpJO8QK7KpoDDihSkP2izwJHEVjPSqvsx3285Yv45XLCwxGxPcoEbNFcPa4WeYC/o=
