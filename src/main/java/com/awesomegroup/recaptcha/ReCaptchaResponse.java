@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by c309044 on 2017-05-26.
@@ -15,6 +16,7 @@ public class ReCaptchaResponse {
     @JsonProperty("success")
     private boolean valid;
 
+    @JsonProperty("challenge_ts")
     private String timestamp;
 
     private String hostname;
@@ -38,4 +40,13 @@ public class ReCaptchaResponse {
         return errorCodes;
     }
 
+    @Override
+    public String toString() {
+        return "ReCaptchaResponse{" +
+                "valid=" + valid +
+                ", timestamp='" + timestamp + '\'' +
+                ", hostname='" + hostname + '\'' +
+                ", errorCodes=" + errorCodes.stream().collect(Collectors.joining(", ")) +
+                '}';
+    }
 }

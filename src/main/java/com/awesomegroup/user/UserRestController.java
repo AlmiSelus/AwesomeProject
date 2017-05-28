@@ -1,6 +1,8 @@
 package com.awesomegroup.user;
 
-import io.reactivex.Observable;
+import com.awesomegroup.general.ResponseEntityUtils;
+import com.awesomegroup.general.ResponseJson;
+import io.reactivex.Maybe;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,20 +34,28 @@ public class UserRestController {
         return user;
     }
 
+    @PostMapping("/api/user/check/mail")
+    public DeferredResult<ResponseEntity<ResponseJson>> checkUserEmail(@RequestBody String mail) {
+        DeferredResult<ResponseEntity<ResponseJson>> deferredCheck = new DeferredResult<>();
+        userService.checkUserEmail(mail).subscribe(
+                emailDoesExist -> deferredCheck.setResult(ResponseEntityUtils.ok(Boolean.toString(emailDoesExist))),
+                error -> deferredCheck.setErrorResult(ResponseEntityUtils.notAcceptable(error.getMessage())));
+        return deferredCheck;
+    }
+
     @PostMapping("/api/user/login")
     public Authentication authenticate(Authentication authentication) {
         return authentication;
     }
 
     @PostMapping("/api/user/register")
-    public DeferredResult<ResponseEntity<String>> register(@RequestBody RegisterJson registerData) {
+    public DeferredResult<ResponseEntity<ResponseJson>> register(@RequestBody RegisterJson registerData) {
         log.info(registerData.toString());
-        Observable<User> observableUser = userService.register(registerData);
-        DeferredResult<ResponseEntity<String>> deferredResult = new DeferredResult<>();
-        observableUser.subscribe(user -> deferredResult.setResult(ResponseEntity.ok("")),
+        DeferredResult<ResponseEntity<ResponseJson>> deferredResult = new DeferredResult<>();
+        userService.register(registerData).subscribe(user -> deferredResult.setResult(ResponseEntity.ok(ResponseJson.create().message("/confirm").build())),
                                  error -> {
-            deferredResult.setErrorResult(ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(error.getMessage()));
-            log.error(ExceptionUtils.getStackTrace(error));
+                                    deferredResult.setErrorResult(ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(error.getMessage()));
+                                    log.error(ExceptionUtils.getStackTrace(error));
         });
         return deferredResult;
     }

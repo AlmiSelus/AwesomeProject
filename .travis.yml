@@ -16,6 +16,7 @@ jobs:
         - sonar-scanner
     - stage: Push to master
       script:
+        - mvn clean wro4j:run
         - chmod 777 merge.sh
         - ./merge.sh $GIT_USER $GIT_PASS development master
 #    - stage: Deploy Master to Heroku
