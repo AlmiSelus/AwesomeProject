@@ -12,7 +12,7 @@ jobs:
   - stage: Deploy Master to Heroku
     deploy:
       provider: heroku
-      api_key:
+      api_key: 9d3f6226-dd0a-46c1-b41f-d4557f87f372
         secure: oSK6YyjIGX1UieZKbTqHq6u3YZ2ZK2FgCyhePmA8Eei5eF7iSeT4KqEudzjQ7xKuHIGe25XU4AfbTZozWfYA7RJfofaSiEXRvakEWQQJb/XGOAekcKlAVZfXE25bdnXbg+S2Usd/P+48Ou7UvbwJhMkyK3Zx7c+jg3thJJJBDU7G7mm0Kl0sC5xFPpRIuSuNj7Y5nCow2fq2fXNqWPSp8tklQ3csoRM4dpSWXPNwox5K0FGrb7qESv3ED2/XMTdlufyNjfoeF3RWMP5uH5KpZmAUuFcOtWOEWKj/U+lS0qnX2Dk+uvhdrPJqs9V78LvQyetcxrx6EVOf0vEATnIgnHiBZyjb9GkP4e+fzeS26OOs9hleIrT6pgCcie+8X/h3s7sm7rnc9UHGe0OfeohDMl6qQSXFRbvBbLuk3L4poH0gQuUNhsehlRKswL9fpmCA8LEl6j5rV8T04B4g51sb0Gs+qp9dp0UGZbVa1DyjDy6UApgBKKdhbjGxwEKn1R7P8xykcfmHy+jR84nbtV6d2GEUkEojNbjRP0MuM2k+6iX8xfL093lmaEV4bqSBqmLFUk5OhCdRz5b8bJ5BAOoTED8LRpeg/MNkiSKFPkvMI2BhVs4C8V0ciEJegyKrK8bwaX2F0RXAbHrtKfLZM76JqZgfFphN84L0ckLswY73mIM=
       app: AwesomeProject
       on:
