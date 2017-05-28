@@ -1,13 +1,20 @@
 package com.awesomegroup.food2fork;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 /**
  * Created by patry on 24.04.2017.
  */
 public class F2FSearchResult {
+
     public String count;
+    @JsonProperty("count")
+    public void setCount(String data) { this.count = data; }
     public List<F2FSearchRecipe> recipes;
+    @JsonProperty("recipes")
+    public void setRecipes(List<F2FSearchRecipe> data) { this.recipes = data; }
 
     public String toString()
     {
