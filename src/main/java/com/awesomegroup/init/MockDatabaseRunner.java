@@ -50,16 +50,16 @@ public class MockDatabaseRunner implements ApplicationRunner {
 
         for(F2FSearchRecipe recipe : topRated.recipes) {
             log.info("----------------------------------- NEW RECIPE -----------------------------------");
-            F2FRecipeRecipe r = f2f.getRecipe(recipe.recipe_id);
+            F2FRecipeRecipe r = f2f.getRecipe(recipe.getRecipeId());
 
             Recipe dbBean = Recipe.create()
-                    .name(r.recipe.title)
+                    .name(r.getRecipee().getTitle())
                     .preparationTime((short) random.nextInt(100))
                     .difficulty(RecipeDifficulty.findByID(random.nextInt(3)))
                     .servings((byte) random.nextInt(5))
                     .build();
 
-            List<String> uniqueIngredients = r.recipe.ingredients.stream().distinct().collect(Collectors.toList());
+            List<String> uniqueIngredients = r.getRecipee().getIngridients().stream().distinct().collect(Collectors.toList());
 
 
             List<RecipeIngredient> recipeIngredients = uniqueIngredients.stream().filter(Objects::nonNull).map(ingredientName->{
