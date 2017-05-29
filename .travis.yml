@@ -7,26 +7,17 @@ addons:
 jobs:
   include:
     - stage: Test
-      on:
-        branch: development
-      script: mvn test -B
+      script:
+        - chmod 777 development-test.sh
+        - ./development-test.sh development
     - stage: Generate tests reports for Sonar
-      on:
-        branch: development
       script:
-        - mvn package -Pci -B
-        - sonar-scanner
+        - chmod 777 development-sonar.sh
+        - ./development-sonar.sh development
     - stage: Push to master
-      on:
-        branch: development
       script:
-        - mvn clean wro4j:run
-        - chmod 777 merge.sh
-        - ./merge.sh $GIT_USER $GIT_PASS development master
-    - stage: echo
-      on:
-        branch: master
-      script: echo "TEST"
+        - chmod 777 development-push.sh
+        - ./development-push.sh development
     - stage: Deploy Master to Heroku
       on:
         branch: master
