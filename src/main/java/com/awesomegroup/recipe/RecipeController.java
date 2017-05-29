@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/partials/recipe")
 public class RecipeController {
 
+    @RequestMapping("editor")
+    public String displayRecipeEditor() { return "partials/recipe/recipeEditor"; }
+
     @GetMapping("list")
     public String displayRecipesListPartial() {
-        return "partials/recipes/list";
+        return "partials/recipe/list";
     }
 }
