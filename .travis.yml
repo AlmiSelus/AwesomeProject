@@ -7,24 +7,29 @@ addons:
 jobs:
   include:
     - stage: Test
-      on: development
+      on:
+        branch: development
       script: mvn test -B
     - stage: Generate tests reports for Sonar
-      on: development
+      on:
+        branch: development
       script:
         - mvn package -Pci -B
         - sonar-scanner
     - stage: Push to master
-      on: development
+      on:
+        branch: development
       script:
         - mvn clean wro4j:run
         - chmod 777 merge.sh
         - ./merge.sh $GIT_USER $GIT_PASS development master
     - stage: echo
-      on: master
+      on:
+        branch: master
       script: echo "TEST"
     - stage: Deploy Master to Heroku
-      on: master
+      on:
+        branch: master
       deploy:
         provider: heroku
         app: awesomeproject
