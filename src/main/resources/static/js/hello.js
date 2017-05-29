@@ -4,7 +4,15 @@ app.config(function ($routeProvider, $httpProvider, $locationProvider, vcRecaptc
 
     $routeProvider.when('/', {
         templateUrl : 'http://localhost:8080/partials/recipe/list.do',
-        controller : 'RecipesController',
+        controller : 'RecipeController',
+        controllerAs: 'controller'
+    }).when('/ingredients', {
+        templateUrl : 'http://localhost:8080/partials/ingredients/main.do',
+        controller : 'IngredientsController',
+        controllerAs: 'controller'
+    }).when('/recipeEditor', {
+        templateUrl : 'http://localhost:8080/partials/recipe/editor.do',
+        controller : 'IngredientsController',
         controllerAs: 'controller'
     }).when('/login', {
         templateUrl : 'http://localhost:8080/partials/user/login.do',
@@ -27,6 +35,28 @@ app.config(function ($routeProvider, $httpProvider, $locationProvider, vcRecaptc
 
 app.controller('RecipesController', function($scope, $http) {
     $http.get('http://localhost:8080/api/recipe-0').then(function (response) {
+        console.log(response.data);
+        $scope.recipes = response.data;
+    });
+
+    console.log($scope.username);
+    console.log($scope.form);
+
+});
+
+app.controller('RecipeController', function($scope, $http) {
+    $http.get('http://localhost:8080/partials/recipe/editor').then(function (response) {
+        console.log(response.data);
+        $scope.recipes = response.data;
+    });
+
+    console.log($scope.username);
+    console.log($scope.form);
+
+});
+
+app.controller('IngredientsController', function($scope, $http) {
+    $http.get('http://localhost:8080/partials/ingredients/main').then(function (response) {
         console.log(response.data);
         $scope.recipes = response.data;
     });
