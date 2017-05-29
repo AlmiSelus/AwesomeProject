@@ -2,7 +2,6 @@ package com.awesomegroup.food2fork;
 
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
-import com.google.gson.Gson;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -28,7 +27,7 @@ public class Food2fork {
         httpKlient = new OkHttpClient();
     }
 
-    public String searchRecipes(String ingridients, char sort, int page)
+    public F2FSearchResult searchRecipes(String ingridients, char sort, int page)
     {
         String result = getDataFromRequest("http://food2fork.com/api/search?key=" + apiKey + "&q=" + ingridients + "&sort=" + sort + "&page" + page);
         F2FSearchResult searchResult = null;
@@ -40,10 +39,10 @@ public class Food2fork {
         catch (JsonParseException e) { e.printStackTrace(); }
         catch (JsonMappingException e) { e.printStackTrace(); }
         catch (IOException e) { e.printStackTrace(); }
-        return searchResult.toString();
+        return searchResult;
     }
 
-    public String searchRecipes(String ingridients)
+    public F2FSearchResult searchRecipes(String ingridients)
     {
         String result = getDataFromRequest("http://food2fork.com/api/search?key=" + apiKey + "&q=" + ingridients);
         F2FSearchResult searchResult = null;
@@ -55,7 +54,7 @@ public class Food2fork {
         catch (JsonParseException e) { e.printStackTrace(); }
         catch (JsonMappingException e) { e.printStackTrace(); }
         catch (IOException e) { e.printStackTrace(); }
-        return searchResult.toString();
+        return searchResult;
 }
 
     public F2FSearchResult findTopRated() {

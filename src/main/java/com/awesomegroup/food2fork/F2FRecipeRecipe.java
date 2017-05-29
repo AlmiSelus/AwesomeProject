@@ -10,6 +10,7 @@ public class F2FRecipeRecipe
     {
         this.recipe = data;
     }
+    public F2FRecipeResult getRecipee() {return this.recipe; }
 
     public String toString()
     {

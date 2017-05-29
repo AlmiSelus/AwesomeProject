@@ -12,9 +12,11 @@ public class F2FSearchResult {
     public String count;
     @JsonProperty("count")
     public void setCount(String data) { this.count = data; }
+    public int getCount(){return Integer.parseInt(this.count); }
     public List<F2FSearchRecipe> recipes;
     @JsonProperty("recipes")
     public void setRecipes(List<F2FSearchRecipe> data) { this.recipes = data; }
+    public List<F2FSearchRecipe> getRecipes() {return this.recipes; }
 
     public String toString()
     {
