@@ -12,7 +12,7 @@ jobs:
         - ./development-test.sh development
     - stage: Generate tests reports for Sonar
       script:
-        - chmod 777 development-push.sh
+        - chmod 777 development-sonar.sh
         - ./development-sonar.sh development
     - stage: Push to master
       script:
