@@ -3,27 +3,27 @@ app.config(function ($routeProvider, $httpProvider, $locationProvider, vcRecaptc
     vcRecaptchaServiceProvider.setSiteKey('6LcbwCIUAAAAAGjuEk3pzNbcnvS1Z289hcaMkx0N');
 
     $routeProvider.when('/', {
-        templateUrl : 'http://localhost:8080/partials/recipe/list.do',
+        templateUrl : '/partials/recipe/list.do',
         controller : 'RecipeController',
         controllerAs: 'controller'
     }).when('/ingredients', {
-        templateUrl : 'http://localhost:8080/partials/ingredients/main.do',
+        templateUrl : '/partials/ingredients/main.do',
         controller : 'IngredientsController',
         controllerAs: 'controller'
     }).when('/recipeEditor', {
-        templateUrl : 'http://localhost:8080/partials/recipe/editor.do',
+        templateUrl : '/partials/recipe/editor.do',
         controller : 'IngredientsController',
         controllerAs: 'controller'
     }).when('/login', {
-        templateUrl : 'http://localhost:8080/partials/user/login.do',
+        templateUrl : '/partials/user/login.do',
         controller : 'LoginController',
         controllerAs: 'controller'
     }).when('/confirm', {
-        templateUrl : 'http://localhost:8080/partials/user/confirm.do',
+        templateUrl : '/partials/user/confirm.do',
         controller : 'ConfirmationController',
         controllerAs: 'controller'
     }).when('/register', {
-        templateUrl : 'http://localhost:8080/partials/user/register.do',
+        templateUrl : '/partials/user/register.do',
         controller : 'RegisterController',
         controllerAs: 'controller'
     }).otherwise('/');
@@ -34,7 +34,7 @@ app.config(function ($routeProvider, $httpProvider, $locationProvider, vcRecaptc
 });
 
 app.controller('RecipesController', function($scope, $http) {
-    $http.get('http://localhost:8080/api/recipe-0').then(function (response) {
+    $http.get('/api/recipe-0').then(function (response) {
         console.log(response.data);
         $scope.recipes = response.data;
     });
@@ -45,7 +45,7 @@ app.controller('RecipesController', function($scope, $http) {
 });
 
 app.controller('RecipeController', function($scope, $http) {
-    $http.get('http://localhost:8080/partials/recipe/editor').then(function (response) {
+    $http.get('/partials/recipe/editor').then(function (response) {
         console.log(response.data);
         $scope.recipes = response.data;
     });
@@ -56,7 +56,7 @@ app.controller('RecipeController', function($scope, $http) {
 });
 
 app.controller('IngredientsController', function($scope, $http) {
-    $http.get('http://localhost:8080/partials/ingredients/main').then(function (response) {
+    $http.get('/partials/ingredients/main').then(function (response) {
         console.log(response.data);
         $scope.recipes = response.data;
     });
@@ -77,7 +77,7 @@ app.controller('RegisterController', ['$scope', 'vcRecaptchaService', '$http', '
                 'g-recaptcha-response' : recaptcha.getResponse()
             };
 
-            $http.post('http://localhost:8080/api/user/register', userData)
+            $http.post('/api/user/register', userData)
                 .then(function (response) {
                     $location.url(response.message);
                 });
@@ -194,7 +194,7 @@ app.controller('ConfirmationController', function ($scope, $http, $routeParams) 
     }
 
     console.log($routeParams.uh);
-    $http.post('http://localhost:8080/api/user/confirm', hash).then(function (response) {
+    $http.post('/api/user/confirm', hash).then(function (response) {
         console.log(response);
     });
 });
@@ -204,7 +204,7 @@ app.controller('LoginController', function ($rootScope, $scope, $http, $location
     $scope.authenticate = function(credentials, callback) {
 
         var headers = credentials ? { Authorization : "Basic " + btoa(credentials.username + ":" + credentials.password) } : {};
-        $http.get("http://localhost:8080/api/user/login", {headers: headers}).then(function (response) {
+        $http.get("/api/user/login", {headers: headers}).then(function (response) {
             if (response.data.name) {
                 $rootScope.authenticated = true;
                 $rootScope.name = response.data.name;
@@ -222,7 +222,7 @@ app.controller('LoginController', function ($rootScope, $scope, $http, $location
     };
 
     $scope.logout = function() {
-        $http.post('http://localhost:8080/api/user/logout', {}).finally(function() {
+        $http.post('/api/user/logout', {}).finally(function() {
             $rootScope.authenticated = false;
             $location.url("/");
         });
