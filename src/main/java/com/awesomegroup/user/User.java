@@ -124,6 +124,7 @@ public class User {
 
         private Builder(User u) {
             this();
+            user.id = u.getId();
             user.email = u.getEmail();
             user.password = u.getPassword();
             user.name = u.getName();
