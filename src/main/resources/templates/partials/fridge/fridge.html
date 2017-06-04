@@ -5,6 +5,7 @@
             <div ng-bind-html="ingredient.name | highlight: $select.search"></div>
         </ui-select-choices>
     </ui-select>
+    <br/>
     <button class="btn btn-default btn-lg" ng-click="addIngredients()">
         <i ng-class="{'fa fa-spinner fa-spin' : clicked, 'fa fa-check' : doneOk}"></i>
         <span ng-show="!clicked &amp;&amp; !doneOk">Save</span>

@@ -42,7 +42,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
-                .antMatchers("/js/**", "/css/**", "/images/**", "/api/user", "/console/**", "/login", "/", "/partials/**").permitAll()
+                .antMatchers("/js/**", "/css/**", "/images/**",
+                        "/api/user**t", "/console/**", "/login", "/", "/partials/**").permitAll()
                 .anyRequest()
                 .authenticated();
 //                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());

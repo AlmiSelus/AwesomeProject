@@ -25,6 +25,14 @@ app.config(function ($routeProvider, $httpProvider, $locationProvider, vcRecaptc
         templateUrl : partialsEndpoint+'/fridge/fridge.do',
         controller : 'FridgeController',
         controllerAs: 'controller'
+    }).when('/ingredients', {
+        templateUrl : partialsEndpoint+'/ingredients/main.do',
+        controller : 'IngredientsController',
+        controllerAs: 'controller'
+    }).when('/recipeEditor', {
+        templateUrl : partialsEndpoint+'/recipe/editor.do',
+        controller : 'IngredientsController',
+        controllerAs: 'controller'
     }).otherwise('/');
 
     $locationProvider.hashPrefix('');
