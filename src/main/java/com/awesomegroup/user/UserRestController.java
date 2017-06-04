@@ -49,10 +49,6 @@ public class UserRestController {
                 )
         );
 
-        log.info("In here!");
-
-        log.info("Auth as user = {}", authentication.getPrincipal());
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return SecurityContextHolder.getContext().getAuthentication();
     }
