@@ -22,16 +22,17 @@ import java.util.stream.Collectors;
 @JsonSerialize
 public class Fridge {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "fridge_id", unique = true, nullable = true)
+    @Column(name = "fridge_id", unique = true, nullable = false)
     @JsonProperty("id")
     private long fridgeId;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "fridge")
     private User fridgeUser;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
             name = "fridge_ingredients",
             joinColumns = @JoinColumn(name = "fridge_id", referencedColumnName = "fridge_id"),  //name = nowa kolumna, ref = istenijacy klucz

@@ -1,6 +1,7 @@
 package com.awesomegroup.food2fork;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.databind.*;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -26,30 +27,64 @@ public class Food2fork {
         httpKlient = new OkHttpClient();
     }
 
-    public String searchRecipes(String ingridients, char sort, int page)
+    public F2FSearchResult searchRecipes(String ingridients, char sort, int page)
     {
         String result = getDataFromRequest("http://food2fork.com/api/search?key=" + apiKey + "&q=" + ingridients + "&sort=" + sort + "&page" + page);
-        F2FSearchResult searchResult = new Gson().fromJson(result, F2FSearchResult.class);
-        return searchResult.toString();
+        F2FSearchResult searchResult = null;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(result);
+            searchResult = mapper.treeToValue(rootNode, F2FSearchResult.class);
+        }
+        catch (JsonParseException e) { e.printStackTrace(); }
+        catch (JsonMappingException e) { e.printStackTrace(); }
+        catch (IOException e) { e.printStackTrace(); }
+        return searchResult;
     }
 
-    public String searchRecipes(String ingridients)
+    public F2FSearchResult searchRecipes(String ingridients)
     {
         String result = getDataFromRequest("http://food2fork.com/api/search?key=" + apiKey + "&q=" + ingridients);
-        F2FSearchResult searchResult = new Gson().fromJson(result, F2FSearchResult.class);
-        return searchResult.toString();
-    }
+        F2FSearchResult searchResult = null;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(result);
+            searchResult = mapper.treeToValue(rootNode, F2FSearchResult.class);
+        }
+        catch (JsonParseException e) { e.printStackTrace(); }
+        catch (JsonMappingException e) { e.printStackTrace(); }
+        catch (IOException e) { e.printStackTrace(); }
+        return searchResult;
+}
 
     public F2FSearchResult findTopRated() {
         String result = getDataFromRequest("http://food2fork.com/api/search?key=" + apiKey);
-        return new Gson().fromJson(result, F2FSearchResult.class);
+        F2FSearchResult searchResult = null;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(result);
+            searchResult = mapper.treeToValue(rootNode, F2FSearchResult.class);
+        }
+        catch (JsonParseException e) { e.printStackTrace(); }
+        catch (JsonMappingException e) { e.printStackTrace(); }
+        catch (IOException e) { e.printStackTrace(); }
+        return searchResult;
     }
 
     public F2FRecipeRecipe getRecipe(String recipeId)
     {
         String result = getDataFromRequest( "http://food2fork.com/api/get?key=" + apiKey + "&rId=" + recipeId);
         //String result = getDataFromRequest( "http://food2fork.com/api/get?key=" + apiKey + "&rId=" + 35120); //test line - chicken dish id
-        F2FRecipeRecipe searchResult = new Gson().fromJson(result, F2FRecipeRecipe.class);
+        //F2FRecipeResult searchResult = new Gson().fromJson(result, F2FRecipeRecipe.class);
+        F2FRecipeRecipe searchResult = null;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(result);
+            searchResult = mapper.treeToValue(rootNode, F2FRecipeRecipe.class);
+        }
+        catch (JsonParseException e) { e.printStackTrace(); }
+        catch (JsonMappingException e) { e.printStackTrace(); }
+        catch (IOException e) { e.printStackTrace(); }
         return searchResult;
     }
 

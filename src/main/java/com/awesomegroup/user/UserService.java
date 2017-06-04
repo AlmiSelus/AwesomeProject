@@ -1,11 +1,15 @@
 package com.awesomegroup.user;
 
+import com.awesomegroup.fridge.Fridge;
 import com.awesomegroup.mail.EmailHTMLSender;
 import com.awesomegroup.recaptcha.GoogleReCaptcha;
 import com.awesomegroup.recaptcha.ReCaptchaRequest;
 import com.awesomegroup.recaptcha.ReCaptchaResponse;
+import com.awesomegroup.recaptcha.ReCaptchaSettings;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +26,6 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
-
-import static com.awesomegroup.recaptcha.GoogleReCaptcha.RECAPTCHA_SECRET_KEY;
-import static com.awesomegroup.recaptcha.GoogleReCaptcha.RECAPTCHA_SERVICE_URL;
 
 /**
  * Created by Michał on 2017-04-23.
@@ -46,9 +47,21 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Observable<User> register(RegisterJson registerData) {
+    public Maybe<Boolean> checkUserEmail(String mail) {
+        return !userRepository.findUserByEmail(mail).isPresent() ? Maybe.just(false) :
+                                Maybe.error(new Exception("User with given e-mail already exists."));
+    }
+
+    public Maybe<User> register(RegisterJson registerData) {
+
+        log.info("Register data = {}", registerData);
+
+        if(userRepository.findUserByEmail(registerData.getEmail()).isPresent()) {
+            return Maybe.error(new Exception("User with given email already exists."));
+        }
+
         GoogleReCaptcha recaptcha = new Retrofit.Builder()
-                                        .baseUrl(RECAPTCHA_SERVICE_URL)
+                                        .baseUrl(ReCaptchaSettings.RECAPTCHA_SERVICE_URL.toString())
                                         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                                         .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
                                         .build()
@@ -59,41 +72,48 @@ public class UserService {
         String ip = request.getRemoteAddr();
 
         ReCaptchaRequest reCaptchaRequest = ReCaptchaRequest.create()
-                                                            .secret(RECAPTCHA_SECRET_KEY)
+                                                            .secret(ReCaptchaSettings.RECAPTCHA_SECRET_KEY.toString())
                                                             .recaptchaResponse(registerData.getCaptchaResponse())
                                                             .remoteIP(ip)
                                                             .build();
-        Observable<ReCaptchaResponse> observableReCaptcha = recaptcha.checkIfHuman(reCaptchaRequest);
+
+        log.info("Checking captcha!");
+        log.info("ReCaptchaRequest = {}", reCaptchaRequest.toString());
+
+        Single<ReCaptchaResponse> observableReCaptcha = recaptcha.checkIfHuman(reCaptchaRequest.getSecret(), reCaptchaRequest.getResponse());
+
         return observableReCaptcha  .filter(ReCaptchaResponse::isValid)
                                     .filter(r -> !userRepository.findUserByEmail(registerData.getEmail()).isPresent())
-                                    .map(reCaptchaResponse -> User.create(Optional.of(registerData).map(this::transformRegisterToUser).orElse(null))
-                                            .enabled(false)
-                                            .locked(true)
-                                            .credentialsExpired(false)
-                                            .roles()
-                                            .password(passwordEncoder.encode(registerData.getPassword()))
-                                            .build())
-                                    .doOnNext(user -> {
-                                        log.info("Doing on request!");
+                                    .map(reCaptchaResponse -> {
+                                        log.info("User {}", Optional.of(registerData).map(this::transformRegisterToUser).orElse(null));
+                                        return User.create(Optional.of(registerData).map(this::transformRegisterToUser).orElse(null))
+                                                .enabled(false)
+                                                .locked(true)
+                                                .credentialsExpired(false)
+                                                .roles()
+                                                .password(passwordEncoder.encode(registerData.getPassword()))
+                                                .fridge(Fridge.create().build())
+                                                .build();
+                                    })
+                                    .doOnSuccess(user -> {
                                         userRepository.save(user);
                                         sendConfirmationEmail(user);
-                                    }).doOnError(throwable -> log.error(ExceptionUtils.getStackTrace(throwable)));
-    }
-
-    private User transformRegisterToUser(RegisterJson registerJson) {
-        return User.create()
-                    .roles(UserRole.ADMIN_ROLE)
-                    .email(registerJson.getEmail())
-                    .name(registerJson.getName())
-                    .surname(registerJson.getSurname())
-                    .build();
+                                    })
+                                    .doOnError(throwable -> log.error(ExceptionUtils.getStackTrace(throwable)));
     }
 
     public void confirm(String userHash) {
         String userDecodedData = new String(Base64Utils.decodeFromString(userHash)).replace(SALT, "");
-        userRepository.findUserByEmail(userDecodedData).ifPresent(user->{
-            userRepository.save(User.create(user).locked(false).enabled(true).build());
-        });
+        userRepository.findUserByEmail(userDecodedData).ifPresent(user-> userRepository.save(User.create(user).locked(false).enabled(true).build()));
+    }
+
+    private User transformRegisterToUser(RegisterJson registerJson) {
+        return User.create()
+                .roles(UserRole.ADMIN_ROLE)
+                .email(registerJson.getEmail())
+                .name(registerJson.getName())
+                .surname(registerJson.getSurname())
+                .build();
     }
 
     private void sendConfirmationEmail(final User user) {
@@ -108,5 +128,4 @@ public class UserService {
     private String getConfirmationURL(User user) {
         return "http://localhost:8080/#/confirm?uh=" + Base64Utils.encodeToString((user.getEmail() + SALT).getBytes());
     }
-
 }

@@ -1,13 +1,20 @@
 package com.awesomegroup.user;
 
-import io.reactivex.Observable;
+import com.awesomegroup.general.ResponseEntityUtils;
+import com.awesomegroup.general.ResponseJson;
+import io.reactivex.Maybe;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,25 +34,67 @@ public class UserRestController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/api/user")
-    public Principal currentUser(Principal user) {
-        return user;
+    @Autowired
+    private AuthService authService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @PostMapping("/api/user")
+    public Principal currentUser(@RequestBody AuthReq req) {
+        final Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        req.getUsername(),
+                        req.getPassword()
+                )
+        );
+
+        log.info("In here!");
+
+        log.info("Auth as user = {}", authentication.getPrincipal());
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return SecurityContextHolder.getContext().getAuthentication();
     }
 
-    @PostMapping("/api/user/login")
+    public static class AuthReq {
+        String username;
+        String password;
+
+        public String getUsername() {
+            return username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+    }
+
+    @PostMapping("/api/user/check/mail")
+    public DeferredResult<ResponseEntity<ResponseJson>> checkUserEmail(@RequestBody String mail) {
+        DeferredResult<ResponseEntity<ResponseJson>> deferredCheck = new DeferredResult<>();
+        userService.checkUserEmail(mail).subscribe(
+                emailDoesExist -> deferredCheck.setResult(ResponseEntityUtils.ok(Boolean.toString(emailDoesExist))),
+                error -> deferredCheck.setErrorResult(ResponseEntityUtils.notAcceptable(error.getMessage())));
+        return deferredCheck;
+    }
+
+    @GetMapping("/api/user/login")
     public Authentication authenticate(Authentication authentication) {
         return authentication;
     }
 
     @PostMapping("/api/user/register")
-    public DeferredResult<ResponseEntity<String>> register(@RequestBody RegisterJson registerData) {
+    public DeferredResult<ResponseEntity<ResponseJson>> register(@RequestBody RegisterJson registerData) {
         log.info(registerData.toString());
-        Observable<User> observableUser = userService.register(registerData);
-        DeferredResult<ResponseEntity<String>> deferredResult = new DeferredResult<>();
-        observableUser.subscribe(user -> deferredResult.setResult(ResponseEntity.ok("")),
+        DeferredResult<ResponseEntity<ResponseJson>> deferredResult = new DeferredResult<>();
+        userService.register(registerData).subscribe(user -> {
+                    log.info("Test in here!");
+                    deferredResult.setResult(ResponseEntity.ok(ResponseJson.create().message("/confirm").build()));
+                },
                                  error -> {
-            deferredResult.setErrorResult(ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(error.getMessage()));
-            log.error(ExceptionUtils.getStackTrace(error));
+                                    deferredResult.setErrorResult(ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(error.getMessage()));
+                                    log.error(ExceptionUtils.getStackTrace(error));
         });
         return deferredResult;
     }

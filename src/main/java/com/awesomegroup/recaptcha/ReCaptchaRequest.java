@@ -29,6 +29,15 @@ public class ReCaptchaRequest {
         return new Builder();
     }
 
+    @Override
+    public String toString() {
+        return "ReCaptchaRequest{" +
+                "secret='" + secret + '\'' +
+                ", response='" + response + '\'' +
+                ", remoteip='" + remoteip + '\'' +
+                '}';
+    }
+
     public static class Builder {
         private String secret;
         private String response;

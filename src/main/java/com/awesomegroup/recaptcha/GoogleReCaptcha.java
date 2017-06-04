@@ -1,16 +1,16 @@
 package com.awesomegroup.recaptcha;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 /**
  * Created by Michał on 2017-05-25.
  */
 public interface GoogleReCaptcha {
-    String RECAPTCHA_SECRET_KEY = "6LcbwCIUAAAAAEBAx0hVwWyXpSkUq51_kmq32pXT";
-    String RECAPTCHA_SERVICE_URL = "https://www.google.com/recaptcha/";
 
     @POST("api/siteverify")
-    Observable<ReCaptchaResponse> checkIfHuman(@Body ReCaptchaRequest request);
+    Single<ReCaptchaResponse> checkIfHuman(@Query("secret") String secret, @Query("response") String response);
 }

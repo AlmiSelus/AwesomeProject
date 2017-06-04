@@ -1,16 +1,20 @@
 package com.awesomegroup.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Created by c309044 on 2017-05-26.
  */
 @JsonSerialize
+@JsonDeserialize
 public class RegisterJson {
     private String email;
     private String password;
     private String name;
     private String surname;
+    @JsonProperty("g-recaptcha-response")
     private String gResponse;
 
     public String getEmail() {
@@ -31,5 +35,16 @@ public class RegisterJson {
 
     public String getCaptchaResponse() {
         return gResponse;
+    }
+
+    @Override
+    public String toString() {
+        return "RegisterJson{" +
+                "email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", gResponse='" + gResponse + '\'' +
+                '}';
     }
 }

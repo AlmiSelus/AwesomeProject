@@ -46,7 +46,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<UserRole> userRoles = new ArrayList<>();
 
-    @OneToOne(fetch=FetchType.LAZY)
+    @OneToOne(fetch=FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinColumn (name = "fridge_id")
     private Fridge fridge;
 
@@ -132,6 +132,7 @@ public class User {
             user.credentialsExpired = u.isCredentialsExpired();
             user.enabled = u.isEnabled();
             user.userRoles = u.getUserRoles();
+            user.fridge = u.getFridge();
         }
 
         public Builder email(String email) {
@@ -171,6 +172,11 @@ public class User {
 
         public Builder surname(String surname) {
             user.surname = surname;
+            return this;
+        }
+
+        public Builder fridge(Fridge fridge) {
+            user.fridge = fridge;
             return this;
         }
 
