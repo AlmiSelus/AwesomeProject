@@ -1,5 +1,6 @@
 package com.awesomegroup.user;
 
+import com.awesomegroup.fridge.Fridge;
 import com.awesomegroup.mail.EmailHTMLSender;
 import com.awesomegroup.recaptcha.GoogleReCaptcha;
 import com.awesomegroup.recaptcha.ReCaptchaRequest;
@@ -53,6 +54,8 @@ public class UserService {
 
     public Maybe<User> register(RegisterJson registerData) {
 
+        log.info("Register data = {}", registerData);
+
         if(userRepository.findUserByEmail(registerData.getEmail()).isPresent()) {
             return Maybe.error(new Exception("User with given email already exists."));
         }
@@ -79,10 +82,7 @@ public class UserService {
 
         Single<ReCaptchaResponse> observableReCaptcha = recaptcha.checkIfHuman(reCaptchaRequest.getSecret(), reCaptchaRequest.getResponse());
 
-        return observableReCaptcha  .filter(reCaptchaResponse -> {
-            log.info("Is Valid = {}", reCaptchaResponse.isValid());
-            return reCaptchaResponse.isValid();
-        })
+        return observableReCaptcha  .filter(ReCaptchaResponse::isValid)
                                     .filter(r -> !userRepository.findUserByEmail(registerData.getEmail()).isPresent())
                                     .map(reCaptchaResponse -> {
                                         log.info("User {}", Optional.of(registerData).map(this::transformRegisterToUser).orElse(null));
@@ -92,19 +92,19 @@ public class UserService {
                                                 .credentialsExpired(false)
                                                 .roles()
                                                 .password(passwordEncoder.encode(registerData.getPassword()))
+                                                .fridge(Fridge.create().build())
                                                 .build();
                                     })
                                     .doOnSuccess(user -> {
                                         userRepository.save(user);
-                                        sendConfirmationEmail(user);})
+                                        sendConfirmationEmail(user);
+                                    })
                                     .doOnError(throwable -> log.error(ExceptionUtils.getStackTrace(throwable)));
     }
 
     public void confirm(String userHash) {
         String userDecodedData = new String(Base64Utils.decodeFromString(userHash)).replace(SALT, "");
-        userRepository.findUserByEmail(userDecodedData).ifPresent(user->{
-            userRepository.save(User.create(user).locked(false).enabled(true).build());
-        });
+        userRepository.findUserByEmail(userDecodedData).ifPresent(user-> userRepository.save(User.create(user).locked(false).enabled(true).build()));
     }
 
     private User transformRegisterToUser(RegisterJson registerJson) {

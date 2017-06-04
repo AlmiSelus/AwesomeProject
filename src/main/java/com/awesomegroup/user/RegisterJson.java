@@ -36,4 +36,15 @@ public class RegisterJson {
     public String getCaptchaResponse() {
         return gResponse;
     }
+
+    @Override
+    public String toString() {
+        return "RegisterJson{" +
+                "email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", gResponse='" + gResponse + '\'' +
+                '}';
+    }
 }
