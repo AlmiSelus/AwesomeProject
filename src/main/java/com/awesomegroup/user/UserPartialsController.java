@@ -24,7 +24,7 @@ public class UserPartialsController {
 
     @GetMapping("/login")
     public String displayLoginPartial() {
-        return "/partials/user/login";
+        return "partials/user/login";
     }
 
 }
