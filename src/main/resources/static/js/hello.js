@@ -2,7 +2,7 @@ var app = angular.module('hello', [ 'ngRoute', 'vcRecaptcha', 'ngMessages', 'ui.
 app.config(function ($routeProvider, $httpProvider, $locationProvider, vcRecaptchaServiceProvider) {
     vcRecaptchaServiceProvider.setSiteKey('6LcbwCIUAAAAAGjuEk3pzNbcnvS1Z289hcaMkx0N');
 
-    var partialsEndpoint = "http://"+ window.location.hostname + (window.location.port == 8080 ? ':8080' : '') + '/partials';
+    var partialsEndpoint = window.location.protocol + "//" + window.location.hostname + (window.location.port == 8080 ? ':8080' : '') + '/partials';
     console.log(partialsEndpoint);
 
     $routeProvider.when('/', {
