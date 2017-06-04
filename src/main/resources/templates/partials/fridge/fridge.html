@@ -1,0 +1,14 @@
+<div ng-controller="FridgeController">
+    <ui-select multiple="multiple" ng-model="selected.selectedIngredients" theme="select2" ng-disabled="disabled" style="width: 800px;">
+        <ui-select-match placeholder="Select ingredients...">{{$item.name}}</ui-select-match>
+        <ui-select-choices repeat="ingredient in ingredients | propsFilter: {name: $select.search}">
+            <div ng-bind-html="ingredient.name | highlight: $select.search"></div>
+        </ui-select-choices>
+    </ui-select>
+    <button class="btn btn-default btn-lg" ng-click="addIngredients()">
+        <i ng-class="{'fa fa-spinner fa-spin' : clicked, 'fa fa-check' : doneOk}"></i>
+        <span ng-show="!clicked &amp;&amp; !doneOk">Save</span>
+        <span ng-show="clicked &amp;&amp; !doneOk">Saving ...</span>
+        <span ng-show="!clicked &amp;&amp; doneOk">Saved!</span>
+    </button>
+</div>

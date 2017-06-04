@@ -5,12 +5,15 @@ import com.awesomegroup.food2fork.F2FSearchRecipe;
 
 import com.awesomegroup.food2fork.F2FSearchResult;
 import com.awesomegroup.food2fork.Food2fork;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by wrobe on 25.04.2017.
@@ -38,11 +41,11 @@ public class IngredientsRestController {
         return ingredientService.AddIngredient(Ingredient.create().name(name).build());
     }
 
-    @GetMapping("/ingredients/all")
-    public List<Ingredient> GetAllIngredients() {
-        List<Ingredient> result = new ArrayList<Ingredient>();
-        ingredientService.getAllIngredients().forEach(x -> result.add(x));
-        return result;
+    @GetMapping("/api/ingredients/all")
+    public List<Ingredient> getAllIngredients() {
+        return ((List<Ingredient>) ingredientService.getAllIngredients()).stream()
+                .map(ingredient -> Ingredient.create().name(ingredient.getIngredientName()).build())
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/ingredients/find/{name}")
@@ -72,4 +75,5 @@ public class IngredientsRestController {
         }
         return resultString;
     }
+
 }
