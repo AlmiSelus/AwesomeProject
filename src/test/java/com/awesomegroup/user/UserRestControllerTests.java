@@ -1,5 +1,6 @@
 package com.awesomegroup.user;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.junit.Before;
@@ -29,6 +30,8 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -42,6 +45,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserRestControllerTests {
 
     private MockMvc mockMvc;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     private FilterChainProxy springSecurityFilterChain;
@@ -57,13 +62,14 @@ public class UserRestControllerTests {
     @Test
     @DatabaseSetup("/database/user2Entries.xml")
     public void callCurrentUser_shouldObtainRegisteredUser() throws Exception {
-//        System.out.println("Password: " + passwordEncoder.encode("password"));
-//        mockMvc.perform(post("/api/user/login")
-//                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-//                .param("username", "jsnow@westeros.com")
-//                .param("password", "password")
-//        )
-//                .andExpect(status().isOk());
+        UserRestController.AuthReq authReq = new UserRestController.AuthReq();
+        authReq.username = "jsnow@westeros.com";
+        authReq.password = "password";
+        mockMvc.perform(post("/api/user").contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(authReq)))
+                .andDo(print());
     }
+
+
 
 }
