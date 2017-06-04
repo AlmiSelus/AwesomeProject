@@ -1,8 +1,10 @@
 package com.awesomegroup.fridge;
 
+import com.awesomegroup.favouriteRecipe.FavouriteRecipe;
 import com.awesomegroup.ingredients.Ingredient;
 import com.awesomegroup.recipe.Recipe;
 import com.awesomegroup.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -40,7 +42,13 @@ public class Fridge {
     )
     private List<Ingredient> fridgeIngredients = new ArrayList<>();
 
-    private HashMap<Recipe, Integer> favouriteRecipes = new HashMap<>();
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(
+            name = "fridge_favourite_recipes",
+            joinColumns = @JoinColumn(name = "fridge_id", referencedColumnName = "fridge_id"),  //name = nowa kolumna, ref = istenijacy klucz
+            inverseJoinColumns = @JoinColumn(name = "favourite_recipe_id", referencedColumnName = "favourite_recipe_id")
+    )
+    private List<FavouriteRecipe> favouriteRecipes = new ArrayList<>();
 
     public long getFridgeId() {
         return fridgeId;
@@ -54,7 +62,7 @@ public class Fridge {
         return fridgeIngredients;
     }
 
-    public HashMap<Recipe, Integer> getFavouriteRecipes() {
+    public List<FavouriteRecipe> getFavouriteRecipes() {
         return favouriteRecipes;
     }
 
@@ -86,38 +94,59 @@ public class Fridge {
     }
 
     public boolean isFavouriteRecipePresent(Recipe recipe) {
-        return favouriteRecipes.entrySet().stream()
-                .filter(recipeIntegerEntry -> recipeIntegerEntry.getKey().getRecipeID() == recipe.getRecipeID())
+        return favouriteRecipes.stream()
+                .filter(r -> r.getRecipe().getRecipeID() == recipe.getRecipeID())
                 .count() > 0;
     }
 
-    public void removeFavouriteRecipe(Recipe recipe) {
+    public void addFavouriteRecipe(Recipe recipe, int rating) {
+        if (!isFavouriteRecipePresent(recipe)) {
+            favouriteRecipes.add(FavouriteRecipe.create().recipe(recipe).rating(rating).build());
+        }
+    }
+
+    public int findFavouriteRecipe(Recipe recipe) {
+        int index = -1;
         if (isFavouriteRecipePresent(recipe))
-            favouriteRecipes.entrySet().removeIf(e -> e.getKey().getRecipeID() == recipe.getRecipeID());
+            for (index = 0; index < favouriteRecipes.size(); index++) {
+                if (favouriteRecipes.get(index).getRecipe().getRecipeID() == recipe.getRecipeID()) {
+                    break;
+                }
+            }
+        return index;
+    }
+
+    public void removeFavouriteRecipe(Recipe recipe) {
+        int index = findFavouriteRecipe(recipe);
+        if (index != -1) ;
+        favouriteRecipes.remove(index);
+    }
+
+    public float getFavouriteRecipeRating(Recipe recipe) {
+        int index = findFavouriteRecipe(recipe);
+        if (index != -1)
+        return favouriteRecipes.get(index).getRating();
+        return -1f;
     }
 
     public void rateFavouriteRecipe(Recipe recipe, int rating) {
-        if (isFavouriteRecipePresent(recipe))
-            favouriteRecipes.put(recipe, rating);
+        int index = findFavouriteRecipe(recipe);
+        if (index != -1) ;
+        favouriteRecipes.get(index).setRating(rating);
+
 
     }
-
+ /*
     public List<Recipe> getRecipesOfRating(int rating) {
         return new ArrayList<>(favouriteRecipes.entrySet().stream()
                 .filter(recipeIntegerEntry -> recipeIntegerEntry.getValue() == rating)
                 .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue())).keySet());
     }
 
-    public void addFavouriteRecipe(Recipe recipe, int rating) {
-        if (!isFavouriteRecipePresent(recipe)) {
-            favouriteRecipes.put(recipe, rating);
-        }
-    }
 
-    public int getFavouriteRecipeRating(Recipe recipe)
-    {
-        return favouriteRecipes.get(recipe);
-    }
+
+
+    */
 
     public static Builder create() {
         return new Builder();
