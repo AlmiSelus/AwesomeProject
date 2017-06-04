@@ -4,6 +4,7 @@
         xsi:schemaLocation="http://www.isdc.ro/wro wro.xsd">
     <group name="angular-bootstrap">
         <css>webjar:bootstrap/3.2.0/css/bootstrap.css</css>
+        <css>webjar:angular-ui-select/0.19.8/select.min.css</css>
         <css>file:src/main/resources/static/css/register.css</css>
         <!--<js>webjar:jquery/@jquery.version@/jquery.min.js</js>-->
         <js>webjar:angularjs/1.6.2/angular.min.js</js>
@@ -11,6 +12,8 @@
         <js>webjar:angularjs/1.6.2/angular-cookies.min.js</js>
         <js>webjar:angularjs/1.6.2/angular-route.min.js</js>
         <js>webjar:angular-messages/1.6.2/angular-messages.min.js</js>
+        <js>webjar:angular-sanitize/1.6.2/angular-sanitize.min.js</js>
+        <js>webjar:angular-ui-select/0.19.8/select.min.js</js>
         <js>file:src/main/resources/static/js/angular-recaptcha.min.js</js>
     </group>
 

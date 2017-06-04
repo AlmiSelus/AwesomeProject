@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  */
 @Entity
 @Table(name = "ingredients")
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Ingredient {
 
     @Id
@@ -84,8 +84,6 @@ public class Ingredient {
     public static Builder create() {
         return new Builder();
     }
-
-
 
     public static class Builder {
         private Ingredient ingredient = new Ingredient();
