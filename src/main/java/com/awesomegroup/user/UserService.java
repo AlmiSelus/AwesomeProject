@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +72,9 @@ public class UserService {
 
         String ip = request.getRemoteAddr();
 
+        String uri = request.getScheme() + "://" + request.getServerName() +
+                (request.getServerPort() != 80 ? ":" + request.getServerPort() : StringUtils.EMPTY);
+
         ReCaptchaRequest reCaptchaRequest = ReCaptchaRequest.create()
                                                             .secret(ReCaptchaSettings.RECAPTCHA_SECRET_KEY.toString())
                                                             .recaptchaResponse(registerData.getCaptchaResponse())
@@ -97,13 +101,13 @@ public class UserService {
                                     })
                                     .doOnSuccess(user -> {
                                         userRepository.save(user);
-                                        sendConfirmationEmail(user);
+                                        sendConfirmationEmail(user, uri);
                                     })
                                     .doOnError(throwable -> log.error(ExceptionUtils.getStackTrace(throwable)));
     }
 
     public void confirm(String userHash) {
-        String userDecodedData = new String(Base64Utils.decodeFromString(userHash)).replace(SALT, "");
+        String userDecodedData = new String(Base64Utils.decodeFromString(userHash)).replace(SALT, StringUtils.EMPTY);
         userRepository.findUserByEmail(userDecodedData).ifPresent(user-> userRepository.save(User.create(user).locked(false).enabled(true).build()));
     }
 
@@ -116,16 +120,16 @@ public class UserService {
                 .build();
     }
 
-    private void sendConfirmationEmail(final User user) {
+    private void sendConfirmationEmail(final User user, String baseUrl) {
         Context context = new Context();
         context.setVariable("title", "Lorem Ipsum");
         context.setVariable("description", "Lorem Lorem Lorem");
-        context.setVariable("link", getConfirmationURL(user));
+        context.setVariable("link", getConfirmationURL(user, baseUrl));
 
         mailSender.send(user.getEmail(), "Confirm your account!", "mail/template_register", context);
     }
 
-    private String getConfirmationURL(User user) {
-        return "http://localhost:8080/#/confirm?uh=" + Base64Utils.encodeToString((user.getEmail() + SALT).getBytes());
+    private String getConfirmationURL(User user, String baseUrl) {
+        return baseUrl + "/#/confirm?uh=" + Base64Utils.encodeToString((user.getEmail() + SALT).getBytes());
     }
 }
