@@ -90,7 +90,9 @@ app.controller('RegisterController', ['$scope', 'vcRecaptchaService', '$http', '
 
             $http.post($rootScope.apiEndpoint+'/user/register', userData)
                 .then(function (response) {
-                    $location.url(response.message);
+                    $location.url(response.data.message);
+                }, function(){
+
                 });
         }
     };
