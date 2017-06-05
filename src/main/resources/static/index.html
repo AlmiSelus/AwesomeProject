@@ -24,15 +24,17 @@
     </head>
     <body ng-app="hello">
 
-        <nav class="navbar navbar-default navbar-static-top">
+        <nav class="navbar navbar-default navbar-static-top" ng-controller="NavigationBarController">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="#">Awesome Project</a>
+                    <a class="navbar-brand" ng-show="!authenticated" href="#">Awesome Project</a>
+                    <a class="navbar-brand" ng-show="authenticated" href="/#/fridge">Awesome Project</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li ng-show="!authenticated"><a href="/#/login">Login</a></li>
                         <li ng-show="authenticated">{{name}}</li>
+                        <li ng-show="authenticated"><a href="#" ng-click="logout()">Logout</a></li>
                         <li class="active"><a href="/#/register">Register</a></li>
                     </ul>
                 </div><!--/.nav-collapse -->
