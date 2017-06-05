@@ -1,5 +1,6 @@
 package com.awesomegroup;
 
+import com.awesomegroup.user.AwesomeLogoutSuccessHandler;
 import com.awesomegroup.user.RESTAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -11,9 +12,17 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * Created by c309044 on 2017-04-24.
@@ -41,11 +50,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
 
         http
-                .authorizeRequests()
-                .antMatchers("/js/**", "/css/**", "/images/**",
-                        "/api/user", "/api/user/**", "/console/**", "/login", "/", "/partials/**").permitAll()
-                .anyRequest()
-                .authenticated();
+            .authorizeRequests()
+            .antMatchers("/js/**", "/css/**", "/images/**",
+                "/api/user", "/api/user/**", "/console/**", "/login", "/", "/partials/**").permitAll()
+            .anyRequest()
+            .authenticated()
+            .and()
+            .logout()
+            .logoutRequestMatcher(new AntPathRequestMatcher("/api/user/logout"))
+            .logoutSuccessHandler(new AwesomeLogoutSuccessHandler());
 //                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 //                .and()
 //                .csrf()
