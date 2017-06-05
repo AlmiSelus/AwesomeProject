@@ -41,7 +41,6 @@ public class RegisterJson {
     public String toString() {
         return "RegisterJson{" +
                 "email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", gResponse='" + gResponse + '\'' +
