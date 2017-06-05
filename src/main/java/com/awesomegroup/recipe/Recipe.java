@@ -1,5 +1,6 @@
 package com.awesomegroup.recipe;
 
+import com.awesomegroup.favouriteRecipe.FavouriteRecipe;
 import com.awesomegroup.recipeingredient.RecipeIngredient;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -42,6 +43,9 @@ public class Recipe {
     @JsonIgnoreProperties("recipe")
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "recipe")
+    private FavouriteRecipe favouriteRecipe;
+
     public static Recipe.Builder create() {
         return new Recipe.Builder();
     }
@@ -74,6 +78,10 @@ public class Recipe {
         return recipeIngredients;
     }
 
+    public FavouriteRecipe getFavouriteRecipe() {
+        return favouriteRecipe;
+    }
+
     @Override
     public String toString() {
         return "Recipe{" +
@@ -84,6 +92,7 @@ public class Recipe {
                 ", servingsCount=" + servingsCount +
                 '}';
     }
+
 
     public static class Builder {
 

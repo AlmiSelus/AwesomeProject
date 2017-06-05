@@ -39,9 +39,9 @@ public class ReCaptchaRequest {
     }
 
     public static class Builder {
-        private String secret;
-        private String response;
-        private String remoteip;
+        private String secret = "";
+        private String response = "";
+        private String remoteip = "";
 
         public Builder secret(String secret) {
             this.secret = secret;

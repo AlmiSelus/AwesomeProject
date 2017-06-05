@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -138,7 +139,12 @@ public class RecipeRestControllerTests {
          */
         doNothing().when(recipeService).saveRecipe(mockRecipe);
 
-        mockMvc.perform(post("/api/recipe/add").content(mockRecipeAsString).contentType(MediaType.APPLICATION_JSON_UTF8))
+        LoggerFactory.getLogger(RecipeRestControllerTests.class).info(mockRecipeAsString);
+
+        mockMvc.perform(post("/api/recipe/add")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"Mock recipe 1\",\"difficulty\":\"MEDIUM\",\"recipeIngredients\":[],\"id\":1}")
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 

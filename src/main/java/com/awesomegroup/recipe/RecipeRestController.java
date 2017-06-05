@@ -3,6 +3,7 @@ package com.awesomegroup.recipe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -34,7 +35,7 @@ public class RecipeRestController {
         return recipeService.getRecipeByName(name);
     }
 
-    @PostMapping("/api/recipe/add")
+    @PostMapping(value = "/api/recipe/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
     public void addRecipe(@RequestBody Recipe recipe) {
         recipeService.saveRecipe(recipe);

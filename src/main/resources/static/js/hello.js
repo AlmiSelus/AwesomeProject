@@ -1,30 +1,37 @@
-var app = angular.module('hello', [ 'ngRoute', 'vcRecaptcha', 'ngMessages' ]);
+var app = angular.module('hello', [ 'ngRoute', 'vcRecaptcha', 'ngMessages', 'ui.select', 'ngSanitize' ]);
 app.config(function ($routeProvider, $httpProvider, $locationProvider, vcRecaptchaServiceProvider) {
     vcRecaptchaServiceProvider.setSiteKey('6LcbwCIUAAAAAGjuEk3pzNbcnvS1Z289hcaMkx0N');
 
+    var partialsEndpoint = window.location.protocol + "//" + window.location.hostname + (window.location.port == 8080 ? ':8080' : '') + '/partials';
+    console.log(partialsEndpoint);
+
     $routeProvider.when('/', {
-        templateUrl : '/partials/recipe/list.do',
-        controller : 'RecipeController',
-        controllerAs: 'controller'
-    }).when('/ingredients', {
-        templateUrl : '/partials/ingredients/main.do',
-        controller : 'IngredientsController',
-        controllerAs: 'controller'
-    }).when('/recipeEditor', {
-        templateUrl : '/partials/recipe/editor.do',
-        controller : 'IngredientsController',
+        templateUrl : partialsEndpoint+'/recipe/list.do',
+        controller : 'RecipesController',
         controllerAs: 'controller'
     }).when('/login', {
-        templateUrl : '/partials/user/login.do',
+        templateUrl : partialsEndpoint+'/user/login.do',
         controller : 'LoginController',
         controllerAs: 'controller'
     }).when('/confirm', {
-        templateUrl : '/partials/user/confirm.do',
+        templateUrl : partialsEndpoint+'/user/confirm.do',
         controller : 'ConfirmationController',
         controllerAs: 'controller'
     }).when('/register', {
-        templateUrl : '/partials/user/register.do',
+        templateUrl : partialsEndpoint+'/user/register.do',
         controller : 'RegisterController',
+        controllerAs: 'controller'
+    }).when('/fridge', {
+        templateUrl : partialsEndpoint+'/fridge/fridge.do',
+        controller : 'FridgeController',
+        controllerAs: 'controller'
+    }).when('/ingredients', {
+        templateUrl : partialsEndpoint+'/ingredients/main.do',
+        controller : 'IngredientsController',
+        controllerAs: 'controller'
+    }).when('/recipeEditor', {
+        templateUrl : partialsEndpoint+'/recipe/editor.do',
+        controller : 'RecipeController',
         controllerAs: 'controller'
     }).otherwise('/');
 
@@ -33,19 +40,12 @@ app.config(function ($routeProvider, $httpProvider, $locationProvider, vcRecaptc
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 });
 
-app.controller('RecipesController', function($scope, $http) {
-    $http.get('/api/recipe-0').then(function (response) {
-        console.log(response.data);
-        $scope.recipes = response.data;
-    });
-
-    console.log($scope.username);
-    console.log($scope.form);
-
+app.run(function($rootScope, $location) {
+    $rootScope.apiEndpoint = $location.protocol() + '://' + $location.host() + ($location.port() == 8080 ? ':8080' : '') + '/api';
 });
 
-app.controller('RecipeController', function($scope, $http) {
-    $http.get('/partials/recipe/editor').then(function (response) {
+app.controller('RecipesController', function($rootScope, $scope, $http) {
+    $http.get($rootScope.apiEndpoint+'/recipe-0').then(function (response) {
         console.log(response.data);
         $scope.recipes = response.data;
     });
@@ -66,20 +66,33 @@ app.controller('IngredientsController', function($scope, $http) {
 
 });
 
-app.controller('RegisterController', ['$scope', 'vcRecaptchaService', '$http', '$location', function ($scope, recaptcha, $http, $location) {
+app.controller('RecipeController', function($scope, $http) {
+    $http.get('/partials/recipe/editor').then(function (response) {
+        console.log(response.data);
+        $scope.recipes = response.data;
+    });
+
+    console.log($scope.username);
+    console.log($scope.form);
+
+});
+
+app.controller('RegisterController', ['$scope', 'vcRecaptchaService', '$http', '$location', '$rootScope', function ($scope, recaptcha, $http, $location, $rootScope) {
     $scope.register = function() {
         if(recaptcha.getResponse() !== '') {
             var userData = {
                 'email': $scope.user.email,
-                'password': $scope.user.password,
+                'password': $scope.user.user_password,
                 'name' : $scope.user.name,
                 'surname' : $scope.user.surname,
                 'g-recaptcha-response' : recaptcha.getResponse()
             };
 
-            $http.post('/api/user/register', userData)
+            $http.post($rootScope.apiEndpoint+'/user/register', userData)
                 .then(function (response) {
-                    $location.url(response.message);
+                    $location.url(response.data.message);
+                }, function(){
+
                 });
         }
     };
@@ -185,7 +198,7 @@ app.controller('RegisterController', ['$scope', 'vcRecaptchaService', '$http', '
 
 });
 
-app.controller('ConfirmationController', function ($scope, $http, $routeParams) {
+app.controller('ConfirmationController', function ($rootScope, $scope, $http, $routeParams) {
     var hash = $routeParams.uh;
     if(typeof hash !== 'undefined') {
         $scope.message = 'Zaktualizowano profil! Możesz się zalogować!';
@@ -194,17 +207,29 @@ app.controller('ConfirmationController', function ($scope, $http, $routeParams) 
     }
 
     console.log($routeParams.uh);
-    $http.post('/api/user/confirm', hash).then(function (response) {
+    $http.post($rootScope.apiEndpoint+'/user/confirm', hash).then(function (response) {
         console.log(response);
     });
+});
+
+app.controller('NavigationBarController', function($rootScope, $scope, $http, $location) {
+    $scope.logout = function() {
+        $http.post($rootScope.apiEndpoint+'/user/logout', {}).then(function(response) {
+            $rootScope.authenticated = false;
+            $location.url(response.data.message);
+        });
+    };
 });
 
 app.controller('LoginController', function ($rootScope, $scope, $http, $location) {
 
     $scope.authenticate = function(credentials, callback) {
 
-        var headers = credentials ? { Authorization : "Basic " + btoa(credentials.username + ":" + credentials.password) } : {};
-        $http.get("/api/user/login", {headers: headers}).then(function (response) {
+        console.log('credentials = ');
+        console.log(credentials);
+
+        // var headers = credentials ? { Authorization : "Basic " + btoa(credentials.username + ":" + credentials.password) } : {};
+        $http.post($rootScope.apiEndpoint+'/user', credentials).then(function (response) {
             if (response.data.name) {
                 $rootScope.authenticated = true;
                 $rootScope.name = response.data.name;
@@ -221,20 +246,13 @@ app.controller('LoginController', function ($rootScope, $scope, $http, $location
         });
     };
 
-    $scope.logout = function() {
-        $http.post('/api/user/logout', {}).finally(function() {
-            $rootScope.authenticated = false;
-            $location.url("/");
-        });
-    };
-
     $scope.credentials = {};
 
     $scope.login = function () {
         $scope.authenticate($scope.credentials, function(authenticated) {
             if (authenticated) {
                 console.log("Login succeeded");
-                $location.url("/");
+                $location.url("/fridge");
                 $scope.error = false;
                 $rootScope.authenticated = true;
             } else {
@@ -247,9 +265,73 @@ app.controller('LoginController', function ($rootScope, $scope, $http, $location
     };
 });
 
-var testFoo = function() {
-return "test";
-}
+app.controller('FridgeController', function ($rootScope, $scope, $http, $location) {
+    if($rootScope.authenticated) {
+        $scope.ingredients = [];
+        $scope.selected = { selectedIngredients : [] };
+
+        $http.get($rootScope.apiEndpoint + '/fridge/ingredients').then(function (response) {
+            $scope.selected.selectedIngredients = response.data;
+        }, function() {
+            $location.url('/login');
+        });
+
+        $http.get($rootScope.apiEndpoint+'/ingredients/all').then(function(response){
+            console.log(response);
+            $scope.ingredients = response.data;
+        }, function () {
+            $location.url('/login');
+        });
+
+        $scope.clicked = false;
+        $scope.doneOk  = false;
+
+        $scope.addIngredients = function() {
+            $scope.clicked = true;
+            $scope.doneOk = false;
+
+            $http.post($rootScope.apiEndpoint + "/fridge/addIngredients", $scope.selected.selectedIngredients).then(function(response){
+                $scope.clicked = false;
+                $scope.doneOk = true;
+            }, function() {
+                $location.url('/login');
+            });
+
+        };
+
+    } else {
+        $location.url("/login");
+    }
+}).filter('propsFilter', function() {
+    return function(items, props) {
+        var out = [];
+
+        if (angular.isArray(items)) {
+            items.forEach(function(item) {
+                var itemMatches = false;
+
+                var keys = Object.keys(props);
+                for (var i = 0; i < keys.length; i++) {
+                    var prop = keys[i];
+                    var text = props[prop].toLowerCase();
+                    if (item[prop].toString().toLowerCase().indexOf(text) !== -1) {
+                        itemMatches = true;
+                        break;
+                    }
+                }
+
+                if (itemMatches) {
+                    out.push(item);
+                }
+            });
+        } else {
+            // Let the output be the input untouched
+            out = items;
+        }
+
+        return out;
+    };
+});
 
 app.controller('RecipeEditor', function($scope, $http) {
 
@@ -269,5 +351,4 @@ app.controller('RecipeEditor', function($scope, $http) {
 
     console.log($scope.username);
     console.log($scope.form);
-
 });

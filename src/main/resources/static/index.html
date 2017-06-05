@@ -13,6 +13,9 @@
         <link href="css/angular-bootstrap.css" rel="stylesheet">
         <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"/>
         <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.19.8/select.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
 
         <!-- Scripts -->
         <script src='//www.google.com/recaptcha/api.js'></script>
@@ -21,15 +24,17 @@
     </head>
     <body ng-app="hello">
 
-        <nav class="navbar navbar-default navbar-static-top">
+        <nav class="navbar navbar-default navbar-static-top" ng-controller="NavigationBarController">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="#">Awesome Project</a>
+                    <a class="navbar-brand" ng-show="!authenticated" href="#">Awesome Project</a>
+                    <a class="navbar-brand" ng-show="authenticated" href="/#/fridge">Awesome Project</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li ng-show="!authenticated"><a href="/#/login">Login</a></li>
                         <li ng-show="authenticated">{{name}}</li>
+                        <li ng-show="authenticated"><a href="#" ng-click="logout()">Logout</a></li>
                         <li class="active"><a href="/#/register">Register</a></li>
                     </ul>
                 </div><!--/.nav-collapse -->
@@ -45,6 +50,7 @@
         </div>
 
     <script src="js/angular-bootstrap.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.19.8/select.js" type="text/javascript"></script>
     <script src="js/jquery.js" type="text/javascript"></script>
     <script src="js/hello.js"></script>
     </body>
