@@ -31,7 +31,7 @@ app.config(function ($routeProvider, $httpProvider, $locationProvider, vcRecaptc
         controllerAs: 'controller'
     }).when('/recipeEditor', {
         templateUrl : partialsEndpoint+'/recipe/editor.do',
-        controller : 'IngredientsController',
+        controller : 'RecipeController',
         controllerAs: 'controller'
     }).otherwise('/');
 
@@ -331,4 +331,24 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
 
         return out;
     };
+});
+
+app.controller('RecipeEditor', function($scope, $http) {
+
+    $scope.recipeContainer =
+    {
+        name: '',
+        difficulty: 'Medium',
+        preparationTime: 0,
+        ingredients: ['banana', 'strawberry'],
+
+
+    };
+    $scope.price = 7;
+    $scope.addIngredient = function() {
+        $scope.recipeContainer.ingredients.push();
+    }
+
+    console.log($scope.username);
+    console.log($scope.form);
 });
