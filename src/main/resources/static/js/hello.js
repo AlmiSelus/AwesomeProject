@@ -246,3 +246,28 @@ app.controller('LoginController', function ($rootScope, $scope, $http, $location
         });
     };
 });
+
+var testFoo = function() {
+return "test";
+}
+
+app.controller('RecipeEditor', function($scope, $http) {
+
+    $scope.recipeContainer =
+    {
+        name: '',
+        difficulty: 'Medium',
+        preparationTime: 0,
+        ingredients: ['banana', 'strawberry'],
+
+
+    };
+    $scope.price = 7;
+    $scope.addIngredient = function() {
+        $scope.recipeContainer.ingredients.push();
+    }
+
+    console.log($scope.username);
+    console.log($scope.form);
+
+});

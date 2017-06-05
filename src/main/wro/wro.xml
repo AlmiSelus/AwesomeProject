@@ -12,6 +12,7 @@
         <js>webjar:angularjs/1.6.2/angular-route.min.js</js>
         <js>webjar:angular-messages/1.6.2/angular-messages.min.js</js>
         <js>file:src/main/resources/static/js/angular-recaptcha.min.js</js>
+        <js>file:src/main/resources/static/js/recipeEditor.js</js>
     </group>
 
     <group name="jquery">

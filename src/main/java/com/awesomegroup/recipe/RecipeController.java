@@ -2,6 +2,7 @@ package com.awesomegroup.recipe;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class RecipeController {
 
     @RequestMapping("editor")
-    public String displayRecipeEditor() { return "partials/recipe/recipeEditor"; }
+    public String displayRecipeEditor() {
+        return "partials/recipe/recipeEditor";
+    }
 
     @GetMapping("list")
     public String displayRecipesListPartial() {
