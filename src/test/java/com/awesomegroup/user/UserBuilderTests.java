@@ -2,6 +2,7 @@ package com.awesomegroup.user;
 
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -21,6 +22,13 @@ public class UserBuilderTests {
     public void userBuilder_createNotNullUserFromExisting() {
         User userBase = User.create().email("email").locked(true).build();
         assertThat(User.create(userBase).build(), is(notNullValue()));
+    }
+
+    @Test
+    public void userBuilder_createFromNull() {
+        User user = User.create(null).build();
+        assertThat(user, is(notNullValue()));
+        assertThat(user.toString(), equalTo(User.create().build().toString()));
     }
 
     @Test
@@ -60,6 +68,18 @@ public class UserBuilderTests {
         User user = User.create().build();
         assertThat(user.getUserRoles(), is(notNullValue()));
         assertThat(user.getUserRoles(), hasSize(0));
+    }
+
+    @Test
+    public void userBuilder_createUserWithName() {
+        User user = User.create().name("name").build();
+        assertThat(user.getName(), is("name"));
+    }
+
+    @Test
+    public void userBuilder_createUserWithSurname() {
+        User user = User.create().surname("surname").build();
+        assertThat(user.getSurname(), is("surname"));
     }
 
 }

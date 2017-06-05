@@ -136,17 +136,27 @@ public class Fridge {
 
 
     }
- /*
-    public List<Recipe> getRecipesOfRating(int rating) {
-        return new ArrayList<>(favouriteRecipes.entrySet().stream()
-                .filter(recipeIntegerEntry -> recipeIntegerEntry.getValue() == rating)
-                .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue())).keySet());
+
+    /*
+       public List<Recipe> getRecipesOfRating(int rating) {
+           return new ArrayList<>(favouriteRecipes.entrySet().stream()
+                   .filter(recipeIntegerEntry -> recipeIntegerEntry.getValue() == rating)
+                   .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue())).keySet());
+       }
+
+
+
+
+       */
+    @Override
+    public String toString() {
+        return "Fridge{" +
+                "fridgeId=" + fridgeId +
+                ", fridgeUser=" + fridgeUser +
+                ", fridgeIngredients=" + fridgeIngredients +
+                ", favouriteRecipes=" + favouriteRecipes +
+                '}';
     }
-
-
-
-
-    */
 
     public static Builder create() {
         return new Builder();
