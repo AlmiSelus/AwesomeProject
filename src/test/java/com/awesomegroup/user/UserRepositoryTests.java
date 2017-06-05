@@ -1,5 +1,6 @@
 package com.awesomegroup.user;
 
+import com.awesomegroup.fridge.Fridge;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.hamcrest.MatcherAssert;

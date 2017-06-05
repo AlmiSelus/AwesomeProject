@@ -20,7 +20,7 @@ import java.util.Optional;
 @Service
 public class AuthService implements UserDetailsService {
 
-    private final static Logger log = LoggerFactory.getLogger(AuthService.class);
+    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
     @Autowired
     private UserRepository userRepository;
