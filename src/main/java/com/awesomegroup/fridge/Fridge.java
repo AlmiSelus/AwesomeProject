@@ -4,16 +4,12 @@ import com.awesomegroup.favouriteRecipe.FavouriteRecipe;
 import com.awesomegroup.ingredients.Ingredient;
 import com.awesomegroup.recipe.Recipe;
 import com.awesomegroup.user.User;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Created by Adi on 26.05.2017.

@@ -1,19 +1,13 @@
 package com.awesomegroup.ingredients;
 
 import com.awesomegroup.food2fork.F2FRecipeRecipe;
-import com.awesomegroup.food2fork.F2FSearchRecipe;
-
-import com.awesomegroup.food2fork.F2FSearchResult;
 import com.awesomegroup.food2fork.Food2fork;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by wrobe on 25.04.2017.

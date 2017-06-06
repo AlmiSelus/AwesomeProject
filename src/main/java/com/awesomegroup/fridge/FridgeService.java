@@ -2,7 +2,6 @@ package com.awesomegroup.fridge;
 
 import com.awesomegroup.ingredients.Ingredient;
 import com.awesomegroup.ingredients.IngredientsRepository;
-import com.awesomegroup.user.User;
 import com.awesomegroup.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -23,7 +21,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class FridgeService {
 
-    private final static Logger log = LoggerFactory.getLogger(FridgeService.class);
+    private static final Logger log = LoggerFactory.getLogger(FridgeService.class);
 
     @Autowired
     private FridgeRepository fridgeRepository;

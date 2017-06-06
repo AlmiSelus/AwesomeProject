@@ -1,8 +1,6 @@
 package com.awesomegroup.recaptcha;
 
-import io.reactivex.Observable;
 import io.reactivex.Single;
-import retrofit2.http.Body;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
