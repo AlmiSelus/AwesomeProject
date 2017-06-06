@@ -138,7 +138,7 @@ public class Fridge {
     public List<Recipe> getRecipesOfRating(float rating) {
         return favouriteRecipes.stream()
                 .filter(r -> r.getRating() == rating)
-                .map(r -> r.getRecipe())
+                .map(FavouriteRecipe::getRecipe)
                 .collect(Collectors.toList());
     }
 

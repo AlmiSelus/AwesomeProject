@@ -7,6 +7,11 @@ import org.springframework.http.ResponseEntity;
  * Created by Michał on 2017-05-28.
  */
 public class ResponseEntityUtils {
+
+    private ResponseEntityUtils() {
+
+    }
+
     public static ResponseEntity<ResponseJson> ok(String message) {
         return ResponseEntity.ok(ResponseJson.create().message(message).build());
     }
