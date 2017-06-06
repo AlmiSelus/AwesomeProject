@@ -31,7 +31,7 @@ app.config(function ($routeProvider, $httpProvider, $locationProvider, vcRecaptc
         controllerAs: 'controller'
     }).when('/recipeEditor', {
         templateUrl : partialsEndpoint+'/recipe/editor.do',
-        controller : 'IngredientsController',
+        controller : 'RecipeController',
         controllerAs: 'controller'
     }).otherwise('/');
 
@@ -212,6 +212,15 @@ app.controller('ConfirmationController', function ($rootScope, $scope, $http, $r
     });
 });
 
+app.controller('NavigationBarController', function($rootScope, $scope, $http, $location) {
+    $scope.logout = function() {
+        $http.post($rootScope.apiEndpoint+'/user/logout', {}).then(function(response) {
+            $rootScope.authenticated = false;
+            $location.url(response.data.message);
+        });
+    };
+});
+
 app.controller('LoginController', function ($rootScope, $scope, $http, $location) {
 
     $scope.authenticate = function(credentials, callback) {
@@ -234,13 +243,6 @@ app.controller('LoginController', function ($rootScope, $scope, $http, $location
         }, function() {
             $rootScope.authenticated = false;
             callback && callback(false);
-        });
-    };
-
-    $scope.logout = function() {
-        $http.post($rootScope.apiEndpoint+'/user/logout', {}).finally(function() {
-            $rootScope.authenticated = false;
-            $location.url("/");
         });
     };
 
@@ -329,4 +331,35 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
 
         return out;
     };
+});
+
+app.controller('RecipeEditor', function($scope, $http) {
+
+    $scope.recipeContainer =
+    {
+        name: '',
+        difficulty: 'Medium',
+        preparationTime: 0,
+        ingredients: ['banana', 'strawberry']
+    };
+    $scope.price = 7;
+    $scope.addIngredient = function() {
+        $scope.recipeContainer.ingredients.push('');
+    };
+    $scope.removeIngredient = function(index) {
+        $scope.recipeContainer.ingredients.splice(index, 1);
+        console.log('remove ' + index);
+    }
+
+    $scope.labelString = 'dat';
+    $scope.labelFoo = function() {
+      $scope.labelString = 'not dat';
+    };
+
+    $scope.log = function(message) {
+        console.log(message);
+    };
+
+    console.log($scope.username);
+    console.log($scope.form);
 });
