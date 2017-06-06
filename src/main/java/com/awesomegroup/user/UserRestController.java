@@ -61,6 +61,13 @@ public class UserRestController {
         public String getPassword() {
             return password;
         }
+
+        public static AuthReq create(String username, String password) {
+            AuthReq requestData = new AuthReq();
+            requestData.username = username;
+            requestData.password = password;
+            return requestData;
+        }
     }
 
     @PostMapping("/api/user/check/mail")
