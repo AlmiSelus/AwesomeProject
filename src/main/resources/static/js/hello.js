@@ -340,14 +340,25 @@ app.controller('RecipeEditor', function($scope, $http) {
         name: '',
         difficulty: 'Medium',
         preparationTime: 0,
-        ingredients: ['banana', 'strawberry'],
-
-
+        ingredients: ['banana', 'strawberry']
     };
     $scope.price = 7;
     $scope.addIngredient = function() {
-        $scope.recipeContainer.ingredients.push();
+        $scope.recipeContainer.ingredients.push('');
+    };
+    $scope.removeIngredient = function(index) {
+        $scope.recipeContainer.ingredients.splice(index, 1);
+        console.log('remove ' + index);
     }
+
+    $scope.labelString = 'dat';
+    $scope.labelFoo = function() {
+      $scope.labelString = 'not dat';
+    };
+
+    $scope.log = function(message) {
+        console.log(message);
+    };
 
     console.log($scope.username);
     console.log($scope.form);
