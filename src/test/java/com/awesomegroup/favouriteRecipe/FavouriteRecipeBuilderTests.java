@@ -22,15 +22,15 @@ public class FavouriteRecipeBuilderTests {
     public void favouriteRecipeBuilder_createSpecificObject()
     {
         FavouriteRecipe favRecipe = FavouriteRecipe.create()
-                .id(4)
+                .id(4L)
                 .recipe(Recipe.create()
-                        .id(2)
+                        .id(2L)
                         .build())
                 .rating(2f)
                 .build();
 
-        Assert.assertThat(favRecipe.getFavouriteRecipeID(), is(4));
-        Assert.assertThat(favRecipe.getRecipe().getRecipeID(), is(2));
+        Assert.assertThat(favRecipe.getFavouriteRecipeID(), is(4L));
+        Assert.assertThat(favRecipe.getRecipe().getRecipeID(), is(2L));
         Assert.assertThat(favRecipe.getRating(), is(2f));
     }
 }
