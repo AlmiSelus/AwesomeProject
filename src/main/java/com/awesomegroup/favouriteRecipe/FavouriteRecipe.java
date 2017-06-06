@@ -2,7 +2,6 @@ package com.awesomegroup.favouriteRecipe;
 
 import com.awesomegroup.fridge.Fridge;
 import com.awesomegroup.recipe.Recipe;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -24,8 +23,8 @@ public class FavouriteRecipe {
     @JsonProperty("id")
     private long favouriteRecipeID;
 
-    @OneToOne(fetch=FetchType.LAZY, cascade = {CascadeType.ALL})
-    @JoinColumn (name = "recipe_id")
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
     @Column(name = "recipe_rating", nullable = false, unique = true, length = 300)
@@ -38,7 +37,10 @@ public class FavouriteRecipe {
         return fridges;
     }
 
-    //
+    public void addFridge(Fridge fridge) {
+        fridges.add(fridge);
+    }
+
     public Recipe getRecipe() {
         return recipe;
     }
@@ -47,9 +49,8 @@ public class FavouriteRecipe {
         return rating;
     }
 
-    public void setRating (float rating)
-    {
-        this.rating =  rating;
+    public void setRating(float rating) {
+        this.rating = rating;
     }
 
     public long getFavouriteRecipeID() {
@@ -65,6 +66,11 @@ public class FavouriteRecipe {
 
         private Builder() {
             favouriteRecipe = new FavouriteRecipe();
+        }
+
+        public Builder id(long id) {
+            favouriteRecipe.favouriteRecipeID = id;
+            return this;
         }
 
         public Builder rating(float rating) {
