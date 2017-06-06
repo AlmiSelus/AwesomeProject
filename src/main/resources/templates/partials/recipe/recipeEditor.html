@@ -1,1 +1,45 @@
-<center>This is a recipe editor.<br/>There will be so much content is here!!!</center>
+<body>
+
+<div ng-app="hello" ng-controller="RecipeEditor" >
+    <br/><br/>
+
+    <b>Recipe editor:</b><br/>
+
+    <table boarder="0">
+        <tr>
+            <td>
+                Recipe name:
+            </td>
+            <td>
+                <input type="text" ng-model="recipeContainer.name" />
+            </td>
+        </tr>
+        <tr>
+            <td>Difficulty</td>
+            <td><select ng-model="recipeContainer.difficulty">
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+                <option value="Expert Chef">Expert Chef</option>
+            </select></td>
+        </tr>
+        <tr>
+            <td>
+                Recipe preparation time
+            </td>
+            <td>
+                <input type="number" step="1" ng-model="recipeContainer.preparationTime" />
+            </td>
+        </tr>
+    </table>
+
+    <br/>
+    <b>Ingredient list:</b><br/>
+    <form ng-repeat="ingredient in recipeContainer.ingredients track by $index">
+        {{$index + 1}} <input type="text" ng-model="recipeContainer.ingredients[$index]" value="{{inredient}}" />
+        <button ng-click="removeIngredient($index)">X</button>
+    </form>
+    <button ng-click="addIngredient()">Add Ingredient</button> <br/>
+</div>
+
+</body>

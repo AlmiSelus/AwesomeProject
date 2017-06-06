@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Adi on 26.05.2017.
@@ -85,8 +86,8 @@ public class Fridge {
 
     public void removeIngredient(Ingredient ingredient) {
         int index = findIngredientByID(ingredient);
-        if (index != -1) ;
-        fridgeIngredients.remove(index);
+        if (index != -1)
+            fridgeIngredients.remove(index);
     }
 
     public boolean isFavouriteRecipePresent(Recipe recipe) {
@@ -114,15 +115,16 @@ public class Fridge {
 
     public void removeFavouriteRecipe(Recipe recipe) {
         int index = findFavouriteRecipe(recipe);
-        if (index != -1) ;
-        favouriteRecipes.remove(index);
+        if (index != -1)
+            favouriteRecipes.remove(index);
     }
 
     public float getFavouriteRecipeRating(Recipe recipe) {
         int index = findFavouriteRecipe(recipe);
-        if (index != -1)
-        return favouriteRecipes.get(index).getRating();
-        return -1f;
+        if (index != -1) {
+            return favouriteRecipes.get(index).getRating();
+        } else
+            return index;
     }
 
     public void rateFavouriteRecipe(Recipe recipe, int rating) {
@@ -133,25 +135,11 @@ public class Fridge {
 
     }
 
-    /*
-       public List<Recipe> getRecipesOfRating(int rating) {
-           return new ArrayList<>(favouriteRecipes.entrySet().stream()
-                   .filter(recipeIntegerEntry -> recipeIntegerEntry.getValue() == rating)
-                   .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue())).keySet());
-       }
-
-
-
-
-       */
-    @Override
-    public String toString() {
-        return "Fridge{" +
-                "fridgeId=" + fridgeId +
-                ", fridgeUser=" + fridgeUser +
-                ", fridgeIngredients=" + fridgeIngredients +
-                ", favouriteRecipes=" + favouriteRecipes +
-                '}';
+    public List<Recipe> getRecipesOfRating(float rating) {
+        return favouriteRecipes.stream()
+                .filter(r -> r.getRating() == rating)
+                .map(FavouriteRecipe::getRecipe)
+                .collect(Collectors.toList());
     }
 
     public static Builder create() {

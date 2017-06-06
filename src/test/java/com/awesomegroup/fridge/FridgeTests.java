@@ -5,12 +5,6 @@ import com.awesomegroup.recipe.Recipe;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.hamcrest.CoreMatchers.is;
 
@@ -20,24 +14,29 @@ import static org.hamcrest.CoreMatchers.is;
 public class FridgeTests {
 
     @Test
+    public void fridge_findIngredient()
+    {
+        Fridge fridge = Fridge.create().build();
+        Ingredient ingredient = Ingredient.create().id(3).build();
+        fridge.addIngredient(ingredient);
+        Assert.assertThat(fridge.findIngredientByID(ingredient), is(0));
+        Assert.assertThat(fridge.findIngredientByID(Ingredient.create().id(4).build()), is(-1));
+    }
+
+    @Test
     public void fridge_isIngredientPresent() {
         Fridge fridge = Fridge.create().build();
         fridge.addIngredient(Ingredient.create().id(3).build());
         Assert.assertThat(fridge.isIngredientPresent(Ingredient.create().id(3).build()), is(true));
+        Assert.assertThat(fridge.isIngredientPresent(Ingredient.create().id(4).build()), is(false));
     }
 
     @Test
     public void fridge_addFridgeIngredient() {
         Fridge fridge = Fridge.create().build();
         fridge.addIngredient(Ingredient.create().id(3).build());
+        fridge.addIngredient(Ingredient.create().id(3).build());
         Assert.assertThat(fridge.getFridgeIngredients().isEmpty(), is(false));
-    }
-
-    @Test
-    public void fridge_addRedundantFridgeIngredient() {
-        Fridge fridge = Fridge.create().build();
-        fridge.addIngredient(Ingredient.create().id(3).build());
-        fridge.addIngredient(Ingredient.create().id(3).build());
         Assert.assertThat(fridge.getFridgeIngredients().size(), is(1));
     }
 
@@ -56,6 +55,15 @@ public class FridgeTests {
         Assert.assertThat(fridge.isIngredientPresent(ingredient), is(false));
     }
 
+    @Test
+    public void fridge_isFavouriteRecipePresent()
+    {
+        Fridge fridge = Fridge.create().build();
+        Recipe recipe = Recipe.create().id(1).build();
+        Assert.assertThat(fridge.isFavouriteRecipePresent(recipe), is(false) );
+        fridge.addFavouriteRecipe(recipe,0);
+        Assert.assertThat(fridge.isFavouriteRecipePresent(recipe), is(true) );
+    }
 
     @Test
     public void fridge_addFavouriteRecipe() {
@@ -68,7 +76,18 @@ public class FridgeTests {
         Assert.assertThat(fridge.getFavouriteRecipes().size(), is(1));
     }
 
-  @Test
+    @Test
+    public void fridge_findFavouriteRecipe()
+    {
+        Fridge fridge = Fridge.create().build();
+        Recipe recipe = Recipe.create().id(1).build();
+
+        Assert.assertThat(fridge.findFavouriteRecipe(recipe), is(-1));
+        fridge.addFavouriteRecipe(recipe, 1);
+        Assert.assertThat(fridge.findFavouriteRecipe(recipe), is(0));
+    }
+
+    @Test
     public void fridge_removeFavouriteRecipe() {
         Fridge fridge = Fridge.create().build();
         Recipe recipe = Recipe.create().id(3).build();
@@ -77,6 +96,7 @@ public class FridgeTests {
         Assert.assertThat(fridge.isFavouriteRecipePresent(recipe), is(false));
 
     }
+
 
     @Test
     public void fridge_rateFavouriteRecipe() {
@@ -89,7 +109,7 @@ public class FridgeTests {
         fridge.rateFavouriteRecipe(recipe, 3);
         Assert.assertThat(fridge.getFavouriteRecipeRating(recipe), is(3f));
     }
-/*
+
     @Test
     public void recipeListByRating() {
         Fridge fridge = Fridge.create().build();
@@ -104,5 +124,5 @@ public class FridgeTests {
         Assert.assertThat(fridge.getRecipesOfRating(1).size(), is(1));
         Assert.assertThat(fridge.getRecipesOfRating(0).size(), is(3));
     }
-    */
+
 }
