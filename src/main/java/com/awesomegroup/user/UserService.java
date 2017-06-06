@@ -8,7 +8,6 @@ import com.awesomegroup.recaptcha.ReCaptchaResponse;
 import com.awesomegroup.recaptcha.ReCaptchaSettings;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.reactivex.Maybe;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
