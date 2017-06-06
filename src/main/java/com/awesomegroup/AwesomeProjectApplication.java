@@ -15,7 +15,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import java.util.Random;
 
 /**
- * Spring security disabled - TODO: enable with changed password
+ * Spring security disabled
  */
 @SpringBootApplication(scanBasePackages = {"com.awesomegroup"})
 @EnableJpaRepositories(basePackages = {"com.awesomegroup"})
