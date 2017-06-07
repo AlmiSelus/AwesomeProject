@@ -2,4 +2,7 @@
 <dataset>
     <users user_id="0" user_name="name" user_surname="surname" user_mail="name.surname@mail.com" user_password="password1" user_enabled="true" user_credentials_expired="false" user_locked="false"/>
     <users user_id="1" user_name="John" user_surname="Snow" user_mail="jsnow@westeros.com" user_password="$2a$10$4aHakC9F5tmDpopFN.kvXOTwqyW1Ysm0Ig.2AZYD4H4W8Xn0/Jk66" user_enabled="true" user_credentials_expired="false" user_locked="false"/>
+    <users user_id="2" user_name="John" user_surname="Snow" user_mail="sbean@westeros.com" user_password="$2a$10$4aHakC9F5tmDpopFN.kvXOTwqyW1Ysm0Ig.2AZYD4H4W8Xn0/Jk66" user_enabled="true" user_credentials_expired="false" user_locked="true"/>
+    <users user_id="3" user_name="John" user_surname="Snow" user_mail="rstark@westeros.com" user_password="$2a$10$4aHakC9F5tmDpopFN.kvXOTwqyW1Ysm0Ig.2AZYD4H4W8Xn0/Jk66" user_enabled="false" user_credentials_expired="false" user_locked="false"/>
+    <users user_id="4" user_name="John" user_surname="Snow" user_mail="jrrm@westeros.com" user_password="$2a$10$4aHakC9F5tmDpopFN.kvXOTwqyW1Ysm0Ig.2AZYD4H4W8Xn0/Jk66" user_enabled="true" user_credentials_expired="true" user_locked="false"/>
 </dataset>
