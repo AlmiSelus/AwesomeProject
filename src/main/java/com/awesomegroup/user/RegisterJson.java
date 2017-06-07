@@ -46,4 +46,44 @@ public class RegisterJson {
                 ", gResponse='" + gResponse + '\'' +
                 '}';
     }
+
+    public static Builder create() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private RegisterJson registerJson;
+        public Builder() {
+            registerJson = new RegisterJson();
+        }
+
+        public Builder email(String email) {
+            registerJson.email = email;
+            return this;
+        }
+
+        public Builder name(String name) {
+            registerJson.name = name;
+            return this;
+        }
+
+        public Builder password(String password) {
+            registerJson.password = password;
+            return this;
+        }
+
+        public Builder surname(String surname) {
+            registerJson.surname = surname;
+            return this;
+        }
+
+        public Builder googleResponse(String response) {
+            registerJson.gResponse = response;
+            return this;
+        }
+
+        public RegisterJson build() {
+            return registerJson;
+        }
+    }
 }
