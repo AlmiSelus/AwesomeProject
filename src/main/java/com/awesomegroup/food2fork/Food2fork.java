@@ -10,6 +10,8 @@ import okhttp3.Response;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by patry on 24.04.2017.
@@ -124,7 +126,7 @@ public class Food2fork {
         name = apiIngredient.replace(numbers, "");
         name = name.replace(measure, "");
         System.out.println(name);
-        return Ingredient.create().id(id).name(name).availableMeasurements(measurement).build();
+        return Ingredient.create().id(id).name(name).expireDate(Calendar.getInstance()).availableMeasurements(measurement).build();
     }
 
     private String GetMeasurement(String base){
