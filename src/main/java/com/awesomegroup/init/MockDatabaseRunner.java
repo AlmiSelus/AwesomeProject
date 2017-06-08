@@ -48,7 +48,7 @@ public class MockDatabaseRunner implements ApplicationRunner {
     public void run(ApplicationArguments applicationArguments) throws Exception {
         F2FSearchResult topRated = f2f.findTopRated();
 
-        for(F2FSearchRecipe recipe : topRated.recipes) {
+        for(F2FSearchRecipe recipe : topRated.getRecipes()) {
             log.info("----------------------------------- NEW RECIPE -----------------------------------");
             F2FRecipeRecipe r = f2f.getRecipe(recipe.getRecipeId());
 
