@@ -13,7 +13,7 @@ public class IngredientMeasurementTests {
 
     @Test
     public void createMeasurementsWithExcept_shouldGive4_G_MG_ML_L() {
-        List<IngredientMeasurement> actual = IngredientMeasurement.except(IngredientMeasurement.ALL, IngredientMeasurement.PINCH, IngredientMeasurement.SPOON, IngredientMeasurement.TBLSPOON);
+        List<IngredientMeasurement> actual = IngredientMeasurement.except(IngredientMeasurement.ALL, IngredientMeasurement.PINCH, IngredientMeasurement.SPOON, IngredientMeasurement.TBLSPOON, IngredientMeasurement.BREAST, IngredientMeasurement.CUP, IngredientMeasurement.CUPS, IngredientMeasurement.COUNT, IngredientMeasurement.TBSP, IngredientMeasurement.TEASPOON, IngredientMeasurement.TSP);
         List<IngredientMeasurement> expected = Arrays.asList(IngredientMeasurement.G, IngredientMeasurement.MG, IngredientMeasurement.ML, IngredientMeasurement.L);
 
         Assert.assertNotNull(actual);

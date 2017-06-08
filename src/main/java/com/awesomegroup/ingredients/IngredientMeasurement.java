@@ -8,9 +8,10 @@ import java.util.stream.Collectors;
  * Created by Michal on 2017-04-18.
  */
 public enum IngredientMeasurement {
-    ALL(0, "ALL"), TBLSPOON(1, "TBL SPOON"), SPOON(2, "SPOON"),
-    PINCH(3, "PINCH"), ML(4, "ML"), MG(5, "MG"),
-    G(6, "G"), L(7, "L");
+    ALL(0, "ALL"), TBLSPOON(1, "tbl spoon"), SPOON(2, "spoon"),
+    PINCH(3, "pinch"), ML(4, "ml"), MG(5, "mg"),
+    G(6, "g"), L(7, "l"), BREAST(8, "breast"), TBSP (9, "tbsp"),
+    TSP(10, "tsp"), CUPS (11, "cups"), CUP (12, "cup"), TEASPOON (13, "teaspoon"), COUNT(14, "COUNT");
 
     private long measurementID;
     private String measurementName;
