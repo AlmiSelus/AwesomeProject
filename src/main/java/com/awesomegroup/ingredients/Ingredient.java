@@ -7,9 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +27,10 @@ public class Ingredient {
     @Column(name = "ingredient_name", nullable = false, unique = true)
     @JsonProperty("name")
     private String ingredientName;
+
+    @Column(name = "expire_date")
+    @JsonProperty("date")
+    private Calendar expireDate;
 
     @ElementCollection(targetClass = IngredientMeasurement.class)
     @CollectionTable(name="ingredients_measurements")
@@ -62,11 +64,14 @@ public class Ingredient {
         return fridges;
     }
 
+    public Calendar getExpireDate() {return expireDate;}
+
     @Override
     public String toString() {
         return "Ingredient{" +
                 "ingredientID=" + ingredientID +
                 ", ingredientName='" + ingredientName + '\'' +
+                ", expireDate='" + expireDate + '\'' +
                 ", availableMeasurements='" + availableMeasurements.stream().map(IngredientMeasurement::toString).collect(Collectors.joining(", ")) +"'"+
                 '}';
     }
@@ -95,6 +100,11 @@ public class Ingredient {
 
         public Builder name(String name) {
             ingredient.ingredientName = name;
+            return this;
+        }
+
+        public Builder expireDate(Calendar date){
+            ingredient.expireDate = date;
             return this;
         }
 

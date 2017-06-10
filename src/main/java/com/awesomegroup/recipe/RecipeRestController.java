@@ -1,10 +1,13 @@
 package com.awesomegroup.recipe;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import java.sql.SQLException;
 
 /**
  * Created by Michał on 2017-04-14.
@@ -36,9 +39,29 @@ public class RecipeRestController {
     }
 
     @PostMapping(value = "/api/recipe/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(value = HttpStatus.OK)
-    public void addRecipe(@RequestBody Recipe recipe) {
-        recipeService.saveRecipe(recipe);
+    public RecipeAddResult saveRecipe(@RequestBody Recipe newRecipe) {
+        RecipeAddResult recipeAddResult = new RecipeAddResult();
+        if(newRecipe != null) {
+            try {
+                recipeService.saveRecipe(newRecipe);
+            }
+            catch(DataIntegrityViolationException e) {
+                recipeAddResult.success = false;
+                recipeAddResult.message = e.getCause().getCause().getMessage();
+            }
+            catch(Exception e) {
+                recipeAddResult.success = false;
+                recipeAddResult.message = e.getMessage();
+            }
+        }else{
+            recipeAddResult.success = false;
+            recipeAddResult.message = "Recived null receipt";
+        }
+        return recipeAddResult;
     }
 
+    @PostMapping("api/recipe/log")
+    public void logToConsole(@RequestBody String content) {
+        System.out.println(content);
+    }
 }
