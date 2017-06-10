@@ -5,15 +5,16 @@ import com.awesomegroup.mail.EmailHTMLSender;
 import com.awesomegroup.recaptcha.GoogleReCaptcha;
 import com.awesomegroup.recaptcha.ReCaptchaRequest;
 import com.awesomegroup.recaptcha.ReCaptchaResponse;
-import com.awesomegroup.recaptcha.ReCaptchaSettings;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
+import io.reactivex.exceptions.Exceptions;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
@@ -40,6 +41,12 @@ public class UserService {
     private final EmailHTMLSender mailSender;
     private final PasswordEncoder passwordEncoder;
 
+    @Value("${google.recaptcha.sitekey}")
+    private String siteKey;
+
+    @Value("${google.recaptcha.url}")
+    private String serviceUrl;
+
     @Autowired
     public UserService(UserRepository userRepository, EmailHTMLSender mailSender, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -60,14 +67,7 @@ public class UserService {
             return Maybe.error(new Exception("User with given email already exists."));
         }
 
-        GoogleReCaptcha recaptcha = new Retrofit.Builder()
-                                        .baseUrl(ReCaptchaSettings.RECAPTCHA_SERVICE_URL.toString())
-                                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                                        .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
-                                        .build()
-                                        .create(GoogleReCaptcha.class);
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-                .getRequest();
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
         String ip = request.getRemoteAddr();
 
@@ -75,19 +75,36 @@ public class UserService {
                 (request.getServerPort() != 80 ? ":" + request.getServerPort() : StringUtils.EMPTY);
 
         ReCaptchaRequest reCaptchaRequest = ReCaptchaRequest.create()
-                                                            .secret(ReCaptchaSettings.RECAPTCHA_SECRET_KEY.toString())
+                                                            .secret(siteKey)
                                                             .recaptchaResponse(registerData.getCaptchaResponse())
                                                             .remoteIP(ip)
                                                             .build();
 
         log.info("Checking captcha!");
         log.info("ReCaptchaRequest = {}", reCaptchaRequest.toString());
+        GoogleReCaptcha reCaptcha = new Retrofit.Builder()
+                .baseUrl(serviceUrl)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
+                .build()
+                .create(GoogleReCaptcha.class);
 
-        Single<ReCaptchaResponse> observableReCaptcha = recaptcha.checkIfHuman(reCaptchaRequest.getSecret(), reCaptchaRequest.getResponse());
+        Single<ReCaptchaResponse> observableReCaptcha = reCaptcha.checkIfHuman(reCaptchaRequest.getSecret(), reCaptchaRequest.getResponse());
 
-        return observableReCaptcha  .filter(ReCaptchaResponse::isValid)
-                                    .filter(r -> !userRepository.findUserByEmail(registerData.getEmail()).isPresent())
+        return observableReCaptcha  .filter(r -> !userRepository.findUserByEmail(registerData.getEmail()).isPresent())
                                     .map(reCaptchaResponse -> {
+                                        if(userRepository.findUserByEmail(registerData.getEmail()).isPresent()) {
+                                            throw Exceptions.propagate(new Exception("User with given email already exists"));
+                                        }
+                                        return reCaptchaResponse;
+                                    })
+                                    .map(reCaptchaResponse -> {
+                                        if(!reCaptchaResponse.isValid()) {
+                                            throw Exceptions.propagate(new Exception("Captcha is not valid"));
+                                        }
+                                        return reCaptchaResponse;
+                                    })
+                                    .map(reCaptchaResponse->{
                                         log.info("User {}", Optional.of(registerData).map(this::transformRegisterToUser).orElse(null));
                                         return User.create(Optional.of(registerData).map(this::transformRegisterToUser).orElse(null))
                                                 .enabled(false)
@@ -107,7 +124,8 @@ public class UserService {
 
     public void confirm(String userHash) {
         String userDecodedData = new String(Base64Utils.decodeFromString(userHash)).replace(SALT, StringUtils.EMPTY);
-        userRepository.findUserByEmail(userDecodedData).ifPresent(user-> userRepository.save(User.create(user).locked(false).enabled(true).build()));
+        userRepository.findUserByEmail(userDecodedData)
+                .ifPresent(user-> userRepository.save(User.create(user).locked(false).enabled(true).build()));
     }
 
     private User transformRegisterToUser(RegisterJson registerJson) {

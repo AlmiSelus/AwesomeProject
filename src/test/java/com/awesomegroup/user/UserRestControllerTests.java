@@ -1,14 +1,18 @@
 package com.awesomegroup.user;
 
 import com.awesomegroup.WebSecurityConfig;
+import com.awesomegroup.recaptcha.GoogleReCaptcha;
+import com.awesomegroup.recaptcha.ReCaptchaResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import io.reactivex.Single;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
@@ -18,6 +22,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -25,10 +30,10 @@ import javax.servlet.Filter;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -122,7 +127,6 @@ public class UserRestControllerTests {
                 .andExpect(status().isForbidden())
                 .andExpect(unauthenticated())
                 .andExpect(status().reason("User is disabled"));
-
     }
 
     @Test
@@ -138,6 +142,46 @@ public class UserRestControllerTests {
                 .andExpect(unauthenticated())
                 .andExpect(status().reason("User credentials have expired"));
 
+    }
+
+    @Test
+    @DatabaseSetup("/database/user2Entries.xml")
+    public void callRegister_shouldRegisterUser() throws Exception {
+        RegisterJson register = RegisterJson.create()
+                .email("newMail@mail.com")
+                .name("name1")
+                .surname("surname1")
+                .password("superSecretPassword")
+                .googleResponse("validSecret")
+                .build();
+        mockMvc.perform(post("/api/user/register")
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .content(objectMapper.writeValueAsString(register)))
+                .andExpect(status().isOk());
+        assertThat(userRepository.findUserByEmail("newMail@mail.com").isPresent(), is(true));
+    }
+
+    @Test
+    @DatabaseSetup("/database/user2Entries.xml")
+    public void callRegister_shouldNotRegisterUser_incorrectEmail() throws Exception {
+        RegisterJson register = RegisterJson.create()
+                .email("incorrectMail")
+                .name("name1")
+                .surname("surname1")
+                .password("superSecretPassword")
+                .googleResponse("validSecret")
+                .build();
+        MvcResult result = mockMvc.perform(post("/api/user/register")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(register)))
+                .andReturn();
+
+        mockMvc.perform(asyncDispatch(result))
+                .andDo(print())
+                .andExpect(status().isNotAcceptable())
+                .andExpect(jsonPath("$.message.length()", is(1)))
+                .andExpect(jsonPath("$.message[0].field", is("registerJson")))
+                .andExpect(jsonPath("$.message[0].error", is("not a well-formed email address")));
     }
 
 }

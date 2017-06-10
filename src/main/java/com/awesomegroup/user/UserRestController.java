@@ -1,7 +1,10 @@
 package com.awesomegroup.user;
 
+import com.awesomegroup.general.FieldErrorJson;
 import com.awesomegroup.general.ResponseEntityUtils;
 import com.awesomegroup.general.ResponseJson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,13 +15,18 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Michał on 2017-04-23.
@@ -85,18 +93,33 @@ public class UserRestController {
     }
 
     @PostMapping("/api/user/register")
-    public DeferredResult<ResponseEntity<ResponseJson>> register(@RequestBody RegisterJson registerData) {
+    public DeferredResult<ResponseEntity<ResponseJson>> register(@Valid @RequestBody RegisterJson registerData, BindingResult result) throws JsonProcessingException {
+        if(result.hasErrors()) {
+            DeferredResult<ResponseEntity<ResponseJson>> defResult = new DeferredResult<>();
+            List<FieldErrorJson> errorJsonList = mapValidationErrorMessages(result.getAllErrors());
+            defResult.setErrorResult(ResponseEntityUtils.notAcceptable(errorJsonList));
+            return defResult;
+        }
+
         log.info(registerData.toString());
         DeferredResult<ResponseEntity<ResponseJson>> deferredResult = new DeferredResult<>();
         userService.register(registerData).subscribe(user -> {
                     log.info("Test in here!");
                     deferredResult.setResult(ResponseEntity.ok(ResponseJson.create().message("/confirm").build()));
-                },
-                                 error -> {
-                                    deferredResult.setErrorResult(ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(error.getMessage()));
-                                    log.error(ExceptionUtils.getStackTrace(error));
+                },  error -> { deferredResult.setErrorResult(ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(error.getMessage()));
+                    log.error(ExceptionUtils.getStackTrace(error));
         });
         return deferredResult;
+    }
+
+    private List<FieldErrorJson> mapValidationErrorMessages(List<ObjectError> allErrors) {
+        return allErrors.stream().map(objectError -> FieldErrorJson.create()
+                .field(objectError.getObjectName())
+                .message(objectError.getDefaultMessage())
+                .build()).map(fieldErrorJson -> {
+                    log.info("FieldErrorJson = {}", fieldErrorJson.toString());
+                    return fieldErrorJson;
+        }).collect(Collectors.toList());
     }
 
     @PostMapping("/api/user/confirm")

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,5 +49,43 @@ public class ReCaptchaResponse {
                 ", hostname='" + hostname + '\'' +
                 ", errorCodes=" + errorCodes.stream().collect(Collectors.joining(", ")) +
                 '}';
+    }
+
+    public static Builder create() {
+        return new Builder();
+    }
+
+    public static class Builder {
+
+        private ReCaptchaResponse reCaptchaResponse;
+
+        public Builder() {
+            reCaptchaResponse = new ReCaptchaResponse();
+        }
+
+        public Builder isValid(boolean valid) {
+            reCaptchaResponse.valid = valid;
+            return this;
+        }
+
+        public Builder timestamp(String timestamp) {
+            reCaptchaResponse.timestamp = timestamp;
+            return this;
+        }
+
+        public Builder hostname(String hostname) {
+            reCaptchaResponse.hostname = hostname;
+            return this;
+        }
+
+        public Builder errorCodes(String... errorCode) {
+            reCaptchaResponse.errorCodes.clear();
+            reCaptchaResponse.errorCodes.addAll(Arrays.asList(errorCode));
+            return this;
+        }
+
+        public ReCaptchaResponse build() {
+            return reCaptchaResponse;
+        }
     }
 }
