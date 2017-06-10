@@ -3,6 +3,9 @@ package com.awesomegroup.user;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.hibernate.validator.constraints.Email;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by c309044 on 2017-05-26.
@@ -10,10 +13,20 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonSerialize
 @JsonDeserialize
 public class RegisterJson {
+    @NotNull
+    @Email
     private String email;
+
+    @NotNull
     private String password;
+
+    @NotNull
     private String name;
+
+    @NotNull
     private String surname;
+
+    @NotNull
     @JsonProperty("g-recaptcha-response")
     private String gResponse;
 

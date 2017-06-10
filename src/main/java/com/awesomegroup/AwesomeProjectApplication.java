@@ -56,4 +56,5 @@ public class AwesomeProjectApplication {
 		registration.addUrlMappings("/console/*");
 		return registration;
 	}
+
 }

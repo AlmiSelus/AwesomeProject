@@ -4,9 +4,9 @@ package com.awesomegroup.general;
  * Created by Michał on 2017-05-28.
  */
 public class ResponseJson {
-    private String message;
+    private Object message;
 
-    public String getMessage() {
+    public Object getMessage() {
         return message;
     }
 
@@ -21,7 +21,7 @@ public class ResponseJson {
             responseJson = new ResponseJson();
         }
 
-        public Builder message(String message) {
+        public Builder message(Object message) {
             responseJson.message = message;
             return this;
         }
