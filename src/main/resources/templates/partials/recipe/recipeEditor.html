@@ -3,43 +3,69 @@
 <div ng-app="hello" ng-controller="RecipeEditor" >
     <br/><br/>
 
-    <b>Recipe editor:</b><br/>
-
-    <table boarder="0">
-        <tr>
-            <td>
-                Recipe name:
-            </td>
-            <td>
-                <input type="text" ng-model="recipeContainer.name" />
-            </td>
-        </tr>
-        <tr>
-            <td>Difficulty</td>
-            <td><select ng-model="recipeContainer.difficulty">
-                <option value="Easy">Easy</option>
-                <option value="Medium">Medium</option>
-                <option value="Hard">Hard</option>
-                <option value="Expert Chef">Expert Chef</option>
-            </select></td>
-        </tr>
-        <tr>
-            <td>
-                Recipe preparation time
-            </td>
-            <td>
-                <input type="number" step="1" ng-model="recipeContainer.preparationTime" />
-            </td>
-        </tr>
-    </table>
-
-    <br/>
-    <b>Ingredient list:</b><br/>
-    <form ng-repeat="ingredient in recipeContainer.ingredients track by $index">
-        {{$index + 1}} <input type="text" ng-model="recipeContainer.ingredients[$index]" value="{{inredient}}" />
-        <button ng-click="removeIngredient($index)">X</button>
+    Pick recipe view:<br/>
+    <form>
+        <input type="radio" ng-model="currentView" value="browse">Browse recipes </input>
+        <input type="radio" ng-model="currentView" value="editor">Recipe editor </input>
     </form>
-    <button ng-click="addIngredient()">Add Ingredient</button> <br/>
+    <br/><br/>
+
+    <div ng-switch="currentView">
+
+        <div ng-switch-when="browse"> <!-- Browse recipes -->
+            <h1>Browse recipes</h1><br/>
+        </div>
+
+        <div ng-switch-when="editor"> <!-- Editor -->
+            <h1>Recipe editor:</h1><br/>
+
+            <table boarder="0">
+                <tr>
+                    <td>
+                        Recipe name:
+                    </td>
+                    <td>
+                        <input type="text" ng-model="recipe.name" ng-change="onRecipeEdit()" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Difficulty</td>
+                    <td><select ng-model="recipe.difficulty" ng-change="onRecipeEdit()" >
+                        <option value="EASY">Easy</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="HARD">Hard</option>
+                        <option value="EXPERT">Expert Chef</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <td>
+                        Recipe preparation time
+                    </td>
+                    <td>
+                        <input type="number" step="1" ng-model="recipe.preparationTime" ng-change="onRecipeEdit()" />
+                    </td>
+                </tr>
+            </table>
+
+            <br/>
+            <b>Ingredient list:</b><br/>
+            <form ng-repeat="ingredient in recipe.recipeIngredients track by $index">
+                {{$index + 1}} <input type="text" ng-model="recipe.recipeIngredients[$index]" value="{{inredient}}" ng-change="onRecipeEdit()" />
+                <button ng-click="removeIngredient($index)">X</button>
+            </form>
+            <button ng-click="addIngredient()">Add Ingredient</button> <br/>
+
+            <br/><br/>
+
+            <button ng-click="addRecipe()">Save recipe</button> <br/>
+            {{errorAddRecipe}}
+
+            <br/><br/>
+            <button ng-click="log(recipe)" >Log container</button>
+
+        </div>
+    </div>
+
 </div>
 
 </body>

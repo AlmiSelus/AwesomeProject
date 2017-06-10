@@ -335,29 +335,58 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
 
 app.controller('RecipeEditor', function($scope, $http) {
 
-    $scope.recipeContainer =
+    $scope.currentView = "editor";
+    $scope.errorAddRecipe = "";
+
+    $scope.recipe =
     {
         name: '',
-        difficulty: 'Medium',
-        preparationTime: 0,
-        ingredients: ['banana', 'strawberry']
+        difficulty: 'MEDIUM',
+        estimatedPreparationTime: 0,
+        servingsCount: 0,
+        //recipeIngredients: ['banana', 'strawberry']
+        recipeIngredients: []
     };
-    $scope.price = 7;
+
+    $scope.onRecipeEdit = function() {
+        $scope.errorAddRecipe = "";
+    }
+
     $scope.addIngredient = function() {
-        $scope.recipeContainer.ingredients.push('');
+        $scope.recipe.recipeIngredients.push('');
     };
     $scope.removeIngredient = function(index) {
-        $scope.recipeContainer.ingredients.splice(index, 1);
+        $scope.recipe.recipeIngredients.splice(index, 1);
         console.log('remove ' + index);
     }
 
-    $scope.labelString = 'dat';
-    $scope.labelFoo = function() {
-      $scope.labelString = 'not dat';
-    };
-
     $scope.log = function(message) {
         console.log(message);
+    };
+
+
+    $scope.post = function(adress, stuff) {
+        $http.post(adress, stuff);
+    }
+
+    $scope.addRecipe = function() {
+        console.log("Save recipe:" + $scope.recipe.name + " to DB.")
+        $http.post('api/recipe/add', $scope.recipe).then(
+            function(response) {
+                if(response.data != null) {
+                    if(response.data.success) {
+                        $scope.errorAddRecipe = "Receipt saved";
+                        console.log("Receipt saved");
+                    }else{
+                        console.log("Receipt save failed");
+                        console.log(response.data.message);
+                        $scope.errorAddRecipe = response.data.message;
+                    }
+                }else{
+                    console.log("Response is null");
+                }
+            }
+        );
     };
 
     console.log($scope.username);
