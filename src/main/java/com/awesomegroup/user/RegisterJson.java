@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.validator.constraints.Email;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Created by c309044 on 2017-05-26.
@@ -13,17 +15,22 @@ import javax.validation.constraints.NotNull;
 @JsonSerialize
 @JsonDeserialize
 public class RegisterJson {
-    @NotNull
+
+    @NotNull(message = "Email not provided")
     @Email
+    @Size(min = 5, message = "Email too short")
     private String email;
 
-    @NotNull
+    @NotNull(message = "Password not provided")
+    @Size(min = 8, message = "Password is too short")
     private String password;
 
-    @NotNull
+    @NotNull(message = "Name not provided")
+    @Size(min = 1, message = "Name cannot be empty")
     private String name;
 
-    @NotNull
+    @NotNull(message = "Surname not provided")
+    @Size(min = 1, message = "Surname cannot be empty")
     private String surname;
 
     @NotNull

@@ -1,18 +1,14 @@
 package com.awesomegroup.user;
 
 import com.awesomegroup.WebSecurityConfig;
-import com.awesomegroup.recaptcha.GoogleReCaptcha;
-import com.awesomegroup.recaptcha.ReCaptchaResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import io.reactivex.Single;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
@@ -180,8 +176,188 @@ public class UserRestControllerTests {
                 .andDo(print())
                 .andExpect(status().isNotAcceptable())
                 .andExpect(jsonPath("$.message.length()", is(1)))
-                .andExpect(jsonPath("$.message[0].field", is("registerJson")))
+                .andExpect(jsonPath("$.message[0].field", is("email")))
                 .andExpect(jsonPath("$.message[0].error", is("not a well-formed email address")));
+    }
+
+    @Test
+    @DatabaseSetup("/database/user2Entries.xml")
+    public void callRegister_shouldNotRegisterUser_nullMail() throws Exception {
+        RegisterJson register = RegisterJson.create()
+                .name("name1")
+                .surname("surname1")
+                .password("superSecretPassword")
+                .googleResponse("validSecret")
+                .build();
+        MvcResult result = mockMvc.perform(post("/api/user/register")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(register)))
+                .andReturn();
+
+        mockMvc.perform(asyncDispatch(result))
+                .andDo(print())
+                .andExpect(status().isNotAcceptable())
+                .andExpect(jsonPath("$.message.length()", is(1)))
+                .andExpect(jsonPath("$.message[0].field", is("email")))
+                .andExpect(jsonPath("$.message[0].error", is("Email not provided")));
+    }
+
+    @Test
+    @DatabaseSetup("/database/user2Entries.xml")
+    public void callRegister_shouldNotRegisterUser_emptyMail() throws Exception {
+        RegisterJson register = RegisterJson.create()
+                .email("")
+                .name("name1")
+                .surname("surname1")
+                .password("superSecretPassword")
+                .googleResponse("validSecret")
+                .build();
+        MvcResult result = mockMvc.perform(post("/api/user/register")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(register)))
+                .andReturn();
+
+        mockMvc.perform(asyncDispatch(result))
+                .andDo(print())
+                .andExpect(status().isNotAcceptable())
+                .andExpect(jsonPath("$.message.length()", is(1)))
+                .andExpect(jsonPath("$.message[0].field", is("email")))
+                .andExpect(jsonPath("$.message[0].error", is("Email too short")));
+    }
+
+    @Test
+    @DatabaseSetup("/database/user2Entries.xml")
+    public void callRegister_shouldNotRegisterUser_emptyName() throws Exception {
+        RegisterJson register = RegisterJson.create()
+                .email("valid@email.com")
+                .name("")
+                .surname("surname1")
+                .password("superSecretPassword")
+                .googleResponse("validSecret")
+                .build();
+        MvcResult result = mockMvc.perform(post("/api/user/register")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(register)))
+                .andReturn();
+
+        mockMvc.perform(asyncDispatch(result))
+                .andDo(print())
+                .andExpect(status().isNotAcceptable())
+                .andExpect(jsonPath("$.message.length()", is(1)))
+                .andExpect(jsonPath("$.message[0].field", is("name")))
+                .andExpect(jsonPath("$.message[0].error", is("Name cannot be empty")));
+    }
+
+    @Test
+    @DatabaseSetup("/database/user2Entries.xml")
+    public void callRegister_shouldNotRegisterUser_nullName() throws Exception {
+        RegisterJson register = RegisterJson.create()
+                .email("valid@email.com")
+                .surname("surname1")
+                .password("superSecretPassword")
+                .googleResponse("validSecret")
+                .build();
+        MvcResult result = mockMvc.perform(post("/api/user/register")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(register)))
+                .andReturn();
+
+        mockMvc.perform(asyncDispatch(result))
+                .andDo(print())
+                .andExpect(status().isNotAcceptable())
+                .andExpect(jsonPath("$.message.length()", is(1)))
+                .andExpect(jsonPath("$.message[0].field", is("name")))
+                .andExpect(jsonPath("$.message[0].error", is("Name not provided")));
+    }
+
+    @Test
+    @DatabaseSetup("/database/user2Entries.xml")
+    public void callRegister_shouldNotRegisterUser_emptySurname() throws Exception {
+        RegisterJson register = RegisterJson.create()
+                .email("valid@email.com")
+                .name("testname")
+                .surname("")
+                .password("superSecretPassword")
+                .googleResponse("validSecret")
+                .build();
+        MvcResult result = mockMvc.perform(post("/api/user/register")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(register)))
+                .andReturn();
+
+        mockMvc.perform(asyncDispatch(result))
+                .andDo(print())
+                .andExpect(status().isNotAcceptable())
+                .andExpect(jsonPath("$.message.length()", is(1)))
+                .andExpect(jsonPath("$.message[0].field", is("surname")))
+                .andExpect(jsonPath("$.message[0].error", is("Surname cannot be empty")));
+    }
+
+    @Test
+    @DatabaseSetup("/database/user2Entries.xml")
+    public void callRegister_shouldNotRegisterUser_nullSurname() throws Exception {
+        RegisterJson register = RegisterJson.create()
+                .email("valid@email.com")
+                .name("testname")
+                .password("superSecretPassword")
+                .googleResponse("validSecret")
+                .build();
+        MvcResult result = mockMvc.perform(post("/api/user/register")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(register)))
+                .andReturn();
+
+        mockMvc.perform(asyncDispatch(result))
+                .andDo(print())
+                .andExpect(status().isNotAcceptable())
+                .andExpect(jsonPath("$.message.length()", is(1)))
+                .andExpect(jsonPath("$.message[0].field", is("surname")))
+                .andExpect(jsonPath("$.message[0].error", is("Surname not provided")));
+    }
+
+    @Test
+    @DatabaseSetup("/database/user2Entries.xml")
+    public void callRegister_shouldNotRegisterUser_nullPassword() throws Exception {
+        RegisterJson register = RegisterJson.create()
+                .email("valid@email.com")
+                .name("testname")
+                .surname("testsurname")
+                .googleResponse("validSecret")
+                .build();
+        MvcResult result = mockMvc.perform(post("/api/user/register")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(register)))
+                .andReturn();
+
+        mockMvc.perform(asyncDispatch(result))
+                .andDo(print())
+                .andExpect(status().isNotAcceptable())
+                .andExpect(jsonPath("$.message.length()", is(1)))
+                .andExpect(jsonPath("$.message[0].field", is("password")))
+                .andExpect(jsonPath("$.message[0].error", is("Password not provided")));
+    }
+
+    @Test
+    @DatabaseSetup("/database/user2Entries.xml")
+    public void callRegister_shouldNotRegisterUser_shortPassword() throws Exception {
+        RegisterJson register = RegisterJson.create()
+                .email("valid@email.com")
+                .name("testname")
+                .surname("testsurname")
+                .password("short")
+                .googleResponse("validSecret")
+                .build();
+        MvcResult result = mockMvc.perform(post("/api/user/register")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(register)))
+                .andReturn();
+
+        mockMvc.perform(asyncDispatch(result))
+                .andDo(print())
+                .andExpect(status().isNotAcceptable())
+                .andExpect(jsonPath("$.message.length()", is(1)))
+                .andExpect(jsonPath("$.message[0].field", is("password")))
+                .andExpect(jsonPath("$.message[0].error", is("Password is too short")));
     }
 
 }
