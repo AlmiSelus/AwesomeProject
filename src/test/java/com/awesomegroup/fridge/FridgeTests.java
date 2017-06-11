@@ -14,8 +14,7 @@ import static org.hamcrest.CoreMatchers.is;
 public class FridgeTests {
 
     @Test
-    public void fridge_findIngredient()
-    {
+    public void fridge_findIngredient() {
         Fridge fridge = Fridge.create().build();
         Ingredient ingredient = Ingredient.create().id(3).build();
         fridge.addIngredient(ingredient);

@@ -15,12 +15,10 @@ import java.util.stream.Collectors;
 /**
  * Created by Adi on 26.05.2017.
  */
-
 @Entity
 @Table(name = "fridges")
 @JsonSerialize
 public class Fridge {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -92,7 +90,7 @@ public class Fridge {
 
     public boolean isFavouriteRecipePresent(Recipe recipe) {
         return favouriteRecipes.stream()
-                .filter(r -> r.getRecipe().getRecipeID() == recipe.getRecipeID())
+                .filter(r -> Float.compare(r.getRecipe().getRecipeID(), recipe.getRecipeID()) == 0)
                 .count() > 0;
     }
 
@@ -131,8 +129,6 @@ public class Fridge {
         int index = findFavouriteRecipe(recipe);
         if (index != -1) ;
         favouriteRecipes.get(index).setRating(rating);
-
-
     }
 
     public List<Recipe> getRecipesOfRating(float rating) {
