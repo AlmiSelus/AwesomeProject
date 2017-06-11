@@ -33,28 +33,21 @@ public class FridgeService {
     private IngredientsRepository ingredientsRepository;
 
     public boolean addFridgeIngredientsForUser(Principal principalUser, List<Ingredient> ingredients) {
-        if(principalUser == null || ingredients.isEmpty()) {
+        if(principalUser == null || ingredients == null || ingredients.isEmpty()) {
             return false;
         }
 
         log.info("Principal user mail = {}", principalUser.getName());
 
-        userRepository.findUserByEmail(principalUser.getName()).ifPresent(user -> {
+        return userRepository.findUserByEmail(principalUser.getName()).map(user->{
             Fridge fridge = user.getFridge();
             fridge.getFridgeIngredients().clear();
-            log.info("Fridge ingredients = {}", fridge.getFridgeIngredients().stream()
-                    .map(Ingredient::getIngredientName)
-                    .collect(Collectors.joining(", ")));
             ingredients.stream()
                     .map(ingredient -> ingredientsRepository.findByName(ingredient.getIngredientName()))
                     .forEach(optionalIngredient -> optionalIngredient.ifPresent(fridge.getFridgeIngredients()::add));
-            log.info("Fridge ingredients AFTER = {}", fridge.getFridgeIngredients().stream()
-                    .map(Ingredient::getIngredientName)
-                    .collect(Collectors.joining(", ")));
             fridgeRepository.save(fridge);
-        });
-
-        return true;
+            return true;
+        }).orElse(false);
     }
 
     public List<Ingredient> getCurrentIngredients(Principal principal) {
