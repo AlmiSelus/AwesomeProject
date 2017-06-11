@@ -16,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -96,7 +97,7 @@ public class UserRestController {
     public DeferredResult<ResponseEntity<ResponseJson>> register(@Valid @RequestBody RegisterJson registerData, BindingResult result) throws JsonProcessingException {
         if(result.hasErrors()) {
             DeferredResult<ResponseEntity<ResponseJson>> defResult = new DeferredResult<>();
-            List<FieldErrorJson> errorJsonList = mapValidationErrorMessages(result.getAllErrors());
+            List<FieldErrorJson> errorJsonList = mapValidationErrorMessages(result.getFieldErrors());
             defResult.setErrorResult(ResponseEntityUtils.notAcceptable(errorJsonList));
             return defResult;
         }
@@ -112,9 +113,9 @@ public class UserRestController {
         return deferredResult;
     }
 
-    private List<FieldErrorJson> mapValidationErrorMessages(List<ObjectError> allErrors) {
+    private List<FieldErrorJson> mapValidationErrorMessages(List<FieldError> allErrors) {
         return allErrors.stream().map(objectError -> FieldErrorJson.create()
-                .field(objectError.getObjectName())
+                .field(objectError.getField())
                 .message(objectError.getDefaultMessage())
                 .build()).map(fieldErrorJson -> {
                     log.info("FieldErrorJson = {}", fieldErrorJson.toString());
