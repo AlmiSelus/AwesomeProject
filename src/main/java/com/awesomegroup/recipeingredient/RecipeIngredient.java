@@ -1,7 +1,6 @@
 package com.awesomegroup.recipeingredient;
 
 import com.awesomegroup.ingredients.Ingredient;
-import com.awesomegroup.ingredients.IngredientMeasurement;
 import com.awesomegroup.recipe.Recipe;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -29,9 +28,6 @@ public class RecipeIngredient {
     @JsonIgnoreProperties("recipeIngredients")
     private Ingredient ingredient;
 
-    @Column(name = "recipe_ingredient_measurement")
-    private IngredientMeasurement measurement;
-
     @Column(name = "recipe_ingredient_count")
     private Integer count;
 
@@ -47,10 +43,6 @@ public class RecipeIngredient {
         return ingredient;
     }
 
-    public IngredientMeasurement getMeasurement() {
-        return measurement;
-    }
-
     public Integer getCount() {
         return count;
     }
@@ -64,11 +56,6 @@ public class RecipeIngredient {
 
         public Builder recipe(Recipe recipe) {
             recipeIngredient.recipe = recipe;
-            return this;
-        }
-
-        public Builder measurement(IngredientMeasurement measurement) {
-            recipeIngredient.measurement = measurement;
             return this;
         }
 

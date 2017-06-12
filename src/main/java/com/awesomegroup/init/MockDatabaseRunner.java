@@ -5,7 +5,6 @@ import com.awesomegroup.food2fork.F2FSearchRecipe;
 import com.awesomegroup.food2fork.F2FSearchResult;
 import com.awesomegroup.food2fork.Food2fork;
 import com.awesomegroup.ingredients.Ingredient;
-import com.awesomegroup.ingredients.IngredientMeasurement;
 import com.awesomegroup.ingredients.IngredientRepository;
 import com.awesomegroup.recipe.Recipe;
 import com.awesomegroup.recipe.RecipeDifficulty;
@@ -65,14 +64,13 @@ public class MockDatabaseRunner implements ApplicationRunner {
             List<RecipeIngredient> recipeIngredients = uniqueIngredients.stream().filter(Objects::nonNull).map(ingredientName->{
                 Optional<Ingredient> optionalIngredient = ingredientRepository.findIngredientsByName(ingredientName);
                 Ingredient newIngredient = optionalIngredient.orElseGet(() -> Ingredient.create().name(ingredientName)
-                        .availableMeasurements(IngredientMeasurement.ALL).build());
+                        .build());
 
                 log.info("Adding " + newIngredient.getIngredientName() + " id = " + newIngredient.getIngredientID());
 
                 return RecipeIngredient.create()
                         .recipe(dbBean)
                         .ingredient(newIngredient)
-                        .measurement(IngredientMeasurement.ML)
                         .count(200).build();
             }).collect(Collectors.toList());
 

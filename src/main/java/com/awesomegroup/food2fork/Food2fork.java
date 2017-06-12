@@ -1,7 +1,6 @@
 package com.awesomegroup.food2fork;
 
 import com.awesomegroup.ingredients.Ingredient;
-import com.awesomegroup.ingredients.IngredientMeasurement;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
 import okhttp3.OkHttpClient;
@@ -120,25 +119,10 @@ public class Food2fork {
     {
         int id = 0;
         String name = "";
-        IngredientMeasurement measurement = IngredientMeasurement.ALL;
         String numbers = GetNumbers(apiIngredient);
-        String measure = GetMeasurement(apiIngredient);
         name = apiIngredient.replace(numbers, "");
-        name = name.replace(measure, "");
         System.out.println(name);
-        return Ingredient.create().id(id).name(name).expireDate(Calendar.getInstance()).availableMeasurements(measurement).build();
-    }
-
-    private String GetMeasurement(String base){
-        for(IngredientMeasurement measure : IngredientMeasurement.values())
-        {
-            if(base.contains(measure.getMeasurementName()))
-            {
-                System.out.println(measure.getMeasurementName());
-                return measure.getMeasurementName();
-            }
-        }
-        return "";
+        return Ingredient.create().id(id).name(name).expireDate(Calendar.getInstance()).build();
     }
 
     private String GetNumbers(String base){
