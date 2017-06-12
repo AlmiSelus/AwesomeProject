@@ -32,11 +32,6 @@ public class Ingredient {
     @JsonProperty("date")
     private Calendar expireDate;
 
-    @ElementCollection(targetClass = IngredientMeasurement.class)
-    @CollectionTable(name="ingredients_measurements")
-    @Column(name = "ingredient_available_measurements")
-    private List<IngredientMeasurement> availableMeasurements = new ArrayList<>();
-
     @OneToMany(mappedBy = "ingredient", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JsonIgnoreProperties("ingredient")
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
@@ -50,10 +45,6 @@ public class Ingredient {
 
     public String getIngredientName() {
         return ingredientName;
-    }
-
-    public List<IngredientMeasurement> getAvailableMeasurements() {
-        return availableMeasurements;
     }
 
     public List<RecipeIngredient> getRecipeIngredients() {
@@ -72,18 +63,7 @@ public class Ingredient {
                 "ingredientID=" + ingredientID +
                 ", ingredientName='" + ingredientName + '\'' +
                 ", expireDate='" + expireDate + '\'' +
-                ", availableMeasurements='" + availableMeasurements.stream().map(IngredientMeasurement::toString).collect(Collectors.joining(", ")) +"'"+
                 '}';
-    }
-
-    public void Update(Ingredient ingredient) {
-        ingredient.getAvailableMeasurements().forEach(
-                ingredientMeasurement -> {
-                    if(!availableMeasurements.contains(ingredientMeasurement)) {
-                        availableMeasurements.add(ingredientMeasurement);
-                    }
-                }
-        );
     }
 
     public static Builder create() {
@@ -105,11 +85,6 @@ public class Ingredient {
 
         public Builder expireDate(Calendar date){
             ingredient.expireDate = date;
-            return this;
-        }
-
-        public Builder availableMeasurements(IngredientMeasurement... measurements) {
-            ingredient.availableMeasurements.addAll(Arrays.asList(measurements));
             return this;
         }
 
