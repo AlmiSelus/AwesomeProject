@@ -1,7 +1,10 @@
 package com.awesomegroup.fridge;
 
+import com.awesomegroup.favouriteRecipe.FavouriteRecipe;
 import com.awesomegroup.ingredients.Ingredient;
 import com.awesomegroup.ingredients.IngredientsRepository;
+import com.awesomegroup.recipe.Recipe;
+import com.awesomegroup.recipe.RecipeRepository;
 import com.awesomegroup.user.User;
 import com.awesomegroup.user.UserRepository;
 import org.junit.Before;
@@ -33,6 +36,9 @@ public class FridgeServiceTests {
 
     @Mock
     private IngredientsRepository ingredientsRepository;
+
+    @Mock
+    private RecipeRepository recipeRepository;
 
     @InjectMocks
     private FridgeService service;
@@ -108,7 +114,7 @@ public class FridgeServiceTests {
     @Test
     public void callGetCurrentIngredients_userExists_shouldReturnListWithOneIngredient() {
         Fridge f = Fridge.create().build();
-        f.addIngredient(Ingredient.create().name("Ingredient 1").build());
+        f.getFridgeIngredients().add(Ingredient.create().name("Ingredient 1").build());
         User user = User.create().email("testUser").fridge(f).build();
 
         when(userRepository.findUserByEmail(basePrincipal.getName())).thenReturn(Optional.of(user));
@@ -123,6 +129,143 @@ public class FridgeServiceTests {
         when(userRepository.findUserByEmail(basePrincipal.getName())).thenReturn(Optional.empty());
         List<Ingredient> ingredients = service.getCurrentIngredients(basePrincipal);
         assertThat(ingredients.isEmpty(), is(true));
+    }
+
+    @Test
+    public void callAddRecipeToFavourites_favouriteNotIncludedCurrently_shouldAddCorrectly() {
+        Fridge f = Fridge.create().build();
+        Recipe recipe = Recipe.create().name("Recipe 1").build();
+        User user = User.create().email("testUser").fridge(f).build();
+        when(userRepository.findUserByEmail(basePrincipal.getName())).thenReturn(Optional.of(user));
+        when(recipeRepository.findRecipeByName(recipe.getName())).thenReturn(recipe);
+
+        boolean result = service.addRecipeToFavourites(basePrincipal, recipe);
+
+        assertThat(result, is(true));
+        assertThat(user.getFridge().getFavouriteRecipes().size(), is(1));
+        assertThat(user.getFridge().getFavouriteRecipes().get(0).getRecipe().getName(), is("Recipe 1"));
+    }
+
+    @Test
+    public void callAddRecipeToFavourites_favouriteIncludedCurrently_shouldReturnFalse() {
+        Fridge f = Fridge.create().build();
+        Recipe recipe = Recipe.create().name("Recipe 1").build();
+        f.getFavouriteRecipes().add(FavouriteRecipe.create().rating(0).recipe(recipe).build());
+        User user = User.create().email("testUser").fridge(f).build();
+
+        when(userRepository.findUserByEmail(basePrincipal.getName())).thenReturn(Optional.of(user));
+        when(recipeRepository.findRecipeByName(recipe.getName())).thenReturn(recipe);
+
+        boolean result = service.addRecipeToFavourites(basePrincipal, recipe);
+
+        assertThat(result, is(false));
+        assertThat(user.getFridge().getFavouriteRecipes().size(), is(1));
+        assertThat(user.getFridge().getFavouriteRecipes().get(0).getRecipe().getName(), is("Recipe 1"));
+    }
+
+    @Test
+    public void callAddRecipeToFavourites_nullRecipe_shouldReturnFalse() {
+        boolean result = service.addRecipeToFavourites(basePrincipal, null);
+        assertThat(result, is(false));
+    }
+
+    @Test
+    public void callRemoveRecipeFromFavourites_recipeIncludedCurrently_shouldRemoveCorrectly() {
+        Fridge f = Fridge.create().build();
+        Recipe recipe = Recipe.create().name("Recipe 1").build();
+        f.getFavouriteRecipes().add(FavouriteRecipe.create().recipe(recipe).rating(0).build());
+        User user = User.create().email("testUser").fridge(f).build();
+        when(userRepository.findUserByEmail(basePrincipal.getName())).thenReturn(Optional.of(user));
+        when(recipeRepository.findRecipeByName(recipe.getName())).thenReturn(recipe);
+
+        assertThat(user.getFridge().getFavouriteRecipes().size(), is(1));
+
+        boolean result = service.removeRecipeFromFavourites(basePrincipal, recipe);
+
+        assertThat(result, is(true));
+        assertThat(user.getFridge().getFavouriteRecipes().size(), is(0));
+    }
+
+    @Test
+    public void callRemoveRecipeFromFavourites_recipeNotIncludedCurrently_shouldReturnFalse() {
+        Fridge f = Fridge.create().build();
+        Recipe recipe = Recipe.create().name("Recipe 1").build();
+        User user = User.create().email("testUser").fridge(f).build();
+
+        when(userRepository.findUserByEmail(basePrincipal.getName())).thenReturn(Optional.of(user));
+        when(recipeRepository.findRecipeByName(recipe.getName())).thenReturn(recipe);
+
+        assertThat(user.getFridge().getFavouriteRecipes().size(), is(0));
+
+        boolean result = service.removeRecipeFromFavourites(basePrincipal, recipe);
+
+        assertThat(result, is(false));
+    }
+
+    @Test
+    public void callRemoveRecipeFromFavourites_nullRecipe_shouldReturnFalse() {
+        boolean result = service.removeRecipeFromFavourites(basePrincipal, null);
+        assertThat(result, is(false));
+    }
+
+    @Test
+    public void callGetAllRecipiesOfRating_shouldReturnListWith1Recipe() {
+        Fridge f = Fridge.create().build();
+        Recipe recipe = Recipe.create().name("Recipe 1").build();
+        Recipe recipe2 = Recipe.create().name("Recipe 2").build();
+
+        f.getFavouriteRecipes().add(FavouriteRecipe.create().recipe(recipe).rating(4f).build());
+        f.getFavouriteRecipes().add(FavouriteRecipe.create().recipe(recipe2).rating(3.5f).build());
+        User user = User.create().email("testUser").fridge(f).build();
+
+        when(userRepository.findUserByEmail(basePrincipal.getName())).thenReturn(Optional.of(user));
+
+        assertThat(user.getFridge().getFavouriteRecipes().size(), is(2));
+
+        List<Recipe> recipes = service.getAllRecipesOfRating(basePrincipal, 3.5f);
+        assertThat(recipes, is(notNullValue()));
+        assertThat(recipes.size(), is(1));
+        assertThat(recipes.get(0).getName(), is("Recipe 2"));
+    }
+
+    @Test
+    public void callGetAllRecipesOfRating_noRecipeWithGivenRating_shouldReturnEmptyList() {
+        Fridge f = Fridge.create().build();
+        Recipe recipe = Recipe.create().name("Recipe 1").build();
+        Recipe recipe2 = Recipe.create().name("Recipe 2").build();
+
+        f.getFavouriteRecipes().add(FavouriteRecipe.create().recipe(recipe).rating(4f).build());
+        f.getFavouriteRecipes().add(FavouriteRecipe.create().recipe(recipe2).rating(3.5f).build());
+        User user = User.create().email("testUser").fridge(f).build();
+
+        when(userRepository.findUserByEmail(basePrincipal.getName())).thenReturn(Optional.of(user));
+
+        assertThat(user.getFridge().getFavouriteRecipes().size(), is(2));
+
+        List<Recipe> recipes = service.getAllRecipesOfRating(basePrincipal, 5f);
+        assertThat(recipes, is(notNullValue()));
+        assertThat(recipes.size(), is(0));
+    }
+
+    @Test
+    public void callChangeRecipeRating_shouldChangeRecipeRatingAndReturnTrue() {
+        Fridge f = Fridge.create().build();
+        Recipe recipe = Recipe.create().name("Recipe 1").build();
+
+        f.getFavouriteRecipes().add(FavouriteRecipe.create().recipe(recipe).rating(4f).build());
+        User user = User.create().email("testUser").fridge(f).build();
+
+        when(userRepository.findUserByEmail(basePrincipal.getName())).thenReturn(Optional.of(user));
+
+        assertThat(user.getFridge().getFavouriteRecipes().size(), is(1));
+        assertThat(user.getFridge().getFavouriteRecipes().get(0).getRating(), is(4f));
+
+        boolean result = service.changeRecipeRating(basePrincipal, recipe, 5f);
+
+        assertThat(result, is(true));
+        assertThat(user.getFridge().getFavouriteRecipes(), is(notNullValue()));
+        assertThat(user.getFridge().getFavouriteRecipes().size(), is(1));
+        assertThat(user.getFridge().getFavouriteRecipes().get(0).getRating(), is(5f));
     }
 
 }
