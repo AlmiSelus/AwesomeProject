@@ -27,7 +27,7 @@ public class IngredientsService {
         if(ingredient != null) {
             Optional<Ingredient> ingredientInBase = ingredientRepository.findIngredientsByName(ingredient.getIngredientName());
             if(ingredientInBase.isPresent()) {
-                ingredientInBase.get().Update(ingredient);
+                //ingredientInBase.get().Update(ingredient);
             }else{
                 ingredientRepository.save(ingredient);
                 ingredientAdded = true;
