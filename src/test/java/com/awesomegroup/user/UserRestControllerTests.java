@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -23,6 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.Filter;
+import javax.servlet.http.HttpSession;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -358,6 +361,28 @@ public class UserRestControllerTests {
                 .andExpect(jsonPath("$.message.length()", is(1)))
                 .andExpect(jsonPath("$.message[0].field", is("password")))
                 .andExpect(jsonPath("$.message[0].error", is("Password is too short")));
+    }
+
+    @Test
+    @DatabaseSetup("/database/user2Entries.xml")
+    public void callLogout_shouldLogoutCorrectly() throws Exception {
+        UserRestController.AuthReq authReq = new UserRestController.AuthReq();
+        authReq.username = "jsnow@westeros.com";
+        authReq.password = "test";
+        HttpSession authenticatedSession = mockMvc.perform(post("/api/user")
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .content(objectMapper.writeValueAsString(authReq)))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andReturn()
+                .getRequest()
+                .getSession();
+
+        mockMvc.perform(post("/api/user/logout")
+                    .session((MockHttpSession) authenticatedSession))
+                .andExpect(status().isOk())
+                .andExpect(unauthenticated())
+                .andExpect(jsonPath("$.message", is("/login")));
     }
 
 }
