@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -52,8 +51,8 @@ public class FridgeService {
             Fridge fridge = user.getFridge();
             fridge.getFridgeIngredients().clear();
             ingredients.stream()
-                    .map(ingredient -> ingredientsRepository.findByName(ingredient.getIngredientName()))
-                    .forEach(optionalIngredient -> optionalIngredient.ifPresent(fridge.getFridgeIngredients()::add));
+                .map(ingredient -> ingredientsRepository.findByName(ingredient.getIngredientName()))
+                .forEach(optionalIngredient -> optionalIngredient.ifPresent(fridge.getFridgeIngredients()::add));
             fridgeRepository.save(fridge);
             return true;
         }).orElse(false);
@@ -68,7 +67,7 @@ public class FridgeService {
 
         return userRepository.findUserByEmail(principalUser.getName()).map(user->{
             Fridge fridge = user.getFridge();
-            fridge.getFridgeIngredients().clear();
+//            fridge.getFridgeIngredients().clear();
             Optional.of(ingredient).map(ingr -> ingredientsRepository.findByName(ingr.getIngredientName()))
                     .map(optionalIngredient -> {
                         optionalIngredient.ifPresent(fridge.getFridgeIngredients()::add);
@@ -79,10 +78,26 @@ public class FridgeService {
         }).orElse(false);
     }
 
+    public boolean removeFridgeIngredientForUser(Principal principal, Ingredient ingredient) {
+        if(principal == null || ingredient == null) {
+            return false;
+        }
+
+        return userRepository.findUserByEmail(principal.getName()).map(user->
+                Optional.of(ingredient)
+                    .map(ingr->ingredientsRepository.findByName(ingr.getIngredientName())
+                        .map(optionalIngr -> {
+                            user.getFridge().getFridgeIngredients().remove(optionalIngr);
+                            fridgeRepository.save(user.getFridge());
+                            return true;
+                        }).orElse(false)).orElse(false))
+            .orElse(false);
+    }
+
     public List<Ingredient> getCurrentIngredients(Principal principal) {
         return userRepository.findUserByEmail(principal.getName())
-                .map(user -> user.getFridge().getFridgeIngredients())
-                .orElse(Collections.emptyList());
+            .map(user -> user.getFridge().getFridgeIngredients())
+            .orElse(Collections.emptyList());
     }
 
     public boolean addRecipeToFavourites(Principal principal, Recipe recipe) {
@@ -123,9 +138,9 @@ public class FridgeService {
         return userRepository.findUserByEmail(principal.getName())
             .map(User::getFridge)
             .map(fridge -> fridge.getFavouriteRecipes().stream()
-                    .filter(favouriteRecipe -> Float.compare(favouriteRecipe.getRating(), rating) == 0)
-                    .map(FavouriteRecipe::getRecipe)
-                    .collect(Collectors.toList()))
+                .filter(favouriteRecipe -> Float.compare(favouriteRecipe.getRating(), rating) == 0)
+                .map(FavouriteRecipe::getRecipe)
+                .collect(Collectors.toList()))
             .orElse(Collections.emptyList());
     }
 
@@ -134,23 +149,22 @@ public class FridgeService {
             return false;
         }
 
-        return userRepository.findUserByEmail(principal.getName()).map(user -> {
-            Fridge fridge = user.getFridge();
-
-            return hasRecipeInFridgeFavourites(fridge, recipe) && fridge.getFavouriteRecipes().stream()
+        return userRepository.findUserByEmail(principal.getName())
+            .map(User::getFridge)
+            .filter(fridge->hasRecipeInFridgeFavourites(fridge, recipe))
+            .map(fridge -> fridge.getFavouriteRecipes().stream()
                 .filter(favouriteRecipe -> favouriteRecipe.getRecipe().getName().equals(recipe.getName()))
                 .findFirst().map(favouriteRecipe -> {
                     favouriteRecipe.setRating(rating);
                     fridgeRepository.save(fridge);
                     return true;
-                }).orElse(false);
-        }).orElse(false);
+                }).orElse(false)
+            ).orElse(false);
     }
 
     private boolean hasRecipeInFridgeFavourites(Fridge fridge, Recipe recipe) {
         return fridge.getFavouriteRecipes().stream()
-                .filter(favRecipe->favRecipe.getRecipe().getRecipeID() == recipe.getRecipeID())
-                .count() > 0;
-
+            .filter(favRecipe->favRecipe.getRecipe().getRecipeID() == recipe.getRecipeID())
+            .count() > 0;
     }
 }

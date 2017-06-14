@@ -1,6 +1,7 @@
 package com.awesomegroup.fridge;
 
 import com.awesomegroup.ingredients.Ingredient;
+import com.awesomegroup.recipe.Recipe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

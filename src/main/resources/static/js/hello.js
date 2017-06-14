@@ -269,7 +269,7 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
     if($rootScope.authenticated) {
         $scope.ingredients = [];
         $scope.selected = { selectedIngredients : [] };
-        $scope.picked = {};
+        $scope.picked = { picked: {}};
 
         //$scope.owned = { o : [] };
 
@@ -300,7 +300,9 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
             $scope.clicked = true;
             $scope.doneOk = false;
 
-            $http.post($rootScope.apiEndpoint + "/fridge/addIngredient", $scope.picked).then(function(response){
+            console.log($scope.picked);
+
+            $http.post($rootScope.apiEndpoint + "/fridge/addIngredient", $scope.picked.picked).then(function(response){
                 $scope.clicked = false;
                 $scope.doneOk = true;
             }, function() {
