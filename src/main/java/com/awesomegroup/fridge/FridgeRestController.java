@@ -1,17 +1,18 @@
 package com.awesomegroup.fridge;
 
+import com.awesomegroup.general.ResponseEntityUtils;
+import com.awesomegroup.general.ResponseJson;
 import com.awesomegroup.ingredients.Ingredient;
 import com.awesomegroup.recipe.Recipe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +44,13 @@ public class FridgeRestController {
         return fridgeService.getCurrentIngredients(principal).stream()
                 .map(ingredient -> Ingredient.create().name(ingredient.getIngredientName()).build())
                 .collect(Collectors.toList());
+    }
+
+    @DeleteMapping("/api/fridge/ingredient/remove")
+    public ResponseEntity<ResponseJson> removeIngredient(Principal principal, @RequestBody Ingredient ingredient) {
+        return Optional.of(fridgeService.removeFridgeIngredientForUser(principal, ingredient))
+                .map(b->ResponseEntityUtils.ok(""))
+                .orElse(ResponseEntityUtils.notAcceptable("Could not remove"));
     }
 
 }

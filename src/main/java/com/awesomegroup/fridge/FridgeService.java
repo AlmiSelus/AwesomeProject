@@ -49,7 +49,7 @@ public class FridgeService {
 
         return userRepository.findUserByEmail(principalUser.getName()).map(user->{
             Fridge fridge = user.getFridge();
-            fridge.getFridgeIngredients().clear();
+            //fridge.getFridgeIngredients().clear();
             ingredients.stream()
                 .map(ingredient -> ingredientsRepository.findByName(ingredient.getIngredientName()))
                 .forEach(optionalIngredient -> optionalIngredient.ifPresent(fridge.getFridgeIngredients()::add));
@@ -67,7 +67,6 @@ public class FridgeService {
 
         return userRepository.findUserByEmail(principalUser.getName()).map(user->{
             Fridge fridge = user.getFridge();
-//            fridge.getFridgeIngredients().clear();
             Optional.of(ingredient).map(ingr -> ingredientsRepository.findByName(ingr.getIngredientName()))
                     .map(optionalIngredient -> {
                         optionalIngredient.ifPresent(fridge.getFridgeIngredients()::add);
