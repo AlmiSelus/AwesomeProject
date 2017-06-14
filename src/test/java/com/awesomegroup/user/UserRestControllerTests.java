@@ -22,12 +22,17 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.Base64Utils;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.Filter;
 import javax.servlet.http.HttpSession;
 
+import java.util.Optional;
+import java.util.function.Function;
+
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
@@ -35,8 +40,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 /**
@@ -73,9 +77,7 @@ public class UserRestControllerTests {
     @Test
     @DatabaseSetup("/database/user2Entries.xml")
     public void callCurrentUser_shouldObtainRegisteredUser() throws Exception {
-        UserRestController.AuthReq authReq = new UserRestController.AuthReq();
-        authReq.username = "jsnow@westeros.com";
-        authReq.password = "test";
+        UserRestController.AuthReq authReq = UserRestController.AuthReq.create("jsnow@westeros.com", "test");
         mockMvc.perform(post("/api/user")
                     .contentType(MediaType.APPLICATION_JSON_UTF8)
                     .content(objectMapper.writeValueAsString(authReq)))
@@ -88,9 +90,7 @@ public class UserRestControllerTests {
     @Test
     @DatabaseSetup("/database/user2Entries.xml")
     public void callCurrentUser_incorrectCredentials_shouldReturn403WithMessage() throws Exception {
-        UserRestController.AuthReq authReq = new UserRestController.AuthReq();
-        authReq.username = "jsnow@westeros.com";
-        authReq.password = "incorrectPassword";
+        UserRestController.AuthReq authReq = UserRestController.AuthReq.create("jsnow@westeros.com", "incorrectPassword");
         mockMvc.perform(post("/api/user")
                     .contentType(MediaType.APPLICATION_JSON_UTF8)
                     .content(objectMapper.writeValueAsString(authReq)))
@@ -102,9 +102,7 @@ public class UserRestControllerTests {
     @Test
     @DatabaseSetup("/database/user2Entries.xml")
     public void callCurrentUser_userLocked_shouldReturn403WithMessage() throws Exception {
-        UserRestController.AuthReq authReq = new UserRestController.AuthReq();
-        authReq.username = "sbean@westeros.com";
-        authReq.password = "test";
+        UserRestController.AuthReq authReq = UserRestController.AuthReq.create("sbean@westeros.com", "test");
         mockMvc.perform(post("/api/user")
                     .contentType(MediaType.APPLICATION_JSON_UTF8)
                     .content(objectMapper.writeValueAsString(authReq)))
@@ -117,9 +115,7 @@ public class UserRestControllerTests {
     @Test
     @DatabaseSetup("/database/user2Entries.xml")
     public void callCurrentUser_userDisabled_shouldReturn403WithMessage() throws Exception {
-        UserRestController.AuthReq authReq = new UserRestController.AuthReq();
-        authReq.username = "rstark@westeros.com";
-        authReq.password = "test";
+        UserRestController.AuthReq authReq = UserRestController.AuthReq.create("rstark@westeros.com", "test");
         mockMvc.perform(post("/api/user")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(objectMapper.writeValueAsString(authReq)))
@@ -131,16 +127,13 @@ public class UserRestControllerTests {
     @Test
     @DatabaseSetup("/database/user2Entries.xml")
     public void callCurrentUser_userCredentialsExpired_shouldReturn403WithMessage() throws Exception {
-        UserRestController.AuthReq authReq = new UserRestController.AuthReq();
-        authReq.username = "jrrm@westeros.com";
-        authReq.password = "test";
+        UserRestController.AuthReq authReq = UserRestController.AuthReq.create("jrrm@westeros.com", "test");
         mockMvc.perform(post("/api/user")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(objectMapper.writeValueAsString(authReq)))
                 .andExpect(status().isForbidden())
                 .andExpect(unauthenticated())
                 .andExpect(status().reason("User credentials have expired"));
-
     }
 
     @Test
@@ -181,6 +174,28 @@ public class UserRestControllerTests {
                 .andExpect(jsonPath("$.message.length()", is(1)))
                 .andExpect(jsonPath("$.message[0].field", is("email")))
                 .andExpect(jsonPath("$.message[0].error", is("not a well-formed email address")));
+    }
+
+    @Test
+    @DatabaseSetup("/database/user2Entries.xml")
+    public void callRegister_shouldNotRegisterUser_userWithEmailExists() throws Exception {
+        RegisterJson register = RegisterJson.create()
+                .email("grrm@westeros.com")
+                .name("name1")
+                .surname("surname1")
+                .password("superSecretPassword")
+                .googleResponse("validSecret")
+                .build();
+        MvcResult result = mockMvc.perform(post("/api/user/register")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(register)))
+                .andExpect(request().asyncStarted())
+                .andDo(print())
+                .andReturn();
+
+        mockMvc.perform(asyncDispatch(result))
+                .andExpect(status().isNotAcceptable())
+                .andExpect(jsonPath("$.message", is("User with given email already exists")));
     }
 
     @Test
@@ -366,9 +381,7 @@ public class UserRestControllerTests {
     @Test
     @DatabaseSetup("/database/user2Entries.xml")
     public void callLogout_shouldLogoutCorrectly() throws Exception {
-        UserRestController.AuthReq authReq = new UserRestController.AuthReq();
-        authReq.username = "jsnow@westeros.com";
-        authReq.password = "test";
+        UserRestController.AuthReq authReq = UserRestController.AuthReq.create("jsnow@westeros.com", "test");
         HttpSession authenticatedSession = mockMvc.perform(post("/api/user")
                     .contentType(MediaType.APPLICATION_JSON_UTF8)
                     .content(objectMapper.writeValueAsString(authReq)))
@@ -383,6 +396,67 @@ public class UserRestControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(unauthenticated())
                 .andExpect(jsonPath("$.message", is("/login")));
+    }
+
+    @Test
+    public void createAuthReq_shouldCreateCorrectlyStoredAuthReqData() {
+        UserRestController.AuthReq authReq = UserRestController.AuthReq.create("jsnow@westeros.com", "test");
+        assertThat(authReq.getUsername(), is("jsnow@westeros.com"));
+        assertThat(authReq.getPassword(), is("test"));
+    }
+
+    @Test
+    @DatabaseSetup("/database/user2Entries.xml")
+    public void callCheckUserEmail_emailDoesNotExist_shouldReturnMessageFalse() throws Exception {
+        String testedMail = "test@test.ok.com";
+        MvcResult result = mockMvc.perform(post("/api/user/check/mail").content(testedMail)).andReturn();
+
+        mockMvc.perform(asyncDispatch(result))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.message", is("false")));
+    }
+
+    @Test
+    @DatabaseSetup("/database/user2Entries.xml")
+    public void callCheckUserEmail_emailExists_shouldReturnErrorWithMessage() throws Exception {
+        String testedMail = "jsnow@westeros.com";
+        MvcResult result = mockMvc.perform(post("/api/user/check/mail").content(testedMail)).andReturn();
+
+        mockMvc.perform(asyncDispatch(result))
+                .andExpect(status().isNotAcceptable())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.message", is("User with given e-mail already exists.")));
+    }
+
+    @Test
+    @DatabaseSetup("/database/user2Entries.xml")
+    public void callConfirm_shouldConfirmUser() throws Exception {
+        Optional<User> user = userRepository.findUserByEmail("grrm@westeros.com");
+        User u = user.map(Function.identity()).orElse(null);
+
+        assertThat(u, is(notNullValue()));
+        assertThat(u.isEnabled(), is(false));
+        assertThat(u.isLocked(), is(true));
+
+        String userHash = Base64Utils.encodeToString((u.getEmail() + "2hM$^%#$^64Jpx5*NG#^E6yaRXLq6PhgmC&Yx61rzKgCPJdpZWx(ipq%fk)&HFjz").getBytes());
+        mockMvc.perform(post("/api/user/confirm").content(userHash))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.message", is("/confirm")));
+
+        Optional<User> confirmedOptional = userRepository.findUserByEmail("grrm@westeros.com");
+        User confirmed = confirmedOptional.map(Function.identity()).orElse(null);
+        assertThat(confirmed, is(notNullValue()));
+        assertThat(confirmed.isEnabled(), is(true));
+        assertThat(confirmed.isLocked(), is(false));
+    }
+
+    @Test
+    @DatabaseSetup("/database/user2Entries.xml")
+    public void callConfirm_userHashIsEmpty_shouldReturnBadRequest() throws Exception {
+        mockMvc.perform(post("/api/user/confirm").content(""))
+                .andExpect(status().isBadRequest());
     }
 
 }
