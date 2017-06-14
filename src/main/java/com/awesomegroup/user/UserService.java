@@ -27,6 +27,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Created by Michał on 2017-04-23.
@@ -60,26 +61,15 @@ public class UserService {
     }
 
     public Maybe<User> register(RegisterJson registerData) {
-
-        log.info("Register data = {}", registerData);
-
-        if(userRepository.findUserByEmail(registerData.getEmail()).isPresent()) {
-            return Maybe.error(new Exception("User with given email already exists."));
-        }
-
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-
         String ip = request.getRemoteAddr();
-
         String uri = request.getScheme() + "://" + request.getServerName() +
                 (request.getServerPort() != 80 ? ":" + request.getServerPort() : StringUtils.EMPTY);
-
         ReCaptchaRequest reCaptchaRequest = ReCaptchaRequest.create()
                                                             .secret(siteKey)
                                                             .recaptchaResponse(registerData.getCaptchaResponse())
                                                             .remoteIP(ip)
                                                             .build();
-
         log.info("Checking captcha!");
         log.info("ReCaptchaRequest = {}", reCaptchaRequest.toString());
         GoogleReCaptcha reCaptcha = new Retrofit.Builder()
@@ -91,41 +81,42 @@ public class UserService {
 
         Single<ReCaptchaResponse> observableReCaptcha = reCaptcha.checkIfHuman(reCaptchaRequest.getSecret(), reCaptchaRequest.getResponse());
 
-        return observableReCaptcha  .filter(r -> !userRepository.findUserByEmail(registerData.getEmail()).isPresent())
-                                    .map(reCaptchaResponse -> {
-                                        if(userRepository.findUserByEmail(registerData.getEmail()).isPresent()) {
-                                            throw Exceptions.propagate(new Exception("User with given email already exists"));
-                                        }
-                                        return reCaptchaResponse;
-                                    })
-                                    .map(reCaptchaResponse -> {
-                                        if(!reCaptchaResponse.isValid()) {
-                                            throw Exceptions.propagate(new Exception("Captcha is not valid"));
-                                        }
-                                        return reCaptchaResponse;
-                                    })
-                                    .map(reCaptchaResponse->{
-                                        log.info("User {}", Optional.of(registerData).map(this::transformRegisterToUser).orElse(null));
-                                        return User.create(Optional.of(registerData).map(this::transformRegisterToUser).orElse(null))
-                                                .enabled(false)
-                                                .locked(true)
-                                                .credentialsExpired(false)
-                                                .roles()
-                                                .password(passwordEncoder.encode(registerData.getPassword()))
-                                                .fridge(Fridge.create().build())
-                                                .build();
-                                    })
-                                    .doOnSuccess(user -> {
-                                        userRepository.save(user);
-                                        sendConfirmationEmail(user, uri);
-                                    })
-                                    .doOnError(throwable -> log.error(ExceptionUtils.getStackTrace(throwable)));
+        return observableReCaptcha.toMaybe()
+            .map(reCaptchaResponse -> {
+                if(userRepository.findUserByEmail(registerData.getEmail()).isPresent()) {
+                    throw Exceptions.propagate(new Exception("User with given email already exists"));
+                }
+                return reCaptchaResponse;
+            })
+            .map(reCaptchaResponse -> {
+                if(!reCaptchaResponse.isValid()) {
+                    throw Exceptions.propagate(new Exception("Captcha is not valid"));
+                }
+                return reCaptchaResponse;
+            })
+            .map(reCaptchaResponse->{
+                log.info("User {}", Optional.of(registerData).map(this::transformRegisterToUser).orElse(null));
+                return User.create(Optional.of(registerData).map(this::transformRegisterToUser).orElse(null))
+                        .enabled(false)
+                        .locked(true)
+                        .credentialsExpired(false)
+                        .roles()
+                        .password(passwordEncoder.encode(registerData.getPassword()))
+                        .fridge(Fridge.create().build())
+                        .build();
+            })
+            .doOnSuccess(user -> {
+                userRepository.save(user);
+                sendConfirmationEmail(user, uri);
+            }).doOnError(Maybe::error);
     }
 
-    public void confirm(String userHash) {
+    public boolean confirm(String userHash) {
         String userDecodedData = new String(Base64Utils.decodeFromString(userHash)).replace(SALT, StringUtils.EMPTY);
-        userRepository.findUserByEmail(userDecodedData)
-                .ifPresent(user-> userRepository.save(User.create(user).locked(false).enabled(true).build()));
+        return userRepository.findUserByEmail(userDecodedData).map(user -> {
+            userRepository.save(User.create(user).locked(false).enabled(true).build());
+            return true;
+        }).orElse(false);
     }
 
     private User transformRegisterToUser(RegisterJson registerJson) {

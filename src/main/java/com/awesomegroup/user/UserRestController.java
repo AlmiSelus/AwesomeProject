@@ -25,6 +25,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -57,6 +58,52 @@ public class UserRestController {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
+    @PostMapping("/api/user/check/mail")
+    public DeferredResult<ResponseEntity<ResponseJson>> checkUserEmail(@RequestBody String mail) {
+        DeferredResult<ResponseEntity<ResponseJson>> deferredCheck = new DeferredResult<>();
+        userService.checkUserEmail(mail).subscribe(
+                emailDoesExist -> deferredCheck.setResult(ResponseEntityUtils.ok(Boolean.toString(emailDoesExist))),
+                error -> deferredCheck.setErrorResult(ResponseEntityUtils.notAcceptable(error.getMessage())));
+        return deferredCheck;
+    }
+
+    @PostMapping("/api/user/register")
+    public DeferredResult<ResponseEntity<ResponseJson>> register(@Valid @RequestBody RegisterJson registerData, BindingResult result) throws JsonProcessingException {
+        if(result.hasErrors()) {
+            DeferredResult<ResponseEntity<ResponseJson>> defResult = new DeferredResult<>();
+            List<FieldErrorJson> errorJsonList = mapValidationErrorMessages(result.getFieldErrors());
+            defResult.setErrorResult(ResponseEntityUtils.notAcceptable(errorJsonList));
+            return defResult;
+        }
+
+        log.info(registerData.toString());
+        DeferredResult<ResponseEntity<ResponseJson>> deferredResult = new DeferredResult<>();
+        userService.register(registerData).subscribe(
+            user -> deferredResult.setResult(ResponseEntityUtils.ok("/confirm")),
+            error -> {
+                deferredResult.setErrorResult(ResponseEntityUtils.notAcceptable(error.getCause().getMessage()));
+                log.error(ExceptionUtils.getStackTrace(error));
+        });
+        return deferredResult;
+    }
+
+    @PostMapping("/api/user/confirm")
+    public ResponseEntity confirm(@RequestBody String userHash) {
+        return Optional.of(userService.confirm(userHash))
+                .map(added->ResponseEntityUtils.ok("/confirm"))
+                .orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
+    }
+
+    private List<FieldErrorJson> mapValidationErrorMessages(List<FieldError> allErrors) {
+        return allErrors.stream().map(objectError -> FieldErrorJson.create()
+                .field(objectError.getField())
+                .message(objectError.getDefaultMessage())
+                .build()).map(fieldErrorJson -> {
+            log.info("FieldErrorJson = {}", fieldErrorJson.toString());
+            return fieldErrorJson;
+        }).collect(Collectors.toList());
+    }
+
     public static class AuthReq {
         String username;
         String password;
@@ -75,62 +122,6 @@ public class UserRestController {
             requestData.password = password;
             return requestData;
         }
-    }
-
-    @PostMapping("/api/user/check/mail")
-    public DeferredResult<ResponseEntity<ResponseJson>> checkUserEmail(@RequestBody String mail) {
-        DeferredResult<ResponseEntity<ResponseJson>> deferredCheck = new DeferredResult<>();
-        userService.checkUserEmail(mail).subscribe(
-                emailDoesExist -> deferredCheck.setResult(ResponseEntityUtils.ok(Boolean.toString(emailDoesExist))),
-                error -> deferredCheck.setErrorResult(ResponseEntityUtils.notAcceptable(error.getMessage())));
-        return deferredCheck;
-    }
-
-    @GetMapping("/api/user/login")
-    public Authentication authenticate(Authentication authentication) {
-        return authentication;
-    }
-
-    @PostMapping("/api/user/register")
-    public DeferredResult<ResponseEntity<ResponseJson>> register(@Valid @RequestBody RegisterJson registerData, BindingResult result) throws JsonProcessingException {
-        if(result.hasErrors()) {
-            DeferredResult<ResponseEntity<ResponseJson>> defResult = new DeferredResult<>();
-            List<FieldErrorJson> errorJsonList = mapValidationErrorMessages(result.getFieldErrors());
-            defResult.setErrorResult(ResponseEntityUtils.notAcceptable(errorJsonList));
-            return defResult;
-        }
-
-        log.info(registerData.toString());
-        DeferredResult<ResponseEntity<ResponseJson>> deferredResult = new DeferredResult<>();
-        userService.register(registerData).subscribe(user -> {
-                    log.info("Test in here!");
-                    deferredResult.setResult(ResponseEntity.ok(ResponseJson.create().message("/confirm").build()));
-                },  error -> { deferredResult.setErrorResult(ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(error.getMessage()));
-                    log.error(ExceptionUtils.getStackTrace(error));
-        });
-        return deferredResult;
-    }
-
-    private List<FieldErrorJson> mapValidationErrorMessages(List<FieldError> allErrors) {
-        return allErrors.stream().map(objectError -> FieldErrorJson.create()
-                .field(objectError.getField())
-                .message(objectError.getDefaultMessage())
-                .build()).map(fieldErrorJson -> {
-                    log.info("FieldErrorJson = {}", fieldErrorJson.toString());
-                    return fieldErrorJson;
-        }).collect(Collectors.toList());
-    }
-
-    @PostMapping("/api/user/confirm")
-    public ResponseEntity confirm(@RequestBody String userHash) {
-        ResponseEntity status = userHash == null || userHash.isEmpty() ? ResponseEntity.status(HttpStatus.BAD_REQUEST).build() :
-                ResponseEntity.status(HttpStatus.OK).build();
-
-        if(status.getStatusCode() == HttpStatus.OK) {
-            userService.confirm(userHash);
-        }
-
-        return status;
     }
 
 }
