@@ -1,6 +1,6 @@
 <div ng-controller="FridgeController">
-    <ui-select ng-disabled = "enabled" ng-model="picked" theme="select2" style="width: 800px;">
-        <ui-select-match placeholder="Select ingredients...">{{picked.name}}</ui-select-match>
+    <ui-select ng-disabled = "enabled" ng-model="picked.ingredient" theme="select2" style="width: 800px;">
+        <ui-select-match placeholder="Select ingredients...">{{picked.ingredient.name}}</ui-select-match>
         <ui-select-choices repeat="ingredient in ingredients | propsFilter: {name: $select.search}">
             <div ng-bind-html="ingredient.name | highlight: $select.search"></div>
         </ui-select-choices>
@@ -14,7 +14,7 @@
     </button>
     <br/>
     <ul>
-        <li ng-repeat="ingredient in selected.selectedIngredients">
+        <li ng-repeat="ingredient in selectedIngredients">
             {{ ingredient.name }}
         </li>
     </ul>
