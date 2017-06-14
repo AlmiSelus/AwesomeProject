@@ -269,8 +269,18 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
     if($rootScope.authenticated) {
         $scope.ingredients = [];
         $scope.selected = { selectedIngredients : [] };
+        $scope.picked = {};
+
+        //$scope.owned = { o : [] };
+
+//        $http.get($rootScope.apiEndpoint + '/fridge/ingredients').then(function (response) {
+//            $scope.picked = response.data;
+//        }, function() {
+//            $location.url('/login');
+//       });
 
         $http.get($rootScope.apiEndpoint + '/fridge/ingredients').then(function (response) {
+            console.log(response);
             $scope.selected.selectedIngredients = response.data;
         }, function() {
             $location.url('/login');
@@ -286,13 +296,20 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
         $scope.clicked = false;
         $scope.doneOk  = false;
 
-        $scope.addIngredients = function() {
+        $scope.addIngredient = function() {
             $scope.clicked = true;
             $scope.doneOk = false;
 
-            $http.post($rootScope.apiEndpoint + "/fridge/addIngredients", $scope.selected.selectedIngredients).then(function(response){
+            $http.post($rootScope.apiEndpoint + "/fridge/addIngredient", $scope.picked).then(function(response){
                 $scope.clicked = false;
                 $scope.doneOk = true;
+            }, function() {
+                $location.url('/login');
+            });
+
+            $http.get($rootScope.apiEndpoint + '/fridge/ingredients').then(function (response) {
+                console.log(response);
+                $scope.selected.selectedIngredients = response.data;
             }, function() {
                 $location.url('/login');
             });

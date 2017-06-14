@@ -59,6 +59,26 @@ public class FridgeService {
         }).orElse(false);
     }
 
+    public boolean addFridgeIngredientForUser(Principal principalUser, Ingredient ingredient) {
+        if(principalUser == null || ingredient == null ) {
+            return false;
+        }
+
+        log.info("Principal user mail = {}", principalUser.getName());
+
+        return userRepository.findUserByEmail(principalUser.getName()).map(user->{
+            Fridge fridge = user.getFridge();
+            fridge.getFridgeIngredients().clear();
+            Optional.of(ingredient).map(ingr -> ingredientsRepository.findByName(ingr.getIngredientName()))
+                    .map(optionalIngredient -> {
+                        optionalIngredient.ifPresent(fridge.getFridgeIngredients()::add);
+                        return true;
+                    });
+            fridgeRepository.save(fridge);
+            return true;
+        }).orElse(false);
+    }
+
     public List<Ingredient> getCurrentIngredients(Principal principal) {
         return userRepository.findUserByEmail(principal.getName())
                 .map(user -> user.getFridge().getFridgeIngredients())

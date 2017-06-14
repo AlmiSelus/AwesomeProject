@@ -26,8 +26,15 @@ public class FridgeRestController {
 
     @PostMapping("/api/fridge/addIngredients")
     public void addIngredients(Principal principal, @RequestBody List<Ingredient> selectedIngredients) {
-        log.info("Principal = {}", principal.toString());
+        log.info("\n Principal = {}", principal.toString());
         fridgeService.addFridgeIngredientsForUser(principal, selectedIngredients);
+    }
+
+    @PostMapping("/api/fridge/addIngredient")
+    public void addIngredient(Principal principal, @RequestBody Ingredient picked) {
+        log.info("\n\n\n Principal = {}", principal.toString());
+        log.info("\n Ingredient = {} \n\n\n", picked.toString());
+        fridgeService.addFridgeIngredientForUser(principal, picked);
     }
 
     @GetMapping("/api/fridge/ingredients")
