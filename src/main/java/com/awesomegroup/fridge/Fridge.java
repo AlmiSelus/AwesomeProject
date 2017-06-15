@@ -1,8 +1,8 @@
 package com.awesomegroup.fridge;
 
-import com.awesomegroup.favouriteRecipe.FavouriteRecipe;
+import com.awesomegroup.fridge.favourite.FavouriteRecipe;
+import com.awesomegroup.fridgeIngredient.FridgeIngredient;
 import com.awesomegroup.ingredients.Ingredient;
-import com.awesomegroup.recipe.Recipe;
 import com.awesomegroup.user.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by Adi on 26.05.2017.
@@ -29,13 +28,8 @@ public class Fridge {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "fridge")
     private User fridgeUser;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
-    @JoinTable(
-            name = "fridge_ingredients",
-            joinColumns = @JoinColumn(name = "fridge_id", referencedColumnName = "fridge_id"),  //name = nowa kolumna, ref = istenijacy klucz
-            inverseJoinColumns = @JoinColumn(name = "ingredient_id", referencedColumnName = "ingredient_id")
-    )
-    private List<Ingredient> fridgeIngredients = new ArrayList<>();
+    @OneToMany(mappedBy = "fridge", cascade = {CascadeType.ALL})
+    private List<FridgeIngredient> fridgeIngredients = new ArrayList<>();
 
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
@@ -53,12 +47,22 @@ public class Fridge {
         return fridgeUser;
     }
 
-    public List<Ingredient> getFridgeIngredients() {
+    public List<FridgeIngredient> getFridgeIngredients() {
         return fridgeIngredients;
     }
 
     public List<FavouriteRecipe> getFavouriteRecipes() {
         return favouriteRecipes;
+    }
+
+    @Override
+    public String toString() {
+        return "Fridge{" +
+                "fridgeId=" + fridgeId +
+                ", fridgeUser=" + fridgeUser +
+                ", fridgeIngredients=" + fridgeIngredients +
+                ", favouriteRecipes=" + favouriteRecipes +
+                '}';
     }
 
     public static Builder create() {

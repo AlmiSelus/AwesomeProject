@@ -5,7 +5,7 @@
             <div ng-bind-html="ingredient.name | highlight: $select.search"></div>
         </ui-select-choices>
     </ui-select>
-    <input type="date"  ng-model="expire.date" placeholder="yyyy-MM-dd" />
+    <input type="date"  ng-model="picked.date" placeholder="yyyy-MM-dd" />
     <br/>
     <button class="btn btn-default btn-lg" ng-click="addIngredient()">
         <span ng-class="{'fa fa-spinner fa-spin' : clicked, 'fa fa-check' : doneOk}"></span>
@@ -17,7 +17,11 @@
     <ul>
         <li ng-repeat="ingredient in selectedIngredients">
             {{ ingredient.name }}
-            <button class="btn btn-default btn-lg" ng-click="deleteIngredient(ingredient)">Delete</button>
+            <button class="btn btn-default btn-lg" ng-click="deleteIngredient(ingredient)">
+                <span ng-class="{'fa fa-spinner fa-spin' : clickedDelete}"></span>
+                <span ng-show="!clickedDelete">Delete</span>
+                <span ng-show="clickedDelete">Deleting ...</span>
+            </button>
         </li>
     </ul>
 

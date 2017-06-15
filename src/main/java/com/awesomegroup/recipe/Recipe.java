@@ -1,6 +1,6 @@
 package com.awesomegroup.recipe;
 
-import com.awesomegroup.favouriteRecipe.FavouriteRecipe;
+import com.awesomegroup.fridge.favourite.FavouriteRecipe;
 import com.awesomegroup.recipeingredient.RecipeIngredient;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

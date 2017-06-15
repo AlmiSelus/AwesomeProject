@@ -1,5 +1,6 @@
 package com.awesomegroup.fridge;
 
+import com.awesomegroup.fridgeIngredient.FridgeIngredientJson;
 import com.awesomegroup.general.ResponseEntityUtils;
 import com.awesomegroup.general.ResponseJson;
 import com.awesomegroup.ingredients.Ingredient;
@@ -33,21 +34,19 @@ public class FridgeRestController {
     }
 
     @PostMapping("/api/fridge/addIngredient")
-    public void addIngredient(Principal principal, @RequestBody Ingredient picked) {
+    public void addIngredient(Principal principal, @RequestBody FridgeIngredientJson picked) {
         log.info("\n\n\n Principal = {}", principal.toString());
         log.info("\n Ingredient = {} \n\n\n", picked.toString());
         fridgeService.addFridgeIngredientForUser(principal, picked);
     }
 
     @GetMapping("/api/fridge/ingredients")
-    public List<Ingredient> getCurrentIngredients(Principal principal) {
-        return fridgeService.getCurrentIngredients(principal).stream()
-                .map(ingredient -> Ingredient.create().name(ingredient.getIngredientName()).build())
-                .collect(Collectors.toList());
+    public List<FridgeIngredientJson> getCurrentIngredients(Principal principal) {
+        return fridgeService.getCurrentIngredients(principal);
     }
 
     @DeleteMapping("/api/fridge/ingredient/remove")
-    public ResponseEntity<ResponseJson> removeIngredient(Principal principal, @RequestBody Ingredient ingredient) {
+    public ResponseEntity<ResponseJson> removeIngredient(Principal principal, @RequestBody FridgeIngredientJson ingredient) {
         return Optional.of(fridgeService.removeFridgeIngredientForUser(principal, ingredient))
                 .map(b->ResponseEntityUtils.ok(""))
                 .orElse(ResponseEntityUtils.notAcceptable("Could not remove"));

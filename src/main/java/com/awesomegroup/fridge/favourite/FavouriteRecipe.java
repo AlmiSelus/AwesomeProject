@@ -1,4 +1,4 @@
-package com.awesomegroup.favouriteRecipe;
+package com.awesomegroup.fridge.favourite;
 
 import com.awesomegroup.fridge.Fridge;
 import com.awesomegroup.recipe.Recipe;
