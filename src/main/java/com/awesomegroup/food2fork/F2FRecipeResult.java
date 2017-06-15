@@ -8,64 +8,64 @@ import java.util.List;
  * Created by patry on 25.04.2017.
  */
 public class F2FRecipeResult {
-    private String publisher;
     @JsonProperty("publisher")
+    private String publisher;
     public void setPublisher(String data)
     {
         this.publisher = data;
     }
     public String getPublisher() {return this.publisher; }
-    private String f2fUrl;
     @JsonProperty("f2f_url")
+    private String f2fUrl;
     public void setF2fUrl(String data)
     {
         this.f2fUrl = data;
     }
     public String getF2fUrl() {return this.f2fUrl; }
-    private List<String> ingredients;
     @JsonProperty("ingredients")
+    private List<String> ingredients;
     public void setIngredients(List<String> data)
     {
         this.ingredients = data;
     }
     public List<String> getIngridients() {return this.ingredients; }
-    private String sourceUrl;
     @JsonProperty("source_url")
+    private String sourceUrl;
     public void setSourceUrl(String data)
     {
         this.sourceUrl = data;
     }
     public String getSourceUrl() {return this.sourceUrl; }
-    private String recipeId;
     @JsonProperty("recipe_id")
+    private String recipeId;
     public void setRecipeId(String data)
     {
         this.recipeId = data;
     }
     public String getRecipeId() {return this.recipeId; }
-    private String imageUrl;
     @JsonProperty("image_url")
+    private String imageUrl;
     public void setImageUrl(String data)
     {
         this.imageUrl = data;
     }
     public String getImageUrl() {return this.imageUrl; }
-    private String socialRank;
     @JsonProperty("social_rank")
+    private String socialRank;
     public void setSocialRank(String data)
     {
         this.socialRank = data;
     }
     public String getSocialRank() {return this.socialRank; }
-    private String publisherUrl;
     @JsonProperty("publisher_url")
+    private String publisherUrl;
     public void setPublisherUrl(String data)
     {
         this.publisherUrl = data;
     }
     public String getPublisherUrl() {return this.publisherUrl; }
-    private String title;
     @JsonProperty("title")
+    private String title;
     public void setTitle(String data)
     {
         this.title = data;

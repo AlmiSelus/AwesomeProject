@@ -9,12 +9,12 @@ import java.util.List;
  */
 public class F2FSearchResult {
 
-    private String count;
     @JsonProperty("count")
+    private String count;
     public void setCount(String data) { this.count = data; }
     public int getCount(){return Integer.parseInt(this.count); }
-    private List<F2FSearchRecipe> recipes;
     @JsonProperty("recipes")
+    private List<F2FSearchRecipe> recipes;
     public void setRecipes(List<F2FSearchRecipe> data) { this.recipes = data; }
     public List<F2FSearchRecipe> getRecipes() {return this.recipes; }
 
