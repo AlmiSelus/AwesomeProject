@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class F2FRecipeRecipe
 {
-    private F2FRecipeResult recipe;
+
     @JsonProperty("recipe")
+    private F2FRecipeResult recipe;
+    public F2FRecipeResult getRecipee() {return this.recipe; }
     public void setRecipe(F2FRecipeResult data)
     {
         this.recipe = data;
     }
-    public F2FRecipeResult getRecipee() {return this.recipe; }
 
     public String toString()
     {
