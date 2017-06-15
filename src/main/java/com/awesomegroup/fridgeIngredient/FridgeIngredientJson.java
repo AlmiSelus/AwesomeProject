@@ -1,29 +1,53 @@
 package com.awesomegroup.fridgeIngredient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Created by patry on 15.06.2017.
  */
+@JsonSerialize
+@JsonDeserialize
 public class FridgeIngredientJson {
-    @JsonProperty("ingredient_name")
+
+    @JsonProperty("name")
     private String ingredientName;
-    @JsonProperty("ingredient_expire_date")
+
+    @JsonProperty("date")
     private String ingredientExpireDate;
 
     public String getIngredientName() {
         return ingredientName;
     }
 
-    public void setIngredientName(String ingredientName) {
-        this.ingredientName = ingredientName;
-    }
-
     public String getIngredientExpireDate() {
         return ingredientExpireDate;
     }
 
-    public void setIngredientExpireDate(String ingredientExpireDate) {
-        this.ingredientExpireDate = ingredientExpireDate;
+    public static Builder create() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private FridgeIngredientJson ingredientJson;
+
+        public Builder() {
+            ingredientJson = new FridgeIngredientJson();
+        }
+
+        public Builder name(String name) {
+            ingredientJson.ingredientName = name;
+            return this;
+        }
+
+        public Builder expires(String expireDate) {
+            ingredientJson.ingredientExpireDate = expireDate;
+            return this;
+        }
+
+        public FridgeIngredientJson build() {
+            return ingredientJson;
+        }
     }
 }

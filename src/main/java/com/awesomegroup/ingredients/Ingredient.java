@@ -1,14 +1,14 @@
 package com.awesomegroup.ingredients;
 
-import com.awesomegroup.fridge.Fridge;
+import com.awesomegroup.fridgeIngredient.FridgeIngredient;
 import com.awesomegroup.recipeingredient.RecipeIngredient;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Michał on 2017-04-18.
@@ -28,16 +28,12 @@ public class Ingredient {
     @JsonProperty("name")
     private String ingredientName;
 
-//    @Column(name = "expire_date")
-//    @JsonProperty("date")
-//    private Calendar expireDate;
-
     @OneToMany(mappedBy = "ingredient", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JsonIgnoreProperties("ingredient")
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "fridgeIngredients")
-    private List<Fridge> fridges = new ArrayList<>();
+    @OneToMany(mappedBy = "ingredient")
+    private List<FridgeIngredient> fridges = new ArrayList<>();
 
     public long getIngredientID() {
         return ingredientID;
@@ -51,11 +47,9 @@ public class Ingredient {
         return recipeIngredients;
     }
 
-    public List<Fridge> getFridges() {
+    public List<FridgeIngredient> getFridges() {
         return fridges;
     }
-
-//    public Calendar getExpireDate() {return expireDate;}
 
     @Override
     public String toString() {
@@ -82,11 +76,6 @@ public class Ingredient {
             ingredient.ingredientName = name;
             return this;
         }
-
-//        public Builder expireDate(Calendar date){
-//            ingredient.expireDate = date;
-//            return this;
-//        }
 
         public Ingredient build() {
             return ingredient;

@@ -1,6 +1,7 @@
 package com.awesomegroup.favouriteRecipe;
 
 import com.awesomegroup.fridge.Fridge;
+import com.awesomegroup.fridge.favourite.FavouriteRecipe;
 import org.junit.Assert;
 import org.junit.Test;
 

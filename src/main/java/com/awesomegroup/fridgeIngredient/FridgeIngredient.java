@@ -5,6 +5,8 @@ import com.awesomegroup.ingredients.Ingredient;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 
 /**
@@ -13,29 +15,23 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "fridge_ingredient")
+@IdClass(FridgeIngredientPK.class)
 public class FridgeIngredient {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "recipe_ingredient_id", nullable = false, unique = true)
-    private long id;
-
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
-    @JoinColumn(name = "fridge_id")
+    @JoinColumn(name = "fridge_ingredient_fridge", referencedColumnName = "fridge_id")
     @JsonIgnoreProperties("fridgeIngredients")
     private Fridge fridge;
 
+    @Id
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
-    @JoinColumn(name = "ingredient_id")
+    @JoinColumn(name = "fridge_ingredient_ingredient", referencedColumnName = "ingredient_id")
     @JsonIgnoreProperties("fridgeIngredients")
     private Ingredient ingredient;
 
     @Column(name = "fridge_ingredient_expire")
     private LocalDate expireDate;
-
-    public long getId() {
-        return id;
-    }
 
     public Fridge getRecipe() {
         return fridge;
@@ -56,7 +52,7 @@ public class FridgeIngredient {
     public static class Builder {
         private FridgeIngredient fridgeIngredient = new FridgeIngredient();
 
-        public FridgeIngredient.Builder recipe(Fridge fridge) {
+        public FridgeIngredient.Builder fridge(Fridge fridge) {
             fridgeIngredient.fridge = fridge;
             return this;
         }
@@ -66,7 +62,7 @@ public class FridgeIngredient {
             return this;
         }
 
-        public FridgeIngredient.Builder expireDate(LocalDate date) {
+        public FridgeIngredient.Builder expires(LocalDate date) {
             fridgeIngredient.expireDate = date;
             return this;
         }

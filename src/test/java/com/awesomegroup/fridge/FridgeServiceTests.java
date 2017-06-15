@@ -1,6 +1,8 @@
 package com.awesomegroup.fridge;
 
-import com.awesomegroup.favouriteRecipe.FavouriteRecipe;
+import com.awesomegroup.fridge.favourite.FavouriteRecipe;
+import com.awesomegroup.fridgeIngredient.FridgeIngredient;
+import com.awesomegroup.fridgeIngredient.FridgeIngredientJson;
 import com.awesomegroup.ingredients.Ingredient;
 import com.awesomegroup.ingredients.IngredientsRepository;
 import com.awesomegroup.recipe.Recipe;
@@ -14,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -72,7 +75,7 @@ public class FridgeServiceTests {
 
         assertThat(added, is(true));
         assertThat(user.getFridge().getFridgeIngredients().size(), is(1));
-        assertThat(user.getFridge().getFridgeIngredients().get(0).getIngredientName(), is("Test"));
+        assertThat(user.getFridge().getFridgeIngredients().get(0).getIngredient().getIngredientName(), is("Test"));
     }
 
     @Test
@@ -114,12 +117,14 @@ public class FridgeServiceTests {
     @Test
     public void callGetCurrentIngredients_userExists_shouldReturnListWithOneIngredient() {
         Fridge f = Fridge.create().build();
-        f.getFridgeIngredients().add(Ingredient.create().name("Ingredient 1").build());
+        f.getFridgeIngredients().add(
+                FridgeIngredient.create().ingredient(
+                Ingredient.create().name("Ingredient 1").build()).expires(LocalDate.now()).build());
         User user = User.create().email("testUser").fridge(f).build();
 
         when(userRepository.findUserByEmail(basePrincipal.getName())).thenReturn(Optional.of(user));
 
-        List<Ingredient> ingredients = service.getCurrentIngredients(basePrincipal);
+        List<FridgeIngredientJson> ingredients = service.getCurrentIngredients(basePrincipal);
         assertThat(ingredients.size(), is(1));
         assertThat(ingredients.get(0).getIngredientName(), is("Ingredient 1"));
     }
@@ -127,7 +132,7 @@ public class FridgeServiceTests {
     @Test
     public void callGetCurrentIngredients_userDoesNotExist_shouldReturnEmptyList() {
         when(userRepository.findUserByEmail(basePrincipal.getName())).thenReturn(Optional.empty());
-        List<Ingredient> ingredients = service.getCurrentIngredients(basePrincipal);
+        List<FridgeIngredientJson> ingredients = service.getCurrentIngredients(basePrincipal);
         assertThat(ingredients.isEmpty(), is(true));
     }
 
@@ -272,15 +277,15 @@ public class FridgeServiceTests {
     public void callRemoveFridgeIngredients_shouldRemoveIngredient() {
         Ingredient ingredient = Ingredient.create().name("test1").build();
         Fridge f = Fridge.create().build();
-        f.getFridgeIngredients().add(ingredient);
+        f.getFridgeIngredients().add(FridgeIngredient.create().ingredient(ingredient).build());
         User user = User.create().email("testUser").fridge(f).build();
         when(userRepository.findUserByEmail(basePrincipal.getName())).thenReturn(Optional.of(user));
         when(ingredientsRepository.findByName(ingredient.getIngredientName())).thenReturn(Optional.of(ingredient));
 
         assertThat(f.getFridgeIngredients().size(), is(1));
-        assertThat(f.getFridgeIngredients().get(0).getIngredientName(), is("test1"));
+        assertThat(f.getFridgeIngredients().get(0).getIngredient().getIngredientName(), is("test1"));
 
-        boolean result = service.removeFridgeIngredientForUser(basePrincipal, Ingredient.create().name("test1").build());
+        boolean result = service.removeFridgeIngredientForUser(basePrincipal, FridgeIngredientJson.create().name("test1").build());
 
         assertThat(result, is(true));
         assertThat(user.getFridge().getFridgeIngredients().size(), is(0));

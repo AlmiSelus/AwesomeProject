@@ -1,6 +1,8 @@
 package com.awesomegroup.fridge;
 
-import com.awesomegroup.favouriteRecipe.FavouriteRecipe;
+import com.awesomegroup.fridge.favourite.FavouriteRecipe;
+import com.awesomegroup.fridgeIngredient.FridgeIngredient;
+import com.awesomegroup.fridgeIngredient.FridgeIngredientJson;
 import com.awesomegroup.ingredients.Ingredient;
 import com.awesomegroup.ingredients.IngredientsRepository;
 import com.awesomegroup.recipe.Recipe;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -52,13 +55,15 @@ public class FridgeService {
             //fridge.getFridgeIngredients().clear();
             ingredients.stream()
                 .map(ingredient -> ingredientsRepository.findByName(ingredient.getIngredientName()))
-                .forEach(optionalIngredient -> optionalIngredient.ifPresent(fridge.getFridgeIngredients()::add));
+                .forEach(optionalIngredient -> optionalIngredient.ifPresent(ingredient->{
+                    fridge.getFridgeIngredients().add(FridgeIngredient.create().ingredient(ingredient).build());
+                }));
             fridgeRepository.save(fridge);
             return true;
         }).orElse(false);
     }
 
-    public boolean addFridgeIngredientForUser(Principal principalUser, Ingredient ingredient) {
+    public boolean addFridgeIngredientForUser(Principal principalUser, FridgeIngredientJson ingredient) {
         if(principalUser == null || ingredient == null ) {
             return false;
         }
@@ -67,17 +72,29 @@ public class FridgeService {
 
         return userRepository.findUserByEmail(principalUser.getName()).map(user->{
             Fridge fridge = user.getFridge();
-            Optional.of(ingredient).map(ingr -> ingredientsRepository.findByName(ingr.getIngredientName()))
+            Optional.of(ingredient).map(ingr ->
+                ingredientsRepository.findByName(ingr.getIngredientName()))
                     .map(optionalIngredient -> {
-                        optionalIngredient.ifPresent(fridge.getFridgeIngredients()::add);
+                        log.info("Found ingredient {}!", optionalIngredient.toString());
+                        optionalIngredient.ifPresent(ingr-> {
+                            log.info("Adding fridge ingredient!");
+                            fridge.getFridgeIngredients().add(FridgeIngredient.create()
+                                    .ingredient(ingr)
+                                    .fridge(user.getFridge())
+                                    .expires(LocalDate.parse(ingredient.getIngredientExpireDate().split("T")[0]))
+                                    .build());
+                            log.info("Fridge ingredient added!");
+                        });
                         return true;
                     });
             fridgeRepository.save(fridge);
+
+            log.info("Fridge state saved!");
             return true;
         }).orElse(false);
     }
 
-    public boolean removeFridgeIngredientForUser(Principal principal, Ingredient ingredient) {
+    public boolean removeFridgeIngredientForUser(Principal principal, FridgeIngredientJson ingredient) {
         if(principal == null || ingredient == null) {
             return false;
         }
@@ -86,17 +103,21 @@ public class FridgeService {
                 Optional.of(ingredient)
                     .map(ingr->ingredientsRepository.findByName(ingr.getIngredientName())
                         .map(optionalIngr -> {
-                            user.getFridge().getFridgeIngredients().remove(optionalIngr);
+                            user.getFridge().getFridgeIngredients().removeIf(fridgeIngredient ->
+                                fridgeIngredient.getIngredient().getIngredientName().equals(ingredient.getIngredientName()));
                             fridgeRepository.save(user.getFridge());
                             return true;
                         }).orElse(false)).orElse(false))
             .orElse(false);
     }
 
-    public List<Ingredient> getCurrentIngredients(Principal principal) {
+    public List<FridgeIngredientJson> getCurrentIngredients(Principal principal) {
         return userRepository.findUserByEmail(principal.getName())
-            .map(user -> user.getFridge().getFridgeIngredients())
-            .orElse(Collections.emptyList());
+            .map(user -> user.getFridge().getFridgeIngredients().stream().map(ingredient->{
+                    log.info("Map ingredient {}", ingredient.toString());
+                    return FridgeIngredientJson.create().name(ingredient.getIngredient().getIngredientName()).expires(ingredient.getExpireDate().toString()).build();
+                }).collect(Collectors.toList())
+            ).orElse(Collections.emptyList());
     }
 
     public boolean addRecipeToFavourites(Principal principal, Recipe recipe) {
