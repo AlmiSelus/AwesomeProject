@@ -317,6 +317,20 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
             }
         };
 
+        $scope.deleteIngredient = function(fIngredient) {
+            console.log(fIngredient);
+            $http.delete("/api/fridge/ingredient/remove", fIngredient).then(function(response){
+                $http.get($rootScope.apiEndpoint + '/fridge/ingredients').then(function (response) {
+                    console.log(response);
+                    $scope.selectedIngredients = response.data;
+                }, function() {
+                    $location.url('/login');
+                });
+            }, function() {
+                $location.url('/login');
+            });
+        };
+
     } else {
         $location.url("/login");
     }
