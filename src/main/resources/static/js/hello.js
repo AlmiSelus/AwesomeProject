@@ -287,6 +287,7 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
 
         $scope.clicked = false;
         $scope.doneOk  = false;
+        $scope.clickedDelete = false;
 
         $scope.addIngredient = function() {
             if($scope.picked.ingredient != undefined)
@@ -316,6 +317,21 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
                 $location.url('/login');
             });
             }
+        };
+
+        $scope.deleteIngredient = function(fIngredient) {
+            console.log(fIngredient);
+            $scope.clickedDelete = true;
+            $http.delete("/api/fridge/ingredient/remove", fIngredient).then(function(response){
+                $http.get($rootScope.apiEndpoint + '/fridge/ingredients').then(function (response) {
+                    console.log(response);
+                    $scope.selectedIngredients = response.data;
+                }, function() {
+                    $location.url('/login');
+                });
+            }, function() {
+                $location.url('/login');
+            });
         };
 
     } else {

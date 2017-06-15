@@ -17,7 +17,11 @@
     <ul>
         <li ng-repeat="ingredient in selectedIngredients">
             {{ ingredient.name }}
-            <button ng-click="funkcja(ingredient)" class="btn btn-default btn-lg">Usun</button>
+            <button class="btn btn-default btn-lg" ng-click="deleteIngredient(ingredient)">
+                <span ng-class="{'fa fa-spinner fa-spin' : clickedDelete}"></span>
+                <span ng-show="!clickedDelete">Delete</span>
+                <span ng-show="clickedDelete">Deleting ...</span>
+            </button>
         </li>
     </ul>
 
