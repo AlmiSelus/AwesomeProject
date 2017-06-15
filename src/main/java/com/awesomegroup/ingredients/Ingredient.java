@@ -28,9 +28,9 @@ public class Ingredient {
     @JsonProperty("name")
     private String ingredientName;
 
-    @Column(name = "expire_date")
-    @JsonProperty("date")
-    private Calendar expireDate;
+//    @Column(name = "expire_date")
+//    @JsonProperty("date")
+//    private Calendar expireDate;
 
     @OneToMany(mappedBy = "ingredient", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JsonIgnoreProperties("ingredient")
@@ -55,14 +55,14 @@ public class Ingredient {
         return fridges;
     }
 
-    public Calendar getExpireDate() {return expireDate;}
+//    public Calendar getExpireDate() {return expireDate;}
 
     @Override
     public String toString() {
         return "Ingredient{" +
                 "ingredientID=" + ingredientID +
                 ", ingredientName='" + ingredientName + '\'' +
-                ", expireDate='" + expireDate + '\'' +
+//                ", expireDate='" + expireDate + '\'' +
                 '}';
     }
 
@@ -83,10 +83,10 @@ public class Ingredient {
             return this;
         }
 
-        public Builder expireDate(Calendar date){
-            ingredient.expireDate = date;
-            return this;
-        }
+//        public Builder expireDate(Calendar date){
+//            ingredient.expireDate = date;
+//            return this;
+//        }
 
         public Ingredient build() {
             return ingredient;

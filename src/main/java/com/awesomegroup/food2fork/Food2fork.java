@@ -122,7 +122,8 @@ public class Food2fork {
         String numbers = GetNumbers(apiIngredient);
         name = apiIngredient.replace(numbers, "");
         System.out.println(name);
-        return Ingredient.create().id(id).name(name).expireDate(Calendar.getInstance()).build();
+ //       return Ingredient.create().id(id).name(name).expireDate(Calendar.getInstance()).build();
+        return Ingredient.create().id(id).name(name).build();
     }
 
     private String GetNumbers(String base){

@@ -270,14 +270,7 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
         $scope.ingredients = [];
         $scope.selectedIngredients = [];
         $scope.picked = {ingredient : undefined};
-
-        //$scope.owned = { o : [] };
-
-//        $http.get($rootScope.apiEndpoint + '/fridge/ingredients').then(function (response) {
-//            $scope.picked = response.data;
-//        }, function() {
-//            $location.url('/login');
-//       });
+        $scope.expire = { date: {}};
 
         $http.get($rootScope.apiEndpoint + '/fridge/ingredients').then(function (response) {
             console.log(response);
