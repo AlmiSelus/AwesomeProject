@@ -268,4 +268,23 @@ public class FridgeServiceTests {
         assertThat(user.getFridge().getFavouriteRecipes().get(0).getRating(), is(5f));
     }
 
+    @Test
+    public void callRemoveFridgeIngredients_shouldRemoveIngredient() {
+        Ingredient ingredient = Ingredient.create().name("test1").build();
+        Fridge f = Fridge.create().build();
+        f.getFridgeIngredients().add(ingredient);
+        User user = User.create().email("testUser").fridge(f).build();
+        when(userRepository.findUserByEmail(basePrincipal.getName())).thenReturn(Optional.of(user));
+        when(ingredientsRepository.findByName(ingredient.getIngredientName())).thenReturn(Optional.of(ingredient));
+
+        assertThat(f.getFridgeIngredients().size(), is(1));
+        assertThat(f.getFridgeIngredients().get(0).getIngredientName(), is("test1"));
+
+        boolean result = service.removeFridgeIngredientForUser(basePrincipal, Ingredient.create().name("test1").build());
+
+        assertThat(result, is(true));
+        assertThat(user.getFridge().getFridgeIngredients().size(), is(0));
+
+    }
+
 }
