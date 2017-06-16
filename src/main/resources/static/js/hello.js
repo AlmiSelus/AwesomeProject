@@ -431,7 +431,7 @@ app.controller('RecipeEditor', function($scope, $http) {
 
     $scope.addRecipe = function() {
         console.log("Save recipe:" + $scope.recipe.name + " to DB.")
-        $http.post('api/recipe/add', $scope.recipe).then(
+        $http.post('api/recipe/addWithStringIngredients', $scope.recipe).then(
             function(response) {
                 if(response.data != null) {
                     if(response.data.success) {

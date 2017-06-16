@@ -1,5 +1,6 @@
 package com.awesomegroup.recipe;
 
+import com.awesomegroup.ingredients.IngredientsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,9 +44,12 @@ public class RecipeRestControllerTests {
     @MockBean
     private RecipeService recipeService;
 
+    @MockBean
+    private IngredientsService ingredientsService;
+
     @Before
     public void startUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new RecipeRestController(recipeService)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(new RecipeRestController(recipeService, ingredientsService)).build();
     }
 
     @Test
