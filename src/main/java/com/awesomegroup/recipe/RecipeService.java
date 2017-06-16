@@ -1,5 +1,7 @@
 package com.awesomegroup.recipe;
 
+import com.awesomegroup.food2fork.F2fDataConverter;
+import com.awesomegroup.food2fork.Food2fork;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,9 @@ public class RecipeService {
     }
 
     public Recipe getRecipeByName(String name) {
-        return recipeRepository.findRecipeByName(name.replace("-", " "));
+        Food2fork f2f = new Food2fork();
+        return F2fDataConverter.convertRecipe(f2f.getRecipe("35120").getRecipee());
+        //return recipeRepository.findRecipeByName(name.replace("-", " "));
     }
 
     public void saveRecipe(Recipe recipe) {

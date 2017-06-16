@@ -1,0 +1,19 @@
+<div ng-controller="RecipeController">
+    <div class="row">
+        <center>
+            <img ng-src="{{recipe.recipe_image_url}}" alt="Description" />
+            <br/>
+            {{recipe.recipe_name}}
+            <br/>
+            Ingredients:
+            <li ng-repeat="recipe_ingredient in recipe.recipe_ingredients">
+                {{ recipe_ingredient.ingredient.name }}
+            </li>
+            <br/>
+            More details <a ng-href="{{recipe.recipe_source_url}}">source</a>
+            <br/>
+            <button class="btn btn-default btn-lg" ng-click="getBack()">Back</button>
+        </center>
+    </div>
+    <pre>Form Data = {{recipe | json}}</pre>
+</div>

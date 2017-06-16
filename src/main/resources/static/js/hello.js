@@ -25,6 +25,10 @@ app.config(function ($routeProvider, $httpProvider, $locationProvider, vcRecaptc
         templateUrl : partialsEndpoint+'/fridge/fridge.do',
         controller : 'FridgeController',
         controllerAs: 'controller'
+    }).when('/recipe', {
+        templateUrl : partialsEndpoint+'/recipe/recipe.do',
+        controller : 'RecipeController',
+        controllerAs: 'controller'
     }).when('/ingredients', {
         templateUrl : partialsEndpoint+'/ingredients/main.do',
         controller : 'IngredientsController',
@@ -66,16 +70,16 @@ app.controller('IngredientsController', function($scope, $http) {
 
 });
 
-app.controller('RecipeController', function($scope, $http) {
-    $http.get('/partials/recipe/editor').then(function (response) {
-        console.log(response.data);
-        $scope.recipes = response.data;
-    });
-
-    console.log($scope.username);
-    console.log($scope.form);
-
-});
+//app.controller('RecipeController', function($scope, $http) {
+//    $http.get('/partials/recipe/editor').then(function (response) {
+//        console.log(response.data);
+//        $scope.recipes = response.data;
+//    });
+//
+//    console.log($scope.username);
+//    console.log($scope.form);
+//
+//});
 
 app.controller('RegisterController', ['$scope', 'vcRecaptchaService', '$http', '$location', '$rootScope', function ($scope, recaptcha, $http, $location, $rootScope) {
     $scope.register = function() {
@@ -252,7 +256,7 @@ app.controller('LoginController', function ($rootScope, $scope, $http, $location
         $scope.authenticate($scope.credentials, function(authenticated) {
             if (authenticated) {
                 console.log("Login succeeded");
-                $location.url("/fridge");
+                $location.url("/recipe");
                 $scope.error = false;
                 $rootScope.authenticated = true;
             } else {
@@ -393,6 +397,24 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
     };
 });
 
+app.controller('RecipeController', function($scope, $location, $http) {
+    $scope.recipe = undefined;
+    $scope.name = $location.search().name;
+    console.log("\n\n\n" + $scope.name + "\n\n\n");
+
+    $http.get("/api/recipe/{name}", $scope.name).then(function(response){
+        console.log("\n\n\n" + response.data + "\n\n\n");
+        $scope.recipe = response.data;
+    }, function () {
+        $location.url('/login');
+    });
+
+
+    $scope.getBack = function() {
+        window.history.back();
+    };
+});
+
 app.controller('RecipeEditor', function($scope, $http) {
 
     $scope.currentView = "editor";
@@ -401,9 +423,9 @@ app.controller('RecipeEditor', function($scope, $http) {
     $scope.recipe =
     {
         name: '',
-        difficulty: 'MEDIUM',
         estimatedPreparationTime: 0,
-        servingsCount: 0,
+        difficulty: 'MEDIUM',
+        servingsCount: 1,
         //recipeIngredients: ['banana', 'strawberry']
         recipeIngredients: []
     };
