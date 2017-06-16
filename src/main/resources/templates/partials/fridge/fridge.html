@@ -16,11 +16,11 @@
     <br/>
     <ul>
         <li ng-repeat="ingredient in selectedIngredients">
-            {{ ingredient.name }}
-            <button class="btn btn-default btn-lg" ng-click="deleteIngredient(ingredient)">
-                <span ng-class="{'fa fa-spinner fa-spin' : clickedDelete}"></span>
-                <span ng-show="!clickedDelete">Delete</span>
-                <span ng-show="clickedDelete">Deleting ...</span>
+            {{ ingredient.name }}. Expires {{ingredient.date}}
+            <button class="btn btn-default btn-lg" ng-click="deleteIngredient(ingredient,$index)">
+                <span ng-class="{'fa fa-spinner fa-spin' : clickedDelete[$index].clicked}"></span>
+                <span ng-show="!clickedDelete[$index].clicked">Delete</span>
+                <span ng-show="clickedDelete[$index].clicked">Deleting ...</span>
             </button>
         </li>
     </ul>
