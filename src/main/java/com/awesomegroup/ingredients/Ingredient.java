@@ -2,6 +2,7 @@ package com.awesomegroup.ingredients;
 
 import com.awesomegroup.fridgeIngredient.FridgeIngredient;
 import com.awesomegroup.recipeingredient.RecipeIngredient;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -30,6 +31,7 @@ public class Ingredient {
 
     @OneToMany(mappedBy = "ingredient", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JsonIgnoreProperties("ingredient")
+    @JsonIgnore
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
     @OneToMany(mappedBy = "ingredient")

@@ -2,7 +2,9 @@ package com.awesomegroup.recipeingredient;
 
 import com.awesomegroup.ingredients.Ingredient;
 import com.awesomegroup.recipe.Recipe;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 
@@ -21,10 +23,12 @@ public class RecipeIngredient {
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "recipe_id")
     @JsonIgnoreProperties("recipeIngredients")
+    @JsonIgnore
     private Recipe recipe;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "ingredient_id")
+    @JsonProperty("ingredient")
     @JsonIgnoreProperties("recipeIngredients")
     private Ingredient ingredient;
 
