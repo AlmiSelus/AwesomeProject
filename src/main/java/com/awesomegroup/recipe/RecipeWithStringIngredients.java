@@ -12,49 +12,28 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by Michał on 2017-04-14.
+ * Created by wrobe on 16.06.2017.
  */
-@Entity
-@Table(name = "recipes")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Recipe {
+public class RecipeWithStringIngredients {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "recipe_id", nullable = false, unique = true, updatable = false)
-    @JsonProperty("id")
+    @JsonProperty("recipeID")
     private long recipeID;
 
-    @Column(name = "recipe_name", nullable = false, unique = true, length = 300)
-    @JsonProperty("recipe_name")
+    @JsonProperty("name")
     private String name;
 
-    @Column(name = "recipe_preparation_time")
     @JsonProperty("estimatedPreparationTime")
     private short estimatedPreparationTime;
 
-    @Column(name = "recipe_difficulty", nullable = false)
+    @JsonProperty("difficulty")
     private RecipeDifficulty difficulty;
 
-    @Column(name = "recipe_servings", nullable = false)
-    @JsonProperty("servings")
+    @JsonProperty("servingsCount")
     private byte servingsCount;
 
-    @OneToMany(mappedBy = "recipe", cascade = {CascadeType.ALL})
-    @JsonIgnoreProperties("recipe")
-    @JsonProperty("recipe_ingredients")
-    private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
-
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "recipe")
-    private FavouriteRecipe favouriteRecipe;
-
-    @JsonProperty("recipe_source_url")
-    @Column(name = "recipe_source_url")
-    private String sourceUrl;
-
-    @JsonProperty("recipe_image_url")
-    @Column(name = "recipe_image_url")
-    private String imageUrl;
+    @JsonProperty("recipeIngredients")
+    private List<String> recipeIngredients = new ArrayList<>();
 
     public static Recipe.Builder create() {
         return new Recipe.Builder();
@@ -84,20 +63,8 @@ public class Recipe {
         return servingsCount;
     }
 
-    public List<RecipeIngredient> getRecipeIngredients() {
+    public List<String> getRecipeIngredients() {
         return recipeIngredients;
-    }
-
-    public FavouriteRecipe getFavouriteRecipe() {
-        return favouriteRecipe;
-    }
-
-    public String getSourceUrl() {
-        return sourceUrl;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
     }
 
     @Override
@@ -114,13 +81,13 @@ public class Recipe {
 
     public static class Builder {
 
-        private Recipe recipe;
+        private RecipeWithStringIngredients recipe;
 
         public Builder() {
-            recipe = new Recipe();
+            recipe = new RecipeWithStringIngredients();
         }
 
-        public Builder(Recipe recipe) {
+        public Builder(RecipeWithStringIngredients recipe) {
             this.recipe = recipe;
         }
 
@@ -149,23 +116,13 @@ public class Recipe {
             return this;
         }
 
-        public Builder ingredients(RecipeIngredient... ingredients) {
+        public Builder ingredients(String... ingredients) {
             recipe.recipeIngredients.clear();
             recipe.recipeIngredients.addAll(Arrays.asList(ingredients));
             return this;
         }
 
-        public Builder sourceUrl(String url) {
-            recipe.sourceUrl = url;
-            return this;
-        }
-
-        public Builder imageUrl(String url) {
-            recipe.imageUrl = url;
-            return this;
-        }
-
-        public Recipe build() {
+        public RecipeWithStringIngredients build() {
             return recipe;
         }
     }

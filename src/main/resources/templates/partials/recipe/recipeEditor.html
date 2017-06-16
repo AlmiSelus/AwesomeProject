@@ -22,10 +22,18 @@
             <table boarder="0">
                 <tr>
                     <td>
-                        Recipe name:
+                        Recipe name
                     </td>
                     <td>
                         <input type="text" ng-model="recipe.name" ng-change="onRecipeEdit()" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Recipe preparation time
+                    </td>
+                    <td>
+                        <input type="number" step="1" ng-value="recipe.estimatedPreparationTime" ng-model="recipe.estimatedPreparationTime" ng-change="onRecipeEdit()" />
                     </td>
                 </tr>
                 <tr>
@@ -39,10 +47,10 @@
                 </tr>
                 <tr>
                     <td>
-                        Recipe preparation time
+                        Servings count
                     </td>
                     <td>
-                        <input type="number" step="1" ng-model="recipe.preparationTime" ng-change="onRecipeEdit()" />
+                        <input type="number" step="1" ng-value="recipe.servingsCount" ng-model="recipe.servingsCount" ng-change="onRecipeEdit()" />
                     </td>
                 </tr>
             </table>
