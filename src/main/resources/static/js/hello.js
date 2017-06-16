@@ -401,9 +401,9 @@ app.controller('RecipeEditor', function($scope, $http) {
     $scope.recipe =
     {
         name: '',
-        difficulty: 'MEDIUM',
         estimatedPreparationTime: 0,
-        servingsCount: 0,
+        difficulty: 'MEDIUM',
+        servingsCount: 1,
         //recipeIngredients: ['banana', 'strawberry']
         recipeIngredients: []
     };

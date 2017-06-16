@@ -29,7 +29,7 @@ public class Recipe {
     private String name;
 
     @Column(name = "recipe_preparation_time")
-    @JsonProperty("prepTime")
+    @JsonProperty("estimatedPreparationTime")
     private short estimatedPreparationTime;
 
     @Column(name = "recipe_difficulty", nullable = false)
@@ -39,7 +39,7 @@ public class Recipe {
     @JsonProperty("servings")
     private byte servingsCount;
 
-    @OneToMany(mappedBy = "recipe", cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "recipe", cascade = {CascadeType.ALL})
     @JsonIgnoreProperties("recipe")
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 

@@ -23,7 +23,7 @@ public class RecipeWithStringIngredients {
     @JsonProperty("name")
     private String name;
 
-    @JsonProperty("preparationTime")
+    @JsonProperty("estimatedPreparationTime")
     private short estimatedPreparationTime;
 
     @JsonProperty("difficulty")
