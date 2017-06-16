@@ -345,7 +345,7 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
 
         $scope.deleteIngredient = function(fIngredient, index) {
             console.log(fIngredient);
-            $scope.clickedDelete[index].clicked = true;
+            //$scope.clickedDelete[index].clicked = true;
             $http.delete("/api/fridge/ingredient/remove/" + fIngredient.name).then(function(response) {
                 $scope.clickedDelete[index].clicked = false;
                 $http.get($rootScope.apiEndpoint + '/fridge/ingredients').then(function (response) {
