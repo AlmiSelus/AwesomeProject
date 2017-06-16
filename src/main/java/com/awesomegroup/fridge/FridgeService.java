@@ -94,17 +94,19 @@ public class FridgeService {
         }).orElse(false);
     }
 
-    public boolean removeFridgeIngredientForUser(Principal principal, FridgeIngredientJson ingredient) {
-        if(principal == null || ingredient == null) {
+    public boolean removeFridgeIngredientForUser(Principal principal, String ingredientName) {
+        if(principal == null || "".equals(ingredientName)) {
             return false;
         }
 
         return userRepository.findUserByEmail(principal.getName()).map(user->
-                Optional.of(ingredient)
-                    .map(ingr->ingredientsRepository.findByName(ingr.getIngredientName())
+                Optional.of(ingredientName)
+                    .map(ingr->ingredientsRepository.findByName(ingr)
                         .map(optionalIngr -> {
-                            user.getFridge().getFridgeIngredients().removeIf(fridgeIngredient ->
-                                fridgeIngredient.getIngredient().getIngredientName().equals(ingredient.getIngredientName()));
+//                            Optional<FridgeIngredient> fridgeIngredient = user.getFridge().getFridgeIngredients().stream().filter(fridgeIngredient1 ->
+//                                    fridgeIngredient1.getIngredient().getIngredientName().equals(ingredientName)).findFirst();
+//                            fridgeIngredient.ifPresent(fridgeIngredient1 -> user.getFridge().getFridgeIngredients().remove(fridgeIngredient1));
+                            fridgeRepository.deleteFridgeIngredient(user.getFridge(), optionalIngr);
                             fridgeRepository.save(user.getFridge());
                             return true;
                         }).orElse(false)).orElse(false))
@@ -115,7 +117,10 @@ public class FridgeService {
         return userRepository.findUserByEmail(principal.getName())
             .map(user -> user.getFridge().getFridgeIngredients().stream().map(ingredient->{
                     log.info("Map ingredient {}", ingredient.toString());
-                    return FridgeIngredientJson.create().name(ingredient.getIngredient().getIngredientName()).expires(ingredient.getExpireDate().toString()).build();
+                    return FridgeIngredientJson.create()
+                            .name(ingredient.getIngredient().getIngredientName())
+                            .expires(ingredient.getExpireDate().toString())
+                            .build();
                 }).collect(Collectors.toList())
             ).orElse(Collections.emptyList());
     }

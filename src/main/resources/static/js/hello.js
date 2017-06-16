@@ -270,10 +270,17 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
         $scope.ingredients = [];
         $scope.selectedIngredients = [];
         $scope.picked = {ingredient : undefined, date: {}};
+        $scope.clicked = false;
+        $scope.doneOk  = false;
+        $scope.clickedDelete = [];
+
 
         $http.get($rootScope.apiEndpoint + '/fridge/ingredients').then(function (response) {
             console.log(response);
             $scope.selectedIngredients = response.data;
+            for(var i = 0; i < response.data.length; ++i) {
+                $scope.clickedDelete[i] = {clicked : false};
+            }
         }, function() {
             $location.url('/login');
         });
@@ -285,9 +292,6 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
             $location.url('/login');
         });
 
-        $scope.clicked = false;
-        $scope.doneOk  = false;
-        $scope.clickedDelete = false;
 
         $scope.addIngredient = function() {
             if($scope.picked.ingredient != undefined)
@@ -319,10 +323,11 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
             }
         };
 
-        $scope.deleteIngredient = function(fIngredient) {
+        $scope.deleteIngredient = function(fIngredient, index) {
             console.log(fIngredient);
-            $scope.clickedDelete = true;
-            $http.delete("/api/fridge/ingredient/remove", fIngredient).then(function(response){
+            $scope.clickedDelete[index].clicked = true;
+            $http.delete("/api/fridge/ingredient/remove/" + fIngredient.name).then(function(response) {
+                $scope.clickedDelete[index].clicked = false;
                 $http.get($rootScope.apiEndpoint + '/fridge/ingredients').then(function (response) {
                     console.log(response);
                     $scope.selectedIngredients = response.data;

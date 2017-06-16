@@ -285,7 +285,7 @@ public class FridgeServiceTests {
         assertThat(f.getFridgeIngredients().size(), is(1));
         assertThat(f.getFridgeIngredients().get(0).getIngredient().getIngredientName(), is("test1"));
 
-        boolean result = service.removeFridgeIngredientForUser(basePrincipal, FridgeIngredientJson.create().name("test1").build());
+        boolean result = service.removeFridgeIngredientForUser(basePrincipal, "test1");
 
         assertThat(result, is(true));
         assertThat(user.getFridge().getFridgeIngredients().size(), is(0));

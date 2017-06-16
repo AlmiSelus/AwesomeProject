@@ -45,9 +45,9 @@ public class FridgeRestController {
         return fridgeService.getCurrentIngredients(principal);
     }
 
-    @DeleteMapping("/api/fridge/ingredient/remove")
-    public ResponseEntity<ResponseJson> removeIngredient(Principal principal, @RequestBody FridgeIngredientJson ingredient) {
-        return Optional.of(fridgeService.removeFridgeIngredientForUser(principal, ingredient))
+    @DeleteMapping("/api/fridge/ingredient/remove/{name}")
+    public ResponseEntity<ResponseJson> removeIngredient(Principal principal, @PathVariable("name") String ingredientName) {
+        return Optional.of(fridgeService.removeFridgeIngredientForUser(principal, ingredientName))
                 .map(b->ResponseEntityUtils.ok(""))
                 .orElse(ResponseEntityUtils.notAcceptable("Could not remove"));
     }
