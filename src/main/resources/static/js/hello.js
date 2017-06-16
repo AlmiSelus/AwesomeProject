@@ -1,4 +1,4 @@
-var app = angular.module('hello', [ 'ngRoute', 'vcRecaptcha', 'ngMessages', 'ui.select', 'ngSanitize' ]);
+var app = angular.module('hello', [ 'ngRoute', 'vcRecaptcha', 'ngMessages', 'ui.select', 'ngSanitize', 'ui.bootstrap' ]);
 app.config(function ($routeProvider, $httpProvider, $locationProvider, vcRecaptchaServiceProvider) {
     vcRecaptchaServiceProvider.setSiteKey('6LcbwCIUAAAAAGjuEk3pzNbcnvS1Z289hcaMkx0N');
 
@@ -274,6 +274,26 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
         $scope.doneOk  = false;
         $scope.clickedDelete = [];
 
+        $scope.today = function() {
+            $scope.picked.date = new Date();
+        };
+        $scope.today();
+
+        $scope.clear = function () {
+            $scope.picked.date = null;
+        };
+
+        $scope.open = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+
+            $scope.opened = true;
+        };
+
+        $scope.dateOptions = {
+            formatYear: 'yy',
+            startingDay: 1
+        };
 
         $http.get($rootScope.apiEndpoint + '/fridge/ingredients').then(function (response) {
             console.log(response);
@@ -299,7 +319,7 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
             $scope.clicked = true;
             $scope.doneOk = false;
 
-            var ingredientData = {'name' : $scope.picked.ingredient.name, 'date' : $scope.picked.date};
+            var ingredientData = {'name' : $scope.picked.ingredient.name, 'date' : $scope.picked.date.toISOString().slice(0,10)};
 
             $http.post($rootScope.apiEndpoint + "/fridge/addIngredient", ingredientData).then(function(response){
                 $scope.clicked = false;

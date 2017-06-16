@@ -1,19 +1,37 @@
 <div ng-controller="FridgeController">
-    <ui-select ng-disabled = "enabled" ng-model="picked.ingredient" theme="select2" style="width: 800px;">
-        <ui-select-match placeholder="Select ingredients...">{{picked.ingredient.name}}</ui-select-match>
-        <ui-select-choices repeat="ingredient in ingredients | propsFilter: {name: $select.search}">
-            <div ng-bind-html="ingredient.name | highlight: $select.search"></div>
-        </ui-select-choices>
-    </ui-select>
-    <input type="date"  ng-model="picked.date" placeholder="yyyy-MM-dd" />
-    <br/>
-    <button class="btn btn-default btn-lg" ng-click="addIngredient()">
-        <span ng-class="{'fa fa-spinner fa-spin' : clicked, 'fa fa-check' : doneOk}"></span>
-        <span ng-show="!clicked &amp;&amp; !doneOk">Save</span>
-        <span ng-show="clicked &amp;&amp; !doneOk">Saving ...</span>
-        <span ng-show="!clicked &amp;&amp; doneOk">Saved!</span>
-    </button>
-    <br/>
+    <div class="row">
+        <ui-select ng-disabled = "enabled" ng-model="picked.ingredient" theme="select2" class="col-md-6">
+            <ui-select-match placeholder="Select ingredients...">{{picked.ingredient.name}}</ui-select-match>
+            <ui-select-choices repeat="ingredient in ingredients | propsFilter: {name: $select.search}">
+                <div ng-bind-html="ingredient.name | highlight: $select.search"></div>
+            </ui-select-choices>
+        </ui-select>
+        <div class="col-md-2 col-md-offset-1">
+            <p class="input-group">
+                <input type="text" class="form-control"
+                       datepicker-popup="yyyy-MM-dd"
+                       ng-model="picked.date"
+                       is-open="opened"
+                       min-date="minDate"
+                       ng-required="true"
+                       close-text="Close"
+                       ng-click="open($event)" />
+                <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="open($event)">
+                    <i class="fa fa-calendar"></i>
+                </button>
+            </span>
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <button class="btn btn-default btn-lg" ng-click="addIngredient()">
+            <span ng-class="{'fa fa-spinner fa-spin' : clicked, 'fa fa-check' : doneOk}"></span>
+            <span ng-show="!clicked &amp;&amp; !doneOk">Save</span>
+            <span ng-show="clicked &amp;&amp; !doneOk">Saving ...</span>
+            <span ng-show="!clicked &amp;&amp; doneOk">Saved!</span>
+        </button>
+    </div>
     <ul>
         <li ng-repeat="ingredient in selectedIngredients">
             {{ ingredient.name }}. Expires {{ingredient.date}}
@@ -24,5 +42,4 @@
             </button>
         </li>
     </ul>
-
 </div>
