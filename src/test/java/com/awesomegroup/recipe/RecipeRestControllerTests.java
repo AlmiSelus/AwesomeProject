@@ -80,11 +80,11 @@ public class RecipeRestControllerTests {
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].recipe_name", is("Mock recipe 1")))
-                .andExpect(jsonPath("$[0].prepTime", is(25)))
+                .andExpect(jsonPath("$[0].estimatedPreparationTime", is(25)))
                 .andExpect(jsonPath("$[0].servings", is(2)))
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].recipe_name", is("Mock recipe 2")))
-                .andExpect(jsonPath("$[1].prepTime", is(10)))
+                .andExpect(jsonPath("$[1].estimatedPreparationTime", is(10)))
                 .andExpect(jsonPath("$[1].servings", is(1)));
     }
 
@@ -108,7 +108,7 @@ public class RecipeRestControllerTests {
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].recipe_name", is("Mock recipe 1")))
-                .andExpect(jsonPath("$[0].prepTime", is(25)))
+                .andExpect(jsonPath("$[0].estimatedPreparationTime", is(25)))
                 .andExpect(jsonPath("$[0].servings", is(2)));
     }
 
@@ -126,7 +126,7 @@ public class RecipeRestControllerTests {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.recipe_name", is("Mock recipe 1")))
-                .andExpect(jsonPath("$.prepTime", is(25)))
+                .andExpect(jsonPath("$.estimatedPreparationTime", is(25)))
                 .andExpect(jsonPath("$.servings", is(2)));
     }
 
