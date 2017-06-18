@@ -6240,8 +6240,8 @@ input[type=text]:focus:not([readonly]),
 input[type=time]:focus:not([readonly]),
 input[type=url]:focus:not([readonly]),
 textarea.md-textarea:focus:not([readonly]) {
-    border-bottom:1px solid #fbc02d !important;
-    box-shadow:0 1px 0 0 #fbc02d !important;;
+    border-bottom: 1px solid #fbc02d !important;
+    box-shadow: 0 1px 0 0 #fbc02d !important;;
 }
 
 input[type=date]:focus:not([readonly])+label,
@@ -6282,7 +6282,8 @@ textarea.md-textarea:focus:not([readonly])+label {
     line-height: 32px;
 }
 
-.chip, .chips .input {
+.chip,
+.chips .input {
     height: 32px;
     font-weight: 500;
 }
@@ -6326,5 +6327,33 @@ md-toolbar.md-hue-1:not(.md-menu-toolbar) {
 }
 
 .md-button.md-primary {
-    color: #fbc02d;
+    color: #fbc02d !important;
 }
+
+.row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.pd-0 {
+    padding: 0 !important;
+}
+
+.side > li {
+    width: 100%;
+    box-shadow: none !important;
+    padding: 0;
+    margin-bottom: 1px !important;
+    margin-left: 0;
+    margin-top: 0;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+

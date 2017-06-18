@@ -296,10 +296,14 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
             $location.url('/login');
         });
 
-        function loadRecipesByIngredients() {
-            var ingredientNames = $scope.selectedIngredients.map(function(ingredient) {
+        function mapToNameList(ingredients) {
+            return ingredients.map(function(ingredient) {
                 return ingredient.name;
             });
+        }
+
+        function loadRecipesByIngredients() {
+            var ingredientNames = mapToNameList($scope.selectedIngredients);
 
             $http.post($rootScope.apiEndpoint + '/fridge/recipes/matching', ingredientNames).then(function (response) {
                 $scope.matchingRecipes = response.data;
@@ -308,7 +312,14 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
             });
         }
 
-        loadRecipesByIngredients();
+        $scope.setupClassIfInFridge = function (ingredientName) {
+            console.log("setup ingredients call!");
+            var ingredientNames = mapToNameList($scope.selectedIngredients);
+            console.log("Index of = ", ingredientNames.indexOf(ingredientName) > -1);
+            return ingredientNames.indexOf(ingredientName) > -1;
+        };
+
+        // loadRecipesByIngredients();
 
         $scope.selectedItem  = null;
         $scope.searchText    = null;
