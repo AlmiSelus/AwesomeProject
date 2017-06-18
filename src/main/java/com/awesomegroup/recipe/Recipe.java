@@ -26,10 +26,11 @@ public class Recipe {
     private long recipeID;
 
     @Column(name = "recipe_name", nullable = false, unique = true, length = 300)
+    @JsonProperty("recipe_name")
     private String name;
 
     @Column(name = "recipe_preparation_time")
-    @JsonProperty("prepTime")
+    @JsonProperty("estimatedPreparationTime")
     private short estimatedPreparationTime;
 
     @Column(name = "recipe_difficulty", nullable = false)
@@ -41,10 +42,19 @@ public class Recipe {
 
     @OneToMany(mappedBy = "recipe", cascade = {CascadeType.ALL})
     @JsonIgnoreProperties("recipe")
+    @JsonProperty("recipe_ingredients")
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "recipe")
     private FavouriteRecipe favouriteRecipe;
+
+    @JsonProperty("recipe_source_url")
+    @Column(name = "recipe_source_url")
+    private String sourceUrl;
+
+    @JsonProperty("recipe_image_url")
+    @Column(name = "recipe_image_url")
+    private String imageUrl;
 
     public static Recipe.Builder create() {
         return new Recipe.Builder();
@@ -80,6 +90,14 @@ public class Recipe {
 
     public FavouriteRecipe getFavouriteRecipe() {
         return favouriteRecipe;
+    }
+
+    public String getSourceUrl() {
+        return sourceUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     @Override
@@ -134,6 +152,16 @@ public class Recipe {
         public Builder ingredients(RecipeIngredient... ingredients) {
             recipe.recipeIngredients.clear();
             recipe.recipeIngredients.addAll(Arrays.asList(ingredients));
+            return this;
+        }
+
+        public Builder sourceUrl(String url) {
+            recipe.sourceUrl = url;
+            return this;
+        }
+
+        public Builder imageUrl(String url) {
+            recipe.imageUrl = url;
             return this;
         }
 

@@ -1,5 +1,10 @@
 package com.awesomegroup.recipe;
 
+import com.awesomegroup.food2fork.F2fDataConverter;
+import com.awesomegroup.food2fork.Food2fork;
+import com.awesomegroup.ingredients.Ingredient;
+import com.awesomegroup.ingredients.IngredientsService;
+import com.awesomegroup.recipeingredient.RecipeIngredient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -19,6 +24,9 @@ public class RecipeService {
     @Autowired
     private RecipeRepository recipeRepository;
 
+    @Autowired
+    private IngredientsService ingredientsService;
+
     public Iterable<Recipe> getAllRecipesPaged(PageRequest pageRequest) {
         return recipeRepository.findAllPaged(pageRequest);
     }
@@ -32,10 +40,64 @@ public class RecipeService {
     }
 
     public Recipe getRecipeByName(String name) {
-        return recipeRepository.findRecipeByName(name.replace("-", " "));
+        Food2fork f2f = new Food2fork();
+        return F2fDataConverter.convertRecipe(f2f.getRecipe("35120").getRecipee());
+        //return recipeRepository.findRecipeByName(name.replace("-", " "));
     }
 
     public void saveRecipe(Recipe recipe) {
         Optional.ofNullable(recipe).ifPresent(r -> recipeRepository.save(r));
+    }
+
+    public void saveRecipeWithStringIngredients(RecipeWithStringIngredients newRecipeWithStringIngredients) {
+        if(newRecipeWithStringIngredients != null) {
+            Recipe recipe = Recipe.create()
+                    .name(newRecipeWithStringIngredients.getName())
+                    .preparationTime(newRecipeWithStringIngredients.getEstimatedPreparationTime())
+                    .difficulty(newRecipeWithStringIngredients.getDifficulty())
+                    .servings(newRecipeWithStringIngredients.getServingsCount())
+                    .build();
+
+            // handle recipe ingredients
+            newRecipeWithStringIngredients.getRecipeIngredients().forEach(
+                    (String ingredientName) ->{
+                        Ingredient referencedIngredient = null;
+                        Optional<Ingredient> foundIngredient = ingredientsService.findIngredientsByName(ingredientName);
+                        if(foundIngredient.isPresent()) {
+                            System.out.println("found existing ingredient: " + ingredientName);
+                            referencedIngredient = foundIngredient.get();
+                        }else{
+                            System.out.println("Create new ingredient: " + ingredientName);
+                            referencedIngredient = Ingredient.create()
+                                    .name(ingredientName)
+                                    .build();
+                            ingredientsService.AddIngredient(referencedIngredient);
+                        }
+
+                        if(referencedIngredient != null) {
+                            System.out.println("reference ingredient: " + ingredientName);
+                            RecipeIngredient recipeIngredient = RecipeIngredient.create()
+                                    .recipe(recipe)
+                                    .ingredient(referencedIngredient)
+                                    .count(1)
+                                    .build();
+                            if(recipeIngredient != null) {
+                                System.out.println("Created recipe ingredient for ingredient: " + ingredientName);
+                                recipe.getRecipeIngredients().add(recipeIngredient);
+                            }else{
+                                System.out.println("failed to create recipe ingredient: " + ingredientName);
+                            }
+                        }else{
+                            System.out.println("did not found nor created ingredient: " + ingredientName);
+                            throw new RuntimeException("Failed to create recipe-ingredient relation!");
+                        }
+                    }
+            );
+            recipeRepository.save(recipe);
+        }
+    }
+
+    public void RemoveRecipe(long id) {
+        recipeRepository.delete(id);
     }
 }

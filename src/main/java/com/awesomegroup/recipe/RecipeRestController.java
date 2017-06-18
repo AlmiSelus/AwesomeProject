@@ -77,49 +77,7 @@ public class RecipeRestController {
         if(newRecipeWithStringIngredients != null) {
             try {
                 if(recipeService.getRecipeByName(newRecipeWithStringIngredients.getName()) == null) {
-                    Recipe recipe = Recipe.create()
-                            .name(newRecipeWithStringIngredients.getName())
-                            .preparationTime(newRecipeWithStringIngredients.getEstimatedPreparationTime())
-                            .difficulty(newRecipeWithStringIngredients.getDifficulty())
-                            .servings(newRecipeWithStringIngredients.getServingsCount())
-                            .build();
-
-                    // handle recipe ingredients
-                    newRecipeWithStringIngredients.getRecipeIngredients().forEach(
-                        (String ingredientName) ->{
-                            Ingredient referencedIngredient = null;
-                            Optional<Ingredient> foundIngredient = ingredientsService.findIngredientsByName(ingredientName);
-                            if(foundIngredient.isPresent()) {
-                                System.out.println("found existing ingredient: " + ingredientName);
-                                referencedIngredient = foundIngredient.get();
-                            }else{
-                                System.out.println("Create new ingredient: " + ingredientName);
-                                referencedIngredient = Ingredient.create()
-                                        .name(ingredientName)
-                                        .build();
-                                ingredientsService.AddIngredient(referencedIngredient);
-                            }
-
-                            if(referencedIngredient != null) {
-                                System.out.println("reference ingredient: " + ingredientName);
-                                RecipeIngredient recipeIngredient = RecipeIngredient.create()
-                                        .recipe(recipe)
-                                        .ingredient(referencedIngredient)
-                                        .count(1)
-                                        .build();
-                                if(recipeIngredient != null) {
-                                    System.out.println("Created recipe ingredient for ingredient: " + ingredientName);
-                                    recipe.getRecipeIngredients().add(recipeIngredient);
-                                }else{
-                                    System.out.println("failed to create recipe ingredient: " + ingredientName);
-                                }
-                            }else{
-                                System.out.println("did not found nor created ingredient: " + ingredientName);
-                                throw new RuntimeException("Failed to create recipe-ingredient relation!");
-                            }
-                        }
-                    );
-                    recipeService.saveRecipe(recipe);
+                    recipeService.saveRecipeWithStringIngredients(newRecipeWithStringIngredients);
 
                 }else{
                     recipeAddResult.success = false;
@@ -144,5 +102,10 @@ public class RecipeRestController {
     @PostMapping("api/recipe/log")
     public void logToConsole(@RequestBody String content) {
         System.out.println(content);
+    }
+
+    @DeleteMapping("api/recipe/delete/{id}")
+    public void deleteRecipe(@PathVariable("id") long id) {
+        recipeService.RemoveRecipe(id);
     }
 }

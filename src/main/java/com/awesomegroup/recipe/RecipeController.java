@@ -21,4 +21,8 @@ public class RecipeController {
     public String displayRecipesListPartial() {
         return "partials/recipe/list";
     }
+
+
+    @GetMapping("recipe")
+    public String displayRecipeInfo() {return "partials/recipe/recipe";    }
 }
