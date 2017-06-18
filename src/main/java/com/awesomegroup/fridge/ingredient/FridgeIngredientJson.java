@@ -1,4 +1,4 @@
-package com.awesomegroup.fridgeIngredient;
+package com.awesomegroup.fridge.ingredient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

@@ -1,4 +1,7 @@
-var app = angular.module('hello', [ 'ngRoute', 'vcRecaptcha', 'ngMessages', 'ui.select', 'ngSanitize', 'ui.bootstrap' ]);
+var app = angular.module('hello', [ 'ngRoute', 'vcRecaptcha', 'ngMessages', 'ui.select', 'ngSanitize', 'ui.bootstrap', 'ngMaterial',
+    'ngAnimate',
+    'ngAria',
+    'mdPickers']);
 app.config(function ($routeProvider, $httpProvider, $locationProvider, vcRecaptchaServiceProvider) {
     vcRecaptchaServiceProvider.setSiteKey('6LcbwCIUAAAAAGjuEk3pzNbcnvS1Z289hcaMkx0N');
 
@@ -269,42 +272,19 @@ app.controller('LoginController', function ($rootScope, $scope, $http, $location
     };
 });
 
-app.controller('FridgeController', function ($rootScope, $scope, $http, $location) {
+app.controller('FridgeController', function ($rootScope, $scope, $http, $location, $mdpDatePicker) {
     if($rootScope.authenticated) {
         $scope.ingredients = [];
         $scope.selectedIngredients = [];
         $scope.picked = {ingredient : undefined, date: {}};
         $scope.clicked = false;
         $scope.doneOk  = false;
-        $scope.clickedDelete = [];
-
-        $scope.today = function() {
-            $scope.picked.date = new Date();
-        };
-        $scope.today();
-
-        $scope.clear = function () {
-            $scope.picked.date = null;
-        };
-
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened = true;
-        };
-
-        $scope.dateOptions = {
-            formatYear: 'yy',
-            startingDay: 1
-        };
+        $scope.matchingRecipes = [];
 
         $http.get($rootScope.apiEndpoint + '/fridge/ingredients').then(function (response) {
             console.log(response);
             $scope.selectedIngredients = response.data;
-            for(var i = 0; i < response.data.length; ++i) {
-                $scope.clickedDelete[i] = {clicked : false};
-            }
+            loadRecipesByIngredients();
         }, function() {
             $location.url('/login');
         });
@@ -316,6 +296,36 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
             $location.url('/login');
         });
 
+        function loadRecipesByIngredients() {
+            var ingredientNames = $scope.selectedIngredients.map(function(ingredient) {
+                return ingredient.name;
+            });
+
+            $http.post($rootScope.apiEndpoint + '/fridge/recipes/matching', ingredientNames).then(function (response) {
+                $scope.matchingRecipes = response.data;
+            }, function (err) {
+                console.log(err);
+            });
+        }
+
+        loadRecipesByIngredients();
+
+        $scope.selectedItem  = null;
+        $scope.searchText    = null;
+
+        $scope.querySearch = function(query) {
+            return query != null && query ? $scope.ingredients.filter(createFilterFor(query)) : $scope.ingredients;
+        };
+
+        /**
+         * Create filter function for a query string
+         */
+        function createFilterFor(query) {
+            var lowercaseQuery = angular.lowercase(query);
+            return function filterFn(state) {
+                return (state.name.indexOf(lowercaseQuery) === 0);
+            };
+        }
 
         $scope.addIngredient = function() {
             if($scope.picked.ingredient != undefined)
@@ -323,7 +333,7 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
             $scope.clicked = true;
             $scope.doneOk = false;
 
-            var ingredientData = {'name' : $scope.picked.ingredient.name, 'date' : $scope.picked.date.toISOString().slice(0,10)};
+            var ingredientData = {'name' : $scope.searchText, 'date' : $scope.picked.date.toISOString().slice(0,10)};
 
             $http.post($rootScope.apiEndpoint + "/fridge/addIngredient", ingredientData).then(function(response){
                 $scope.clicked = false;
@@ -334,9 +344,11 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
                 $http.get($rootScope.apiEndpoint + '/fridge/ingredients').then(function (response) {
                     console.log(response);
                     $scope.selectedIngredients = response.data;
+                    loadRecipesByIngredients();
                 }, function() {
                     $location.url('/login');
                 });
+
 
                 $scope.clicked = false;
                 $scope.doneOk  = false;
@@ -351,15 +363,25 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
             console.log(fIngredient);
             //$scope.clickedDelete[index].clicked = true;
             $http.delete("/api/fridge/ingredient/remove/" + fIngredient.name).then(function(response) {
-                $scope.clickedDelete[index].clicked = false;
+                // $scope.clickedDelete[index].clicked = false;
                 $http.get($rootScope.apiEndpoint + '/fridge/ingredients').then(function (response) {
                     console.log(response);
                     $scope.selectedIngredients = response.data;
+                    loadRecipesByIngredients();
                 }, function() {
                     $location.url('/login');
                 });
             }, function() {
                 $location.url('/login');
+            });
+        };
+
+        $scope.currentDate = new Date();
+        $scope.showDatePicker = function(ev) {
+            $mdpDatePicker($scope.currentDate, {
+                targetEvent: ev
+            }).then(function(selectedDate) {
+                $scope.currentDate = selectedDate;
             });
         };
 

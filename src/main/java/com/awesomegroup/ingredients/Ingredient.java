@@ -1,6 +1,6 @@
 package com.awesomegroup.ingredients;
 
-import com.awesomegroup.fridgeIngredient.FridgeIngredient;
+import com.awesomegroup.fridge.ingredient.FridgeIngredient;
 import com.awesomegroup.recipeingredient.RecipeIngredient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -35,6 +35,7 @@ public class Ingredient {
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
     @OneToMany(mappedBy = "ingredient")
+    @JsonIgnore
     private List<FridgeIngredient> fridges = new ArrayList<>();
 
     public long getIngredientID() {

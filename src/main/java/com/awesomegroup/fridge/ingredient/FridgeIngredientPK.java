@@ -1,4 +1,4 @@
-package com.awesomegroup.fridgeIngredient;
+package com.awesomegroup.fridge.ingredient;
 
 import java.io.Serializable;
 

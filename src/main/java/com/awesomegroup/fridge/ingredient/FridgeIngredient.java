@@ -1,12 +1,10 @@
-package com.awesomegroup.fridgeIngredient;
+package com.awesomegroup.fridge.ingredient;
 
 import com.awesomegroup.fridge.Fridge;
 import com.awesomegroup.ingredients.Ingredient;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 
 /**

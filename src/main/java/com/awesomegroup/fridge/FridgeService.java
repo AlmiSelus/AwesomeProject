@@ -1,8 +1,8 @@
 package com.awesomegroup.fridge;
 
 import com.awesomegroup.fridge.favourite.FavouriteRecipe;
-import com.awesomegroup.fridgeIngredient.FridgeIngredient;
-import com.awesomegroup.fridgeIngredient.FridgeIngredientJson;
+import com.awesomegroup.fridge.ingredient.FridgeIngredient;
+import com.awesomegroup.fridge.ingredient.FridgeIngredientJson;
 import com.awesomegroup.ingredients.Ingredient;
 import com.awesomegroup.ingredients.IngredientsRepository;
 import com.awesomegroup.recipe.Recipe;
@@ -18,8 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -81,7 +83,7 @@ public class FridgeService {
                             fridge.getFridgeIngredients().add(FridgeIngredient.create()
                                     .ingredient(ingr)
                                     .fridge(user.getFridge())
-                                    .expires(LocalDate.parse(ingredient.getIngredientExpireDate().split("T")[0]))
+                                    .expires(LocalDate.parse(ingredient.getIngredientExpireDate()))
                                     .build());
                             log.info("Fridge ingredient added!");
                         });
@@ -185,6 +187,26 @@ public class FridgeService {
                     return true;
                 }).orElse(false)
             ).orElse(false);
+    }
+
+    public List<Recipe> findAllFittingRecipes(List<String> ingredientNames) {
+        Comparator<Recipe> recipeComparator = Comparator.comparingInt(o -> {
+            int matches = findMatchesForRecipe(o, ingredientNames);
+            log.info("Matches for recipe {} = {}", o.getName(), matches);
+            return matches;
+        });
+        Comparator<Recipe> reverseRecipeComparator = recipeComparator.reversed();
+        return ingredientNames.isEmpty() ? Collections.emptyList() :
+                fridgeRepository.findAllRecipesByIngredients(ingredientNames).stream()
+                .sorted(reverseRecipeComparator)
+                .collect(Collectors.toList());
+    }
+
+    private int findMatchesForRecipe(Recipe recipe, List<String> ingredientNames) {
+        return recipe.getRecipeIngredients().stream()
+                .filter(recipeIngredient ->
+                        ingredientNames.contains(recipeIngredient.getIngredient().getIngredientName().toLowerCase()))
+                .mapToInt(i->1).sum();
     }
 
     private boolean hasRecipeInFridgeFavourites(Fridge fridge, Recipe recipe) {
