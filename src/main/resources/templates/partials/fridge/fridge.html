@@ -79,13 +79,13 @@
             <div class="card-block">
                 <div class="container">
                     <div class="text-center">
-                        <h3>{{recipe.name}}</h3>
+                        <h3>{{recipe.recipe_name}}</h3>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <div class="options">
-                    <div class="chip" ng-repeat="recipeIngredient in recipe.recipeIngredients">
+                    <div class="chip" ng-class="{'amber' : setupClassIfInFridge(recipeIngredient.ingredient.name)}" ng-repeat="recipeIngredient in recipe.recipe_ingredients">
                         {{ recipeIngredient.ingredient.name }}
                     </div>
                 </div>
