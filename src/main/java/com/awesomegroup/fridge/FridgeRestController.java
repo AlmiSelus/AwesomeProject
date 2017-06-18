@@ -1,6 +1,6 @@
 package com.awesomegroup.fridge;
 
-import com.awesomegroup.fridgeIngredient.FridgeIngredientJson;
+import com.awesomegroup.fridge.ingredient.FridgeIngredientJson;
 import com.awesomegroup.general.ResponseEntityUtils;
 import com.awesomegroup.general.ResponseJson;
 import com.awesomegroup.ingredients.Ingredient;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Created by Michał on 2017-06-04.
@@ -43,6 +42,11 @@ public class FridgeRestController {
     @GetMapping("/api/fridge/ingredients")
     public List<FridgeIngredientJson> getCurrentIngredients(Principal principal) {
         return fridgeService.getCurrentIngredients(principal);
+    }
+
+    @PostMapping("/api/fridge/recipes/matching")
+    public List<Recipe> findAllMatchingRecipes(Principal principal, @RequestBody List<String> ingredients) {
+        return fridgeService.findAllFittingRecipes(ingredients);
     }
 
     @DeleteMapping("/api/fridge/ingredient/remove/{name}")

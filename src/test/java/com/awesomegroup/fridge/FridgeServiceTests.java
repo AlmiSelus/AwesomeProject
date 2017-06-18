@@ -1,8 +1,8 @@
 package com.awesomegroup.fridge;
 
 import com.awesomegroup.fridge.favourite.FavouriteRecipe;
-import com.awesomegroup.fridgeIngredient.FridgeIngredient;
-import com.awesomegroup.fridgeIngredient.FridgeIngredientJson;
+import com.awesomegroup.fridge.ingredient.FridgeIngredient;
+import com.awesomegroup.fridge.ingredient.FridgeIngredientJson;
 import com.awesomegroup.ingredients.Ingredient;
 import com.awesomegroup.ingredients.IngredientsRepository;
 import com.awesomegroup.recipe.Recipe;

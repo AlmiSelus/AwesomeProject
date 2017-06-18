@@ -1,8 +1,7 @@
 package com.awesomegroup.fridge;
 
 import com.awesomegroup.fridge.favourite.FavouriteRecipe;
-import com.awesomegroup.fridgeIngredient.FridgeIngredient;
-import com.awesomegroup.ingredients.Ingredient;
+import com.awesomegroup.fridge.ingredient.FridgeIngredient;
 import com.awesomegroup.user.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
