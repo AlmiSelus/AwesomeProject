@@ -10,7 +10,6 @@ import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.exceptions.Exceptions;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,6 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * Created by Michał on 2017-04-23.

@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -54,12 +53,11 @@ public class FridgeService {
 
         return userRepository.findUserByEmail(principalUser.getName()).map(user->{
             Fridge fridge = user.getFridge();
-            //fridge.getFridgeIngredients().clear();
             ingredients.stream()
                 .map(ingredient -> ingredientsRepository.findByName(ingredient.getIngredientName()))
-                .forEach(optionalIngredient -> optionalIngredient.ifPresent(ingredient->{
-                    fridge.getFridgeIngredients().add(FridgeIngredient.create().ingredient(ingredient).build());
-                }));
+                .forEach(optionalIngredient -> optionalIngredient.ifPresent(ingredient->
+                    fridge.getFridgeIngredients().add(FridgeIngredient.create().ingredient(ingredient).build())
+                ));
             fridgeRepository.save(fridge);
             return true;
         }).orElse(false);
@@ -105,9 +103,6 @@ public class FridgeService {
                 Optional.of(ingredientName)
                     .map(ingr->ingredientsRepository.findByName(ingr)
                         .map(optionalIngr -> {
-//                            Optional<FridgeIngredient> fridgeIngredient = user.getFridge().getFridgeIngredients().stream().filter(fridgeIngredient1 ->
-//                                    fridgeIngredient1.getIngredient().getIngredientName().equals(ingredientName)).findFirst();
-//                            fridgeIngredient.ifPresent(fridgeIngredient1 -> user.getFridge().getFridgeIngredients().remove(fridgeIngredient1));
                             fridgeRepository.deleteFridgeIngredient(user.getFridge(), optionalIngr);
                             fridgeRepository.save(user.getFridge());
                             return true;
