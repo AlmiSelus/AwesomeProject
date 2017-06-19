@@ -16,6 +16,13 @@ public interface RecipeRepository extends CrudRepository<Recipe, Long> {
     @Query("select r from Recipe r where r.difficulty = :difficulty")
     Page<Recipe> findByDifficulty(@Param("difficulty") byte recipeDifficulty, Pageable pageRequest);
 
+//    @Query("select r from Recipe r where r.name = :name")
+    @Query("select r from Recipe r where r.name like %:name%")
+    Page<Recipe> findByNamePaged(@Param("name") String name, Pageable pageRequest);
+
+    @Query("select count(*) from Recipe r where r.name like %:name%")
+    long findByNameCount(@Param("name") String name);
+
     @Query("select r from Recipe r")
     Page<Recipe> findAllPaged(Pageable pageRequest);
 

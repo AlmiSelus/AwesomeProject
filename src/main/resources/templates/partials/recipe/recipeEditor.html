@@ -21,21 +21,33 @@
 
         <div ng-switch-when="browse"> <!-- Browse recipes -->
 
-            <!--<table>-->
-                <!--<tr>-->
-                    <!--<td>Recipe count</td>-->
-                    <!--<td>{{recipeCount}}</td>-->
-                <!--</tr>-->
-                <!--<tr>-->
-                    <!--<td>Recipe page count</td>-->
-                    <!--<td>{{recipePageCount}}</td>-->
-                <!--</tr>-->
-            <!--</table>-->
             <div class="card">
-                <div class="card-block">
-                    <div class="text-center roundPadding">
+                <div class="card-block roundPadding">
+                    <div class="text-center">
                         <h3>Browse recipes</h3><br/>
                     </div>
+
+                    <table style="width:100%">
+                        <td style="width:10%">Search</td>
+                        <td style="width:80%"><input type="text" ng-value="search.phrase" ng-model="search.phrase" ng-change="search()" /></td>
+                        <td style="width:10%"> <button ng-click="clearSearch()">Clear</button></td>
+                    </table>
+                    <br/>
+                </div>
+            </div>
+
+            <div class="card-spacer-15"></div>
+
+            <div class="card">
+                <div class="card-block" ng-repeat="recipe in recipesToShow">
+                    <p>recipe:{{recipe}}</p> <br/>
+                </div>
+            </div>
+
+            <div class="card-spacer-15"></div>
+
+            <div class="card">
+                <div class="card-block">
                     <div align="center" >
                         <table>
                             <td>
@@ -57,22 +69,6 @@
                             </td>
                         </table>
                     </div>
-                    <br/>
-                </div>
-            </div>
-
-            <div class="card-spacer-15"></div>
-
-            <div class="card">
-                <div class="card-block" ng-repeat="recipe in recipesToShow">
-                    <p>recipe:{{recipe}}</p> <br/>
-                </div>
-            </div>
-
-            <div class="card-spacer-15"></div>
-
-            <div class="card">
-                <div class="card-block">
                     length:{{recipesToShow.length}}
                 </div>
             </div>

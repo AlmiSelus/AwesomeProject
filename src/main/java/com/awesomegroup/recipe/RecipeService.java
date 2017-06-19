@@ -32,9 +32,16 @@ public class RecipeService {
     public Iterable<Recipe> getByDifficulty(RecipeDifficulty recipeDifficulty, PageRequest pageRequest) {
         return recipeRepository.findByDifficulty(recipeDifficulty.getID(), pageRequest == null ? new PageRequest(1, RECIPES_PER_PAGE) : pageRequest);
     }
+    public Iterable<Recipe> getByNamePaged(String name, PageRequest pageRequest) {
+        return recipeRepository.findByNamePaged(name, pageRequest == null ? new PageRequest(1, RECIPES_PER_PAGE) : pageRequest);
+    }
 
     public int getCount() {
         return (int) recipeRepository.count() ;
+    }
+
+    public int getByNameCount(String name) {
+        return (int)recipeRepository.findByNameCount(name);
     }
 
     public Recipe getRecipeByName(String name) {

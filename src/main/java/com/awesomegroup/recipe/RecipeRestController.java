@@ -36,10 +36,24 @@ public class RecipeRestController {
     public int getRecipePageCount() {
         return (int) Math.ceil ( (double)recipeService.getCount() / (double)RecipeService.RECIPES_PER_PAGE );
     }
+    @GetMapping("/api/recipe-pageCount-'{name}'")
+    public int getRecipePageCount(@PathVariable("name") String name) {
+        return (int) Math.ceil ( (double)recipeService.getByNameCount(name) / (double)RecipeService.RECIPES_PER_PAGE );
+    }
+
+    @GetMapping("/api/recipe-pageSize")
+    public int getRecipePageSize() {
+        return RecipeService.RECIPES_PER_PAGE;
+    }
 
     @GetMapping("/api/recipe-{page}")
     public Iterable<Recipe> findAll(@PathVariable("page") int page) {
         return recipeService.getAllRecipesPaged(new PageRequest(page, RecipeService.RECIPES_PER_PAGE));
+    }
+
+    @GetMapping("/api/recipe-search-'{name}'/{page}")
+    public Iterable<Recipe> findByNamePaged(@PathVariable("name") String name, @PathVariable("page") int page) {
+        return recipeService.getByNamePaged(name, new PageRequest(page, RecipeService.RECIPES_PER_PAGE));
     }
 
     @GetMapping("/api/recipe/difficulty-{diff}/{page}")
