@@ -448,7 +448,7 @@ app.controller('RecipeController', function($scope, $location, $http) {
     };
 });
 
-app.controller('RecipeEditor', function($scope, $http) {
+app.controller('RecipeEditor', function($rootScope, $scope, $http) {
 
     $scope.currentView = "editor";
     $scope.errorAddRecipe = "";
@@ -465,6 +465,12 @@ app.controller('RecipeEditor', function($scope, $http) {
 
     $scope.onRecipeEdit = function() {
         $scope.errorAddRecipe = "";
+        if($scope.recipe.estimatedPreparationTime < 0) {
+            $scope.recipe.estimatedPreparationTime = 0;
+        }
+        if($scope.recipe.servingsCount < 0) {
+            $scope.recipe.servingsCount = 0;
+        }
     }
 
     $scope.addIngredient = function() {
@@ -479,6 +485,10 @@ app.controller('RecipeEditor', function($scope, $http) {
         console.log(message);
     };
 
+
+    $scope.get = function(adress) {
+        return $http.get(adress);
+    }
 
     $scope.post = function(adress, stuff) {
         $http.post(adress, stuff);
@@ -504,6 +514,60 @@ app.controller('RecipeEditor', function($scope, $http) {
         );
     };
 
-    console.log($scope.username);
-    console.log($scope.form);
+
+    $scope.recipesToShow = [];
+    $scope.recipePageNumber = 0;
+
+    $scope.recipeCount = 0;
+    $scope.recipePageCount = 0;
+
+    $scope.updateCounts = function() {
+        $http.get("api/recipe-count").then(
+            function(response) {
+                $scope.recipeCount = response.data;
+            }
+        );
+        $http.get("api/recipe-pageCount").then(
+            function(response) {
+                $scope.recipePageCount = response.data;
+            }
+        );
+    };
+
+    $scope.getRecipes = function() {
+        $http.get("api/recipe-"+$scope.recipePageNumber).then(
+            function(response) {
+                if(response.data != null) {
+                    $scope.recipesToShow = response.data.content;
+                }else{
+                    console.log("Received null recipes!");
+                }
+            }
+        );
+    };
+
+    $scope.updateBrowse = function() {
+        $scope.updateCounts();
+        $scope.getRecipes();
+    }
+
+    $scope.nextPage = function() {
+        $scope.recipePageNumber += 1;
+        if($scope.recipePageNumber >= $scope.recipePageCount) {
+            $scope.recipePageNumber = $scope.recipePageCount-1;
+        }
+        $scope.updateBrowse();
+    };
+    $scope.previousPage = function() {
+        $scope.recipePageNumber -= 1;
+        if($scope.recipePageNumber < 0) {
+            $scope.recipePageNumber = 0;
+        }
+        $scope.updateBrowse();
+    };
+
+    if($rootScope.authenticated != null && $rootScope.authenticated == true){
+        $scope.updateBrowse();
+    }
+//    console.log("Editor: " + $rootScope.authenticated);
 });

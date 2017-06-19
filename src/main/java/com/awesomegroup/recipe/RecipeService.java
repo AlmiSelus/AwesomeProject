@@ -40,9 +40,9 @@ public class RecipeService {
     }
 
     public Recipe getRecipeByName(String name) {
-        Food2fork f2f = new Food2fork();
-        return F2fDataConverter.convertRecipe(f2f.getRecipe("35120").getRecipee());
-        //return recipeRepository.findRecipeByName(name.replace("-", " "));
+//        Food2fork f2f = new Food2fork();
+//        return F2fDataConverter.convertRecipe(f2f.getRecipe("35120").getRecipee());
+        return recipeRepository.findRecipeByName(name.replace("-", " "));
     }
 
     public void saveRecipe(Recipe recipe) {
