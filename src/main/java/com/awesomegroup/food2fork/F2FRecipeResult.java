@@ -73,12 +73,13 @@ public class F2FRecipeResult {
     public String getTitle() {return this.title; }
     public String toString()
     {
-        String result = title + "/";
+        StringBuilder bld = new StringBuilder();
+        bld.append("F2FRecipeResult");
         for(int i = 0; i < ingredients.size(); ++i)
         {
-            result += ingredients.get(i).toString() + "/";
+            bld.append(ingredients.get(i));
         }
-        return result;
+        return bld.toString();
     }
 }
 

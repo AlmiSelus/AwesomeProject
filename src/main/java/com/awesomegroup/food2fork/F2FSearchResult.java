@@ -20,11 +20,12 @@ public class F2FSearchResult {
 
     public String toString()
     {
-        String result = count + "/";
+        StringBuilder bld = new StringBuilder();
+        bld.append("F2FSearchResult");
         for(int i = 0; i < Integer.parseInt(count); ++i)
         {
-            result += recipes.get(i).toString();
+            bld.append(recipes.get(i).toString());
         }
-        return result;
+        return bld.toString();
     }
 }
