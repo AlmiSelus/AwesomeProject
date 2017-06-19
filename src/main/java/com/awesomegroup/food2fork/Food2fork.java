@@ -1,7 +1,6 @@
 package com.awesomegroup.food2fork;
 
 import com.awesomegroup.ingredients.Ingredient;
-import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -9,8 +8,6 @@ import okhttp3.Response;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

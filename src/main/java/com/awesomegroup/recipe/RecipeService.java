@@ -1,7 +1,5 @@
 package com.awesomegroup.recipe;
 
-import com.awesomegroup.food2fork.F2fDataConverter;
-import com.awesomegroup.food2fork.Food2fork;
 import com.awesomegroup.ingredients.Ingredient;
 import com.awesomegroup.ingredients.IngredientsService;
 import com.awesomegroup.recipeingredient.RecipeIngredient;
