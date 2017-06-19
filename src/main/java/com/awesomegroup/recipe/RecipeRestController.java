@@ -28,6 +28,15 @@ public class RecipeRestController {
         this.ingredientsService = ingredientsService;
     }
 
+    @GetMapping("/api/recipe-count")
+    public int getRecipeCount() {
+        return recipeService.getCount();
+    }
+    @GetMapping("/api/recipe-pageCount")
+    public int getRecipePageCount() {
+        return (int) Math.ceil ( (double)recipeService.getCount() / (double)RecipeService.RECIPES_PER_PAGE );
+    }
+
     @GetMapping("/api/recipe-{page}")
     public Iterable<Recipe> findAll(@PathVariable("page") int page) {
         return recipeService.getAllRecipesPaged(new PageRequest(page, RecipeService.RECIPES_PER_PAGE));
@@ -49,11 +58,12 @@ public class RecipeRestController {
         RecipeAddResult recipeAddResult = new RecipeAddResult();
         if(newRecipe != null) {
             try {
-                if(recipeService.getRecipeByName(newRecipe.getName()) == null) {
-                    recipeService.saveRecipe(newRecipe);
-                }else{
+                Recipe foundRecipe = recipeService.getRecipeByName(newRecipe.getName());
+                if(foundRecipe != null && foundRecipe.getName().equals(newRecipe.getName())) {
                     recipeAddResult.success = false;
                     recipeAddResult.message = "There is already a recipe with given name!";
+                }else{
+                    recipeService.saveRecipe(newRecipe);
                 }
             }
             catch(DataIntegrityViolationException e) {
@@ -76,12 +86,12 @@ public class RecipeRestController {
         RecipeAddResult recipeAddResult = new RecipeAddResult();
         if(newRecipeWithStringIngredients != null) {
             try {
-                if(recipeService.getRecipeByName(newRecipeWithStringIngredients.getName()) == null) {
-                    recipeService.saveRecipeWithStringIngredients(newRecipeWithStringIngredients);
-
-                }else{
+                Recipe foundRecipe = recipeService.getRecipeByName(newRecipeWithStringIngredients.getName());
+                if(foundRecipe != null && foundRecipe.getName().equals(newRecipeWithStringIngredients.getName())) {
                     recipeAddResult.success = false;
                     recipeAddResult.message = "There is already a recipe with given name!";
+                }else{
+                    recipeService.saveRecipeWithStringIngredients(newRecipeWithStringIngredients);
                 }
             }
             catch(DataIntegrityViolationException e) {

@@ -6288,6 +6288,10 @@ textarea.md-textarea:focus:not([readonly])+label {
     font-weight: 500;
 }
 
+.card-spacer-15 {
+    height: 15px;
+}
+
 .card-spacer-30 {
     height: 30px;
 }
