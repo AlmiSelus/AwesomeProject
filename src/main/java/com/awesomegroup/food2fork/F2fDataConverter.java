@@ -6,7 +6,6 @@ import com.awesomegroup.recipe.RecipeDifficulty;
 import com.awesomegroup.recipeingredient.RecipeIngredient;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -15,6 +14,10 @@ import java.util.Random;
 public final class F2fDataConverter {
 
     private static Random random = new Random();
+
+    private F2fDataConverter() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static Ingredient convertIngredient(String ingredient)
     {
