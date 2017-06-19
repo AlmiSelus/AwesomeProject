@@ -130,3 +130,21 @@ md-toolbar.md-hue-1:not(.md-menu-toolbar) {
     margin-top: 0;
     background-color: rgba(0, 0, 0, 0.05);
 }
+
+.roundPadding {
+    padding: 10px;
+}
+.sidePadding {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.beforePadding {
+    padding-top: 10px;
+}
+.afterPadding {
+    padding-bottom: 10px;
+}
+
+.columnGap {
+    column-gap: 20px;
+}
