@@ -4,21 +4,21 @@
             <div class="container">
                 <!-- Headline -->
                 <div class="text-center">
-                    <h3><i class="fa fa-lock"></i> Register</h3>
+                    <h3><span class="fa fa-lock"></span> Register</h3>
                     <hr class="mt-2 mb-2"/>
                 </div>
 
                 <form novalidate="novalidate" class="col-md-offset-3 col-md-6" name="add_user_form">
                     <!-- Email field -->
                     <div class="md-form">
-                        <i class="fa fa-envelope prefix"></i>
+                        <span class="fa fa-envelope prefix"></span>
                         <input type="email" id="emailInput" ng-model="user.email" required="required"/>
                         <label for="emailInput" class="">Email address</label>
                     </div>
 
                     <!-- Password field -->
                     <div class="md-form" ng-class="{ 'has-error' : add_user_form.user_password.$dirty &amp;&amp; add_user_form.user_password.$invalid }">
-                        <i class="fa fa-unlock-alt prefix"></i>
+                        <span class="fa fa-unlock-alt prefix"></span>
                         <input type="password" id="user_password" name="user_password" ng-model="user.user_password" password-verify="{{user.confirm_password}}" required="required"/>
                         <label for="user_password" class="">Password</label>
                         <div class="help-block" ng-messages="add_user_form.user_password.$error" ng-if="add_user_form.user_password.$dirty">
@@ -30,7 +30,7 @@
 
                     <!-- Confirm Password field -->
                     <div class="md-form" ng-class="{ 'has-error' : add_user_form.confirm_password.$dirty &amp;&amp; add_user_form.confirm_password.$invalid }">
-                        <i class="fa fa-unlock-alt prefix"></i>
+                        <span class="fa fa-unlock-alt prefix"></span>
                         <input type="password" id="confirm_password" ng-model="user.confirm_password" name="confirm_password" required="required" password-verify="{{user.user_password}}"/>
                         <label for="confirm_password" class="">Confirm your password</label>
                         <div class="help-block" ng-messages="add_user_form.confirm_password.$error" ng-if="add_user_form.confirm_password.$dirty">
@@ -41,14 +41,14 @@
 
                     <!-- Name field -->
                     <div class="md-form">
-                        <i class="fa fa-address-card-o prefix"></i>
+                        <span class="fa fa-address-card-o prefix"></span>
                         <input type="text" id="nameInput" ng-model="user.name" required="required"/>
                         <label for="nameInput" class="">First name</label>
                     </div>
 
                     <!-- Password field -->
                     <div class="md-form">
-                        <i class="fa fa-address-card-o prefix"></i>
+                        <span class="fa fa-address-card-o prefix"></span>
                         <input type="text" id="surnameInput" ng-model="user.surname" required="required"/>
                         <label for="surnameInput" class="">Last name</label>
                     </div>

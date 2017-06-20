@@ -1,22 +1,20 @@
 <div ng-controller="FridgeController">
     <div class="card">
         <div class="card-block">
-            <div class="container">
 
-                <!--Header-->
-                <div class="text-center">
-                    <h3><i class="fa fa-shopping-basket"></i> Your fridge:</h3>
-                    <hr class="mt-2 mb-2"/>
-                </div>
+            <!--Header-->
+            <div class="text-center">
+                <h3><span class="fa fa-shopping-basket"></span> Your fridge:</h3>
+                <hr class="mt-2 mb-2"/>
+            </div>
 
-                <!-- Currently held ingredients -->
-                <div class="row">
-                    <div class="mb-1 text-center"><h4>Current ingredients in fridge</h4></div>
-                    <div class="col-md-12">
-                        <div class="chip" ng-repeat="ingredient in selectedIngredients">
-                            {{ ingredient.name }} (Expires {{ingredient.date}})
-                            <button ng-click="deleteIngredient(ingredient,$index)" class="close"><span class="fa fa-times"></span></button>
-                        </div>
+            <!-- Currently held ingredients -->
+            <div class="row">
+                <div class="mb-1 text-center"><h4>Current ingredients in fridge</h4></div>
+                <div class="col-md-12">
+                    <div class="chip" ng-repeat="ingredient in selectedIngredients">
+                        {{ ingredient.name }} (Expires {{ingredient.date}})
+                        <button ng-click="deleteIngredient(ingredient,$index)" class="close"><span class="fa fa-times"></span></button>
                     </div>
                 </div>
             </div>
@@ -25,51 +23,49 @@
     <div class="card-spacer-30"></div>
     <div class="card">
         <div class="card-block">
-            <div class="container">
-                <!--Header-->
-                <div class="text-center">
-                    <h3><i class="fa fa-shopping-cart"></i> Add new ingredient:</h3>
-                    <hr class="mt-2 mb-2"/>
-                </div>
-                <!-- New ingredient details -->
-                <div class="row">
-                    <md-autocomplete flex="flex" required="required"
-                                     md-input-name="autocompleteField"
-                                     md-input-minlength="0"
-                                     md-input-maxlength="18"
-                                     md-selected-item="picked.ingredient"
-                                     md-search-text="searchText"
-                                     md-items="ingredient in querySearch(searchText)"
-                                     md-item-text="ingredient.name"
-                                     md-floating-label="Ingredient name"
-                                     placeholder="Ingredient name"
-                                     class="col-md-5">
-                        <md-item-template>
-                            <span md-highlight-text="searchText" md-highlight-flags="^i">{{ingredient.name}}</span>
-                        </md-item-template>
+            <!--Header-->
+            <div class="text-center">
+                <h3><span class="fa fa-shopping-cart"></span> Add new ingredient:</h3>
+                <hr class="mt-2 mb-2"/>
+            </div>
+            <!-- New ingredient details -->
+            <div class="row">
+                <md-autocomplete flex="flex" required="required"
+                                 md-input-name="autocompleteField"
+                                 md-input-minlength="0"
+                                 md-input-maxlength="18"
+                                 md-selected-item="picked.ingredient"
+                                 md-search-text="searchText"
+                                 md-items="ingredient in querySearch(searchText)"
+                                 md-item-text="ingredient.name"
+                                 md-floating-label="Ingredient name"
+                                 placeholder="Ingredient name"
+                                 class="col-md-5">
+                    <md-item-template>
+                        <span md-highlight-text="searchText" md-highlight-flags="^i">{{ingredient.name}}</span>
+                    </md-item-template>
 
-                        <div ng-messages="searchForm.autocompleteField.$error" ng-if="searchForm.autocompleteField.$touched">
-                            <div ng-message="required">You <b>must</b> add ingredient name.</div>
-                            <div ng-message="minlength">Your entry is not long enough.</div>
-                            <div ng-message="maxlength">Your entry is too long.</div>
-                        </div>
-                    </md-autocomplete>
-                    <div class="col-md-4">
-                        <mdp-date-picker mdp-open-on-click="mdp-open-on-click" required="required" name="dateFormat" mdp-placeholder="My date(dd/mm/yyyy)" mdp-format="DD/MM/YYYY" ng-model="picked.date">
-                            <div ng-messages="demoForm.dateFormat.$error">
-                                <div ng-message="required">This is required</div>
-                                <div ng-message="format">Invalid format</div>
-                            </div>
-                        </mdp-date-picker>
+                    <div ng-messages="searchForm.autocompleteField.$error" ng-if="searchForm.autocompleteField.$touched">
+                        <div ng-message="required">You <b>must</b> add ingredient name.</div>
+                        <div ng-message="minlength">Your entry is not long enough.</div>
+                        <div ng-message="maxlength">Your entry is too long.</div>
                     </div>
-                    <!-- Save button -->
-                    <button class="btn btn-yellow" ng-click="addIngredient()">
-                        <span ng-class="{'fa fa-spinner fa-spin' : clicked, 'fa fa-check' : doneOk}"></span>
-                        <span ng-show="!clicked &amp;&amp; !doneOk">Save</span>
-                        <span ng-show="clicked &amp;&amp; !doneOk">Saving ...</span>
-                        <span ng-show="!clicked &amp;&amp; doneOk">Saved!</span>
-                    </button>
+                </md-autocomplete>
+                <div class="col-md-4">
+                    <mdp-date-picker mdp-open-on-click="mdp-open-on-click" required="required" name="dateFormat" mdp-placeholder="My date(dd/mm/yyyy)" mdp-format="DD/MM/YYYY" ng-model="picked.date">
+                        <div ng-messages="demoForm.dateFormat.$error">
+                            <div ng-message="required">This is required</div>
+                            <div ng-message="format">Invalid format</div>
+                        </div>
+                    </mdp-date-picker>
                 </div>
+                <!-- Save button -->
+                <button class="btn btn-yellow" ng-click="addIngredient()">
+                    <span ng-class="{'fa fa-spinner fa-spin' : clicked, 'fa fa-check' : doneOk}"></span>
+                    <span ng-show="!clicked &amp;&amp; !doneOk">Save</span>
+                    <span ng-show="clicked &amp;&amp; !doneOk">Saving ...</span>
+                    <span ng-show="!clicked &amp;&amp; doneOk">Saved!</span>
+                </button>
             </div>
         </div>
     </div>
@@ -77,10 +73,8 @@
         <div class="card-spacer-30" ></div>
         <div class="card">
             <div class="card-block">
-                <div class="container">
-                    <div class="text-center">
-                        <h3>{{recipe.recipe_name}}</h3>
-                    </div>
+                <div class="text-center">
+                    <h3>{{recipe.recipe_name}}</h3>
                 </div>
             </div>
             <div class="modal-footer">

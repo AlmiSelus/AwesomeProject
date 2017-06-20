@@ -4,7 +4,6 @@ import com.awesomegroup.general.FieldErrorJson;
 import com.awesomegroup.general.ResponseEntityUtils;
 import com.awesomegroup.general.ResponseJson;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -79,11 +77,8 @@ public class UserRestController {
         log.info(registerData.toString());
         DeferredResult<ResponseEntity<ResponseJson>> deferredResult = new DeferredResult<>();
         userService.register(registerData).subscribe(
-            user -> deferredResult.setResult(ResponseEntityUtils.ok("/confirm")),
-            error -> {
-                deferredResult.setErrorResult(ResponseEntityUtils.notAcceptable(error.getCause().getMessage()));
-                log.error(ExceptionUtils.getStackTrace(error));
-        });
+            user  -> deferredResult.setResult(ResponseEntityUtils.ok("/confirm")),
+            error -> deferredResult.setErrorResult(ResponseEntityUtils.notAcceptable(error.getCause().getMessage())));
         return deferredResult;
     }
 
