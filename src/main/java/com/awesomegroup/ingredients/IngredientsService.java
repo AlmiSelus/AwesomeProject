@@ -22,13 +22,11 @@ public class IngredientsService {
         return ingredientRepository.findAll();
     }
 
-    public boolean AddIngredient(Ingredient ingredient) {
+    public boolean addIngredient(Ingredient ingredient) {
         boolean ingredientAdded = false;
         if(ingredient != null) {
             Optional<Ingredient> ingredientInBase = ingredientRepository.findIngredientsByName(ingredient.getIngredientName());
-            if(ingredientInBase.isPresent()) {
-                //ingredientInBase.get().Update(ingredient);
-            }else{
+            if(!ingredientInBase.isPresent()) {
                 ingredientRepository.save(ingredient);
                 ingredientAdded = true;
             }
@@ -36,9 +34,9 @@ public class IngredientsService {
         return ingredientAdded;
     }
 
-    public Iterable<Boolean> AddIngredient(Iterable<Ingredient> ingredients) {
-        ArrayList<Boolean> results = new ArrayList<Boolean>();
-        ingredients.forEach((Ingredient x) -> { results.add(AddIngredient(x)); } );
+    public Iterable<Boolean> addIngredient(Iterable<Ingredient> ingredients) {
+        ArrayList<Boolean> results = new ArrayList<>();
+        ingredients.forEach((Ingredient x) -> results.add(addIngredient(x)) );
         return results;
     }
 

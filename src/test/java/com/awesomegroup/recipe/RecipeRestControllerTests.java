@@ -44,12 +44,9 @@ public class RecipeRestControllerTests {
     @MockBean
     private RecipeService recipeService;
 
-    @MockBean
-    private IngredientsService ingredientsService;
-
     @Before
     public void startUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new RecipeRestController(recipeService, ingredientsService)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(new RecipeRestController(recipeService)).build();
     }
 
     @Test
