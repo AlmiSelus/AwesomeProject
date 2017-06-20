@@ -435,7 +435,7 @@ app.controller('RecipeController', function($scope, $location, $http) {
     $scope.id = $location.search().id;
     console.log("\n\n\n" + $scope.name + "\n\n\n");
 
-    $http.get("/api/recipe/{id}", $scope.id).then(function(response){
+    $http.get("/api/recipeId/{id}", $scope.id).then(function(response){
         console.log("\n\n\n" + response.data + "\n\n\n");
         $scope.recipe = response.data;
     }, function () {
