@@ -60,7 +60,7 @@ public class RecipeRestController {
         return recipeService.getRecipeByName(name);
     }
 
-    @GetMapping("/api/recipe/{id}")
+    @GetMapping("/api/recipeId/{id}")
     public Recipe getRecipeById(@PathVariable("id") String id) {
         Food2fork f2f = new Food2fork();
         return F2fDataConverter.convertRecipe(f2f.getRecipe("35120").getRecipee());
