@@ -332,15 +332,16 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
          * Create filter function for a query string
          */
         function createFilterFor(query) {
-            var lowercaseQuery = angular.lowercase(query);
             return function filterFn(state) {
+                console.log(state);
                 return (state.name.indexOf(lowercaseQuery) === 0);
             };
+            var lowercaseQuery = angular.lowercase(query);
         }
 
         $scope.addIngredient = function() {
-            if($scope.picked.ingredient != undefined)
-            {
+            // if($scope.picked.ingredient != undefined)
+            // {
             $scope.clicked = true;
             $scope.doneOk = false;
 
@@ -367,7 +368,7 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
             }, function() {
                 $location.url('/login');
             });
-            }
+            // }
         };
 
         $scope.deleteIngredient = function(fIngredient, index) {
