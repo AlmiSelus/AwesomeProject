@@ -1,5 +1,7 @@
 package com.awesomegroup.recipe;
 
+import com.awesomegroup.food2fork.F2fDataConverter;
+import com.awesomegroup.food2fork.Food2fork;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
@@ -57,6 +59,13 @@ public class RecipeRestController {
     public Recipe getRecipeByName(@PathVariable("name") String name) {
         return recipeService.getRecipeByName(name);
     }
+
+    @GetMapping("/api/recipeId/{id}")
+    public Recipe getRecipeById(@PathVariable("id") String id) {
+        Food2fork f2f = new Food2fork();
+        return F2fDataConverter.convertRecipe(f2f.getRecipe("35120").getRecipee());
+    }
+
 
     @PostMapping(value = "/api/recipe/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public RecipeAddResult saveRecipe(@RequestBody Recipe newRecipe) {

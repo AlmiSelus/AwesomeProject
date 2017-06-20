@@ -332,15 +332,16 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
          * Create filter function for a query string
          */
         function createFilterFor(query) {
-            var lowercaseQuery = angular.lowercase(query);
             return function filterFn(state) {
+                console.log(state);
                 return (state.name.indexOf(lowercaseQuery) === 0);
             };
+            var lowercaseQuery = angular.lowercase(query);
         }
 
         $scope.addIngredient = function() {
-            if($scope.picked.ingredient != undefined)
-            {
+            // if($scope.picked.ingredient != undefined)
+            // {
             $scope.clicked = true;
             $scope.doneOk = false;
 
@@ -367,7 +368,7 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
             }, function() {
                 $location.url('/login');
             });
-            }
+            // }
         };
 
         $scope.deleteIngredient = function(fIngredient, index) {
@@ -432,10 +433,10 @@ app.controller('FridgeController', function ($rootScope, $scope, $http, $locatio
 
 app.controller('RecipeController', function($scope, $location, $http) {
     $scope.recipe = undefined;
-    $scope.name = $location.search().name;
+    $scope.id = $location.search().id;
     console.log("\n\n\n" + $scope.name + "\n\n\n");
 
-    $http.get("/api/recipe/{name}", $scope.name).then(function(response){
+    $http.get("/api/recipeId/{id}", $scope.id).then(function(response){
         console.log("\n\n\n" + response.data + "\n\n\n");
         $scope.recipe = response.data;
     }, function () {
