@@ -1,6 +1,5 @@
 package com.awesomegroup.recipe;
 
-import com.awesomegroup.ingredients.IngredientsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
@@ -115,13 +114,8 @@ public class RecipeRestController {
         return recipeAddResult;
     }
 
-    @PostMapping("api/recipe/log")
-    public void logToConsole(@RequestBody String content) {
-        System.out.println(content);
-    }
-
     @DeleteMapping("api/recipe-delete/{id}")
     public void deleteRecipe(@PathVariable("id") long id) {
-        recipeService.RemoveRecipe(id);
+        recipeService.removeRecipe(id);
     }
 }

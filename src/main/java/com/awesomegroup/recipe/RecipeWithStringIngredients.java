@@ -1,12 +1,8 @@
 package com.awesomegroup.recipe;
 
-import com.awesomegroup.fridge.favourite.FavouriteRecipe;
-import com.awesomegroup.recipeingredient.RecipeIngredient;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

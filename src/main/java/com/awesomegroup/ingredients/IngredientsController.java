@@ -18,7 +18,7 @@ public class IngredientsController {
     }
 
     @GetMapping("/where")
-    public String Where() {
+    public String where() {
         return"In ingredients!";
     }
 

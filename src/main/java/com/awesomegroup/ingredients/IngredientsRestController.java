@@ -57,17 +57,6 @@ public class IngredientsRestController {
     @GetMapping("/ingredients/getrecipe/{recipeId}")
     public F2FRecipeRecipe getRecipe(@PathVariable("recipeId") String recipeId) {
         Food2fork food2fork = new Food2fork();
-        F2FRecipeRecipe foundRecipe = food2fork.getRecipe(recipeId);
-        return foundRecipe;
+        return food2fork.getRecipe(recipeId);
     }
-
-    @GetMapping("/ingredients/kochastest/{param}")
-    public String kochasTest(@PathVariable("param") String param) {
-        String resultString = new String("Kochas is testing!");
-        if(param != null) {
-            resultString += "\n" + param;
-        }
-        return resultString;
-    }
-
 }
