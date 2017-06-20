@@ -1,17 +1,11 @@
 package com.awesomegroup.recipe;
 
-import com.awesomegroup.ingredients.Ingredient;
 import com.awesomegroup.ingredients.IngredientsService;
-import com.awesomegroup.recipeingredient.RecipeIngredient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.sql.SQLException;
-import java.util.Optional;
 
 /**
  * Created by Michał on 2017-04-14.
@@ -20,12 +14,10 @@ import java.util.Optional;
 public class RecipeRestController {
 
     private final RecipeService recipeService;
-    private final IngredientsService ingredientsService;
 
     @Autowired
-    public RecipeRestController(RecipeService recipeService, IngredientsService ingredientsService) {
+    public RecipeRestController(RecipeService recipeService) {
         this.recipeService = recipeService;
-        this.ingredientsService = ingredientsService;
     }
 
     @GetMapping("/api/recipe-count")

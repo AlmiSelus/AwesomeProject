@@ -74,7 +74,7 @@ public class RecipeService {
                             referencedIngredient = Ingredient.create()
                                     .name(ingredientName)
                                     .build();
-                            ingredientsService.AddIngredient(referencedIngredient);
+                            ingredientsService.addIngredient(referencedIngredient);
                         }
 
                         if(referencedIngredient != null) {

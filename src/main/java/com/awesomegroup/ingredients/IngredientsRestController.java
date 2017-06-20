@@ -23,7 +23,7 @@ public class IngredientsRestController {
     }
 
     @GetMapping("/ingredients/example")
-    public Ingredient OneIngredient() {
+    public Ingredient oneIngredient() {
         return Ingredient.create()
                 .id(5)
                 .name("milk")
@@ -31,8 +31,8 @@ public class IngredientsRestController {
     }
 
     @PostMapping("ingredients/add/{name}")
-    public Boolean AddIngredient(@PathVariable("name") String name) {
-        return ingredientService.AddIngredient(Ingredient.create().name(name).build());
+    public Boolean addIngredient(@PathVariable("name") String name) {
+        return ingredientService.addIngredient(Ingredient.create().name(name).build());
     }
 
     @GetMapping("/api/ingredients/all")
@@ -43,7 +43,7 @@ public class IngredientsRestController {
     }
 
     @GetMapping("/ingredients/find/{name}")
-    public Ingredient FindByName(@PathVariable("name") String name) {
+    public Ingredient findByName(@PathVariable("name") String name) {
         Optional<Ingredient> foundIngredient = ingredientService.findIngredientsByName(name);
         return foundIngredient.isPresent() ? foundIngredient.get() : null;
     }
@@ -55,7 +55,7 @@ public class IngredientsRestController {
 
 
     @GetMapping("/ingredients/getrecipe/{recipeId}")
-    public F2FRecipeRecipe GetRecipe(@PathVariable("recipeId") String recipeId) {
+    public F2FRecipeRecipe getRecipe(@PathVariable("recipeId") String recipeId) {
         Food2fork food2fork = new Food2fork();
         F2FRecipeRecipe foundRecipe = food2fork.getRecipe(recipeId);
         return foundRecipe;
