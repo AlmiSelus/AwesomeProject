@@ -10,6 +10,7 @@ import com.awesomegroup.recipe.Recipe;
 import com.awesomegroup.recipe.RecipeDifficulty;
 import com.awesomegroup.recipe.RecipeRepository;
 import com.awesomegroup.recipeingredient.RecipeIngredient;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -57,7 +59,26 @@ public class MockDatabaseRunner implements ApplicationRunner {
                     .servings((byte) random.nextInt(5))
                     .build();
 
-            List<String> uniqueIngredients = r.getRecipee().getIngridients().stream().distinct().collect(Collectors.toList());
+            log.info(r.getRecipee().getIngridients().stream().collect(Collectors.joining(", ")));
+
+
+            List<String> uniqueIngredients = r.getRecipee().getIngridients().stream()
+                    .filter(s-> !s.contains("Note"))
+                    .map(s->!s.contains("(") ? s : s.replace(s.substring(s.indexOf("("), s.indexOf(")")), ""))
+                    .flatMap(Pattern.compile(" ")::splitAsStream)
+                    .filter(s->!StringUtils.containsAny(s.toLowerCase(),"in", "of", "shredded", "lengthwise", "seeded", "half", "and", "slice", "cut", "room", "temperature", "crumbled", ")"))
+                    .filter(s->!Pattern.matches("\\d", s))
+                    .filter(s->!Pattern.matches("([cup]+?)(s\\b|\\b)", s))
+                    .filter(s->!Pattern.matches("([pound]+?)(s\\b|\\b)", s))
+                    .filter(s->!Pattern.matches("([quart]+?)(s\\b|\\b)", s))
+                    .filter(s->!Pattern.matches("([spoon]+?)(s\\b|\\b)", s))
+                    .filter(s->!Pattern.matches("([tablespoon]+?)(s\\b|\\b)", s))
+                    .filter(s->!Pattern.matches("([gram]+?)(s\\b|\\b)", s))
+                    .filter(s->!Pattern.matches("([milligram]+?)(s\\b|\\b)", s))
+                    .filter(s->!Pattern.matches("(\\d)([.*])(\\d)",s))
+                    .distinct().collect(Collectors.toList());
+
+            log.info(uniqueIngredients.stream().collect(Collectors.joining(", ")));
 
 
             List<RecipeIngredient> recipeIngredients = uniqueIngredients.stream().filter(Objects::nonNull).map(ingredientName->{
