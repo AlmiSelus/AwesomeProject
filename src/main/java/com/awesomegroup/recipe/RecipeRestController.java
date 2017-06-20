@@ -128,7 +128,7 @@ public class RecipeRestController {
         System.out.println(content);
     }
 
-    @DeleteMapping("api/recipe/delete/{id}")
+    @DeleteMapping("api/recipe-delete/{id}")
     public void deleteRecipe(@PathVariable("id") long id) {
         recipeService.RemoveRecipe(id);
     }

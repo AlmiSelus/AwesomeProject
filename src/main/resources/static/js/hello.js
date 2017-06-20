@@ -514,6 +514,15 @@ app.controller('RecipeEditor', function($rootScope, $scope, $http) {
         );
     };
 
+    $scope.removeRecipe = function(id) {
+        path = 'api/recipe-delete/'+id;
+        console.log("remove: "+path);
+        $http.delete('api/recipe-delete/'+id).then(
+            function(response) {
+                 $scope.getRecipes();
+            }
+        );
+    }
 
     $scope.search =
     {
@@ -605,7 +614,6 @@ app.controller('RecipeEditor', function($rootScope, $scope, $http) {
     };
 
     if($rootScope.authenticated != null && $rootScope.authenticated == true){
-
         $scope.clearSearch();
     };
 

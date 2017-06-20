@@ -39,8 +39,26 @@
             <div class="card-spacer-15"></div>
 
             <div class="card">
-                <div class="card-block" ng-repeat="recipe in recipesToShow">
-                    <p>recipe:{{recipe}}</p> <br/>
+                <div class="card-block roundPadding" ng-repeat="recipe in recipesToShow">
+                    <div class="card">
+                        <div class="card-block roundPadding">
+                            <div class="">Name: {{recipe.recipe_name}}</div>
+                            <div class="">Difficulty: {{recipe.difficulty}}</div>
+                            <div class="">Preparation time: {{recipe.estimatedPreparationTime}}</div>
+                            <div class="">Servings: {{recipe.servings}}</div>
+                            <div>
+                                Ingredients: <br/>
+                                <div class="sidePadding" ng-repeat="ingredient in recipe.recipe_ingredients">
+                                    <p>- {{ingredient.ingredient.name}}</p>
+                                    <!--<ul>-->
+                                        <!--<li>- {{ingredient.ingredient.name}}</li>-->
+                                    <!--</ul>-->
+                                </div>
+                            </div>
+                            <button ng-click="removeRecipe(recipe.id)">Remove</button>
+                        </div>
+                    </div>
+                    <!--<p>recipe:{{recipe}}</p> <br/>-->
                 </div>
             </div>
 
@@ -69,7 +87,6 @@
                             </td>
                         </table>
                     </div>
-                    length:{{recipesToShow.length}}
                 </div>
             </div>
         </div>
@@ -107,12 +124,14 @@
                             </tr>
                             <tr>
                                 <td class="sidePadding">Difficulty</td>
-                                <td class="sidePadding"><select ng-model="recipe.difficulty" ng-change="onRecipeEdit()" >
-                                    <option value="EASY">Easy</option>
-                                    <option value="MEDIUM">Medium</option>
-                                    <option value="HARD">Hard</option>
-                                    <option value="EXPERT">Expert Chef</option>
-                                </select></td>
+                                <td class="sidePadding">
+                                    <select ng-model="recipe.difficulty" ng-change="onRecipeEdit()" >
+                                        <option value="EASY">Easy</option>
+                                        <option value="MEDIUM">Medium</option>
+                                        <option value="HARD">Hard</option>
+                                        <option value="EXPERT">Expert Chef</option>
+                                    </select>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="sidePadding">
