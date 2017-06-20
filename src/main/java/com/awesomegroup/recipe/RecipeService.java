@@ -67,10 +67,8 @@ public class RecipeService {
                         Ingredient referencedIngredient = null;
                         Optional<Ingredient> foundIngredient = ingredientsService.findIngredientsByName(ingredientName);
                         if(foundIngredient.isPresent()) {
-                            System.out.println("found existing ingredient: " + ingredientName);
                             referencedIngredient = foundIngredient.get();
                         }else{
-                            System.out.println("Create new ingredient: " + ingredientName);
                             referencedIngredient = Ingredient.create()
                                     .name(ingredientName)
                                     .build();
@@ -78,21 +76,17 @@ public class RecipeService {
                         }
 
                         if(referencedIngredient != null) {
-                            System.out.println("reference ingredient: " + ingredientName);
                             RecipeIngredient recipeIngredient = RecipeIngredient.create()
                                     .recipe(recipe)
                                     .ingredient(referencedIngredient)
                                     .count(1)
                                     .build();
                             if(recipeIngredient != null) {
-                                System.out.println("Created recipe ingredient for ingredient: " + ingredientName);
                                 recipe.getRecipeIngredients().add(recipeIngredient);
                             }else{
-                                System.out.println("failed to create recipe ingredient: " + ingredientName);
                             }
                         }else{
-                            System.out.println("did not found nor created ingredient: " + ingredientName);
-                            throw new RuntimeException("Failed to create recipe-ingredient relation!");
+                            throw new CouldNotCreateRecipeIngredientException("Failed to create recipe-ingredient relation!");
                         }
                     }
             );
@@ -100,7 +94,7 @@ public class RecipeService {
         }
     }
 
-    public void RemoveRecipe(long id) {
+    public void removeRecipe(long id) {
         recipeRepository.delete(id);
     }
 }

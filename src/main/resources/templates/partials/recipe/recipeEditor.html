@@ -50,15 +50,11 @@
                                 Ingredients: <br/>
                                 <div class="sidePadding" ng-repeat="ingredient in recipe.recipe_ingredients">
                                     <p>- {{ingredient.ingredient.name}}</p>
-                                    <!--<ul>-->
-                                        <!--<li>- {{ingredient.ingredient.name}}</li>-->
-                                    <!--</ul>-->
                                 </div>
                             </div>
                             <button ng-click="removeRecipe(recipe.id)">Remove</button>
                         </div>
                     </div>
-                    <!--<p>recipe:{{recipe}}</p> <br/>-->
                 </div>
             </div>
 
@@ -158,8 +154,6 @@
                                         <td style="width:85%"><input type="text" ng-model="recipe.recipeIngredients[$index]" value="{{inredient}}" ng-change="onRecipeEdit()" /></td>
                                         <td style="width:10%"><button ng-click="removeIngredient($index)">X</button></td>
                                     </table>
-                                    <!--<form>-->
-                                    <!--</form>-->
                                 </div>
                             </div>
                         </div>
